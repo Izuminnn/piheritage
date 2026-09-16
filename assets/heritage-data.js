@@ -82,6 +82,15 @@ window.PSH_HERITAGE = [
             viewer:'https://lcc-viewer.xgrids.com/pub/32ef8d04-5ad8-4e8a-a9d2-42ae8e4d08db',
             photo:'/images/conglangvanphuc.jpg',
             splats:'48.2M', captured:'07/2026', unesco:false, tone:0 },
+           
+           { name:'Làng lụa Vạn Phúc', name_en:'Van Phuc Silk Village',
+            type:'Di sản', type_en:'Heritage',
+            era:'', era_en:'',
+            lat:20.9792, lng:105.7730,
+            gmaps:'https://maps.app.goo.gl/3QM56cTfpEiNJoEd7',
+            viewer:'https://lcc-viewer.xgrids.com/pub/f8c65aaa-49ab-4c51-8e4d-7c1d528f8225',
+            photo:'/images/conglangvanphuc.jpg',
+            splats:'48.2M', captured:'09/2026', unesco:false, tone:0 },
 
           { name:'Chùa Vạn Phúc', name_en:'Van Phuc Temple',
             type:'Di sản', type_en:'Heritage',
