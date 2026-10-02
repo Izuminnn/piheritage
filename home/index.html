@@ -50,6 +50,10 @@ tailwind.config = {
     <a class="btn btn--ghost btn--sm hidden lg:inline-flex justify-self-center" href="/gallery/" data-en="Scan library">Thư viện scan</a>
 
     <div class="justify-self-end flex items-center gap-3">
+      <a class="nav-link nav-link--key hidden lg:inline-flex" href="/khach-hang/">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="4" cy="9" r="2.6" stroke="currentColor" stroke-width="1.3"/><path d="M5.9 7.1 11.5 1.5M9.4 3.6l1.6 1.6M10.8 2.2l1.2 1.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="square"/></svg>
+        <span data-en="Clients">Khách hàng</span>
+      </a>
       <div class="lang" role="group" aria-label="Ngôn ngữ" data-en-aria-label="Language">
         <button class="lang-btn" type="button" data-lang-btn="vi" aria-pressed="true">VI</button>
         <button class="lang-btn" type="button" data-lang-btn="en" aria-pressed="false">EN</button>
@@ -76,6 +80,7 @@ tailwind.config = {
   <div id="drawer" hidden class="lg:hidden border-t border-ink-500 bg-ink-900/95 backdrop-blur px-5 py-5">
     <div class="flex flex-col gap-1">
       <a class="nav-link py-3" href="/gallery/" data-en="Scan library">Thư viện scan</a>
+      <a class="nav-link py-3" href="/khach-hang/" data-en="Clients">Khách hàng</a>
       <a class="nav-link py-3" href="#gioi-thieu" data-en="About us">Về chúng tôi</a>
       <a class="nav-link py-3" href="#cong-nghe" data-en="Technology">Công nghệ</a>
       <a class="nav-link py-3" href="#giao-duc" data-en="Schools">Trường học</a>
@@ -331,7 +336,10 @@ tailwind.config = {
         <li class="flex gap-3 text-bonedim"><span class="text-psh font-mono text-xs mt-1 flex-none">→</span> <span data-en="Viewer embedded in your website, kiosk or app.">Nhúng viewer vào website, kiosk hoặc ứng dụng.</span></li>
         <li class="flex gap-3 text-bonedim"><span class="text-psh font-mono text-xs mt-1 flex-none">→</span> <span data-en="Source data handed over for archival and restoration.">Bàn giao dữ liệu gốc phục vụ lưu trữ và trùng tu.</span></li>
       </ul>
-      <a class="btn btn--ghost mt-8" href="#lien-he" data-en="Request a quote">Nhận báo giá</a>
+      <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <a class="btn btn--ghost" href="#lien-he" data-en="Request a quote">Nhận báo giá</a>
+        <a class="inline-link text-[.875rem]" href="/khach-hang/" data-en="Have a project code? Open your scan →">Đã có mã dự án? Mở bản scan →</a>
+      </div>
     </article>
   </div>
 </section>
@@ -405,6 +413,7 @@ tailwind.config = {
         <p class="font-mono text-[10px] tracking-[.18em] uppercase text-bonemute" data-en="Pages">Trang</p>
         <ul class="mt-5 space-y-3 list-none p-0 text-[.9375rem]">
           <li><a class="foot-link" href="/gallery/" data-en="Scan library">Thư viện scan</a></li>
+          <li><a class="foot-link" href="/khach-hang/" data-en="Client area">Khu vực khách hàng</a></li>
           <li><a class="foot-link" href="#cong-nghe" data-en="3DGS technology">Công nghệ 3DGS</a></li>
           <li><a class="foot-link" href="#gioi-thieu" data-en="About us">Về chúng tôi</a></li>
           <li><a class="foot-link" href="#giao-duc" data-en="Schools programme">Chương trình trường học</a></li>

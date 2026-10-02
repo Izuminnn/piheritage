@@ -1,12 +1,14 @@
 /* =========================================================================
    PIHERITAGE — DANH SÁCH DI TÍCH & DI SẢN
    -------------------------------------------------------------------------
-   ĐÂY LÀ FILE DUY NHẤT BẠN CẦN SỬA để thêm/bớt địa điểm.
+   ĐÂY LÀ FILE DUY NHẤT chứa danh sách địa điểm.
    Cả trang chủ (đếm số liệu) và trang gallery đều đọc từ đây.
 
-   📖 Hướng dẫn đầy đủ, có ví dụ: xem file HUONG-DAN.md ở thư mục gốc.
+   ✅ CÁCH DỄ NHẤT: dùng trang quản trị nội bộ (link ẩn /quan-tri/) — thêm,
+      sửa, xoá địa điểm, tải ảnh lên, chọn toạ độ trên bản đồ rồi bấm
+      "Lưu lên web". Trang đó tự ghi lại phần dữ liệu bên dưới.
 
-   CÁCH THÊM NHANH — chép dòng dưới, dán vào trong `items: [ ... ]` của đúng tỉnh:
+   SỬA TAY VẪN ĐƯỢC — chép dòng dưới, dán vào trong `items: [ ... ]` của đúng tỉnh:
 
      { name:'Tên di tích',        name_en:'English name',
        type:'Cấp xếp hạng',       type_en:'Ranking in English',
@@ -61,15 +63,17 @@
    ➜ KHI CÔNG TY MỞ RỘNG TỚI VÙNG ĐÓ: xoá dòng `soon: true`, rồi thay dữ liệu
      mẫu trong `cities` bằng dữ liệu thật. Các bước chi tiết: xem HUONG-DAN.md.
 
-   Hiện đang bật `soon: true`: Miền Trung, Miền Nam.
    ========================================================================= */
 
+/* @@PSH-DATA-START — trang quản trị ghi lại toàn bộ phần từ đây tới dòng @@PSH-DATA-END.
+   Sửa tay vẫn được, nhưng ghi chú // viết bên trong sẽ mất sau lần lưu kế tiếp từ trang quản trị. */
 window.PSH_HERITAGE = [
   {
     region: 'Miền Bắc',
     region_en: 'Northern Vietnam',
     blurb: 'Kinh thành, đền chùa và địa mạo đá vôi của châu thổ sông Hồng.',
     blurb_en: 'Imperial citadels, temples and the limestone karst of the Red River Delta.',
+
     cities: [
       {
         city: 'Hà Nội', city_en: 'Hanoi',
@@ -77,16 +81,16 @@ window.PSH_HERITAGE = [
           { name:'Cổng làng lụa Vạn Phúc', name_en:'Van Phuc Silk Village Gate',
             type:'Di sản', type_en:'Heritage',
             era:'', era_en:'',
-            lat:20.9792, lng:105.7730,
+            lat:20.9792, lng:105.773,
             gmaps:'https://maps.app.goo.gl/3QM56cTfpEiNJoEd7',
             viewer:'https://lcc-viewer.xgrids.com/pub/32ef8d04-5ad8-4e8a-a9d2-42ae8e4d08db',
             photo:'/images/conglangvanphuc.jpg',
             splats:'48.2M', captured:'07/2026', unesco:false, tone:0 },
-           
-           { name:'Làng lụa Vạn Phúc', name_en:'Van Phuc Silk Village',
+
+          { name:'Làng lụa Vạn Phúc', name_en:'Van Phuc Silk Village',
             type:'Di sản', type_en:'Heritage',
             era:'', era_en:'',
-            lat:20.9792, lng:105.7730,
+            lat:20.9792, lng:105.773,
             gmaps:'https://maps.app.goo.gl/3QM56cTfpEiNJoEd7',
             viewer:'https://lcc-viewer.xgrids.com/pub/f8c65aaa-49ab-4c51-8e4d-7c1d528f8225',
             photo:'/images/conglangvanphuc.jpg',
@@ -104,20 +108,20 @@ window.PSH_HERITAGE = [
             type:'Di sản', type_en:'Heritage',
             era:'', era_en:'',
             lat:20.9771, lng:105.7757,
+            gmaps:'https://maps.app.goo.gl/A4QHnCbYUGiB5jmr6',
             viewer:'',
             photo:'/images/caungoilanglua.jpg',
-            gmaps:'https://maps.app.goo.gl/A4QHnCbYUGiB5jmr6',
             splats:'—', captured:'Dự kiến 08/2026', captured_en:'Planned 08/2026', unesco:false, tone:2 },
 
-          { name:'Đình làng Vạn Phúc', name_en:"Van Phuc Communal House",
+          { name:'Đình làng Vạn Phúc', name_en:'Van Phuc Communal House',
             type:'Di sản', type_en:'Heritage',
             era:'', era_en:'',
-            lat:20.9248, lng:105.8920,
+            lat:20.9248, lng:105.892,
             viewer:'',
             photo:'/images/dinhlangvanphuc.jpg',
-            splats:'—', captured:'Dự kiến 08/2026', captured_en:'Planned 08/2026', unesco:false, tone:3 },
+            splats:'—', captured:'Dự kiến 08/2026', captured_en:'Planned 08/2026', unesco:false, tone:3 }
         ]
-      },
+      }
     ]
   },
 
@@ -127,8 +131,8 @@ window.PSH_HERITAGE = [
     blurb: 'Kinh đô triều Nguyễn, phố cảng Hội An và tháp gạch Chăm Pa.',
     blurb_en: 'The Nguyễn dynasty capital, the port town of Hội An and Cham brick towers.',
 
-    /* ⏳ Chưa mở rộng tới đây. Xoá đúng dòng `soon: true` bên dưới là cả vùng
-          hiện ra bình thường — nhớ thay dữ liệu mẫu bằng dữ liệu thật trước. */
+    /* ⏳ Chưa mở rộng tới đây — vùng này chỉ hiện ô "Sắp mở rộng" trên trang thư viện.
+          Tắt ở trang quản trị, hoặc xoá dòng `soon: true` bên dưới. */
     soon: true,
 
     cities: [
@@ -152,8 +156,8 @@ window.PSH_HERITAGE = [
     blurb: 'Kiến trúc thuộc địa, công trình tôn giáo và di tích chiến tranh.',
     blurb_en: 'Colonial architecture, religious landmarks and wartime sites.',
 
-    /* ⏳ Chưa mở rộng tới đây. Xoá đúng dòng `soon: true` bên dưới là cả vùng
-          hiện ra bình thường — nhớ thay dữ liệu mẫu bằng dữ liệu thật trước. */
+    /* ⏳ Chưa mở rộng tới đây — vùng này chỉ hiện ô "Sắp mở rộng" trên trang thư viện.
+          Tắt ở trang quản trị, hoặc xoá dòng `soon: true` bên dưới. */
     soon: true,
 
     cities: [
@@ -170,7 +174,7 @@ window.PSH_HERITAGE = [
           { name:'Nhà thờ Đức Bà Sài Gòn', name_en:'Saigon Notre-Dame Cathedral',
             type:'Kiến trúc Pháp thuộc', type_en:'French colonial architecture',
             era:'1880', era_en:'1880',
-            lat:10.7797, lng:106.6990,
+            lat:10.7797, lng:106.699,
             viewer:'https://viewer.xgrids.com/REPLACE_ME/nha-tho-duc-ba',
             splats:'52.3M', captured:'04/2025', unesco:false, tone:1 },
 
@@ -192,6 +196,7 @@ window.PSH_HERITAGE = [
     ]
   }
 ];
+/* @@PSH-DATA-END */
 
 /* Bỏ dấu tiếng Việt — dùng cho ô tìm kiếm gõ không dấu vẫn ra kết quả. */
 window.pshDeaccent = function (s) {

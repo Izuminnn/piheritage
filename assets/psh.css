@@ -405,7 +405,7 @@ a.plaque:active{transform:translate3d(0,-1px,0)}
 /* ---------- Bản đồ (trang gallery) ---------- */
 .map-shell{height:300px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--ink-500);box-shadow:var(--shade-2)}
 @media(min-width:1024px){.map-shell{height:440px}}
-/* Nền sáng khớp với tile CARTO Positron — không nháy đen lúc tile đang tải. */
+/* Nền sáng khớp với tile Esri Light Gray — không nháy đen lúc tile đang tải. */
 #map{width:100%;height:100%;background:#eceae5}
 .leaflet-container{background:#eceae5!important;font-family:'JetBrains Mono',monospace!important}
 .leaflet-control-attribution{background:rgba(255,255,255,.84)!important;color:#5d6b63!important;font-size:9px!important}
@@ -515,6 +515,99 @@ a.plaque:active{transform:translate3d(0,-1px,0)}
     transparent 1px 9px
   );
 }
+
+/* ---------- Khu vực khách hàng: sân khấu viewer ----------
+   Một khung duy nhất, trước và sau khi mở khoá đều là nó. Lúc khoá là lưới
+   chấm sáng — nhắc lại "hàng triệu điểm sáng" ở hero — với tấm nhập mã ở giữa;
+   nhập đúng thì một vạch quét chạy qua và viewer hiện ra ngay tại chỗ. */
+.stage{
+  position:relative;overflow:hidden;isolation:isolate;
+  height:min(78svh,720px);min-height:440px;
+  border:1px solid var(--ink-500);border-radius:var(--r-md);
+  background-color:var(--ink-900);
+  background-image:
+    radial-gradient(rgba(237,230,216,.09) 1px,transparent 1.6px),
+    radial-gradient(680px 440px at 18% 14%,rgba(120,66,192,.2),transparent 66%),
+    radial-gradient(640px 440px at 86% 90%,rgba(27,158,75,.17),transparent 64%);
+  background-size:18px 18px,auto,auto;
+  box-shadow:var(--shade-2);
+}
+@media(max-width:639px){.stage{height:72svh;min-height:460px}}
+.stage:fullscreen{height:100%;min-height:0;border:0;border-radius:0}
+
+.stage-viewer{
+  position:absolute;inset:0;z-index:1;width:100%;height:100%;border:0;display:block;
+  background:var(--ink-900);opacity:0;transition:opacity .8s var(--ease) .15s;
+}
+.stage-viewer[hidden]{display:none}
+.stage[data-state="open"] .stage-viewer{opacity:1}
+
+.stage-cover{
+  position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;
+  padding:var(--sp-5);transition:opacity .5s var(--ease);
+}
+.stage-cover[hidden]{display:none}
+.stage[data-state="open"] .stage-cover{opacity:0;pointer-events:none}
+
+/* Vạch quét — chỉ chạy trong lúc đang giải mã */
+.stage-sweep{
+  position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;
+  background:linear-gradient(to bottom,transparent 0%,transparent 64%,rgba(141,198,63,.09) 94%,rgba(141,198,63,.7) 100%);
+  transform:translate3d(0,-100%,0);transition:opacity .3s var(--ease);
+}
+.stage[data-state="busy"] .stage-sweep{opacity:1;animation:psh-sweep 1.15s var(--ease) infinite}
+@keyframes psh-sweep{from{transform:translate3d(0,-100%,0)}to{transform:translate3d(0,0,0)}}
+
+/* Tấm nhập mã — tầng nổi trên sân khấu */
+.plate{
+  position:relative;z-index:1;width:min(100%,540px);padding:clamp(1.5rem,4vw,2.25rem);
+  background:linear-gradient(158deg,rgba(23,38,30,.94) 0%,rgba(12,20,16,.96) 100%);
+  border:1px solid var(--ink-400);border-radius:var(--r-md);
+  box-shadow:0 2px 4px rgba(0,0,0,.5),0 32px 64px -22px rgba(0,0,0,.85),0 0 0 1px rgba(120,66,192,.14),0 24px 60px -30px rgba(120,66,192,.45);
+  transition:transform .5s var(--ease),opacity .5s var(--ease);
+}
+.stage[data-state="open"] .plate{transform:translate3d(0,-18px,0);opacity:0}
+.plate.is-wrong{animation:psh-shake .42s var(--ease)}
+@keyframes psh-shake{
+  0%,100%{transform:none}
+  20%{transform:translate3d(-7px,0,0)}
+  40%{transform:translate3d(6px,0,0)}
+  60%{transform:translate3d(-4px,0,0)}
+  80%{transform:translate3d(2px,0,0)}
+}
+.plate-title{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-.02em;text-transform:uppercase;line-height:1.1;color:var(--bone);margin:.75rem 0 1.5rem}
+.plate-row{display:flex;flex-direction:column;gap:.75rem}
+@media(min-width:560px){.plate-row{flex-direction:row}.plate-row .btn{flex:none}}
+.plate-input{font-family:'JetBrains Mono',monospace;font-size:1.0625rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase}
+.plate-input::placeholder{color:rgba(127,138,130,.55);letter-spacing:.16em}
+.plate-input[aria-invalid="true"]{border-color:rgba(201,162,39,.6)}
+.plate-msg{margin:.9rem 0 0;font-size:.8125rem;line-height:1.6;color:var(--bone-mute)}
+.plate-msg.is-error{color:var(--brass)}
+.btn[aria-busy="true"]{pointer-events:none;opacity:.75}
+
+/* Hàng điều khiển phía trên sân khấu, chỉ hiện sau khi mở khoá */
+.stage-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem;margin-bottom:1.25rem}
+.stage-bar[hidden]{display:none}
+.stage-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin-left:auto}
+.stage-actions [hidden]{display:none}
+
+/* Thông tin dự án */
+.meta-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1.25rem 1.5rem;margin:0}
+.meta-list > div{border-top:1px solid var(--ink-500);padding-top:.85rem}
+.meta-list > div[hidden]{display:none}
+.meta-list dt{font-family:'JetBrains Mono',monospace;font-size:.625rem;letter-spacing:.18em;text-transform:uppercase;color:var(--bone-mute)}
+.meta-list dd{margin:.4rem 0 0;font-family:'Archivo',sans-serif;font-weight:700;font-size:1.0625rem;letter-spacing:-.015em;color:var(--bone);line-height:1.3}
+
+.inline-link{color:var(--lime);text-decoration:none;border-radius:var(--r-sm);transition:color .28s var(--ease)}
+.inline-link:hover{text-decoration:underline;text-underline-offset:3px}
+.inline-link:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.inline-link:active{color:var(--bone)}
+
+/* Link "Khách hàng" trên thanh nav */
+.nav-link--key{display:inline-flex;align-items:center;gap:.45rem}
+.nav-link--key svg{flex:none;transition:transform .35s var(--ease-spring)}
+.nav-link--key:hover svg{transform:translate3d(0,-1px,0) rotate(-8deg)}
+.nav-link:active{transform:translate3d(0,1px,0)}
 
 /* ---------- Chân trang ---------- */
 .foot-link{color:var(--bone-dim);text-decoration:none;transition:color .28s var(--ease),transform .28s var(--ease);display:inline-block}

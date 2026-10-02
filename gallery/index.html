@@ -51,6 +51,10 @@ tailwind.config = {
     <a class="btn btn--ghost btn--sm hidden lg:inline-flex justify-self-center" href="/gallery/" aria-current="page" data-en="Scan library">Thư viện scan</a>
 
     <div class="justify-self-end flex items-center gap-3">
+      <a class="nav-link nav-link--key hidden lg:inline-flex" href="/khach-hang/">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="4" cy="9" r="2.6" stroke="currentColor" stroke-width="1.3"/><path d="M5.9 7.1 11.5 1.5M9.4 3.6l1.6 1.6M10.8 2.2l1.2 1.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="square"/></svg>
+        <span data-en="Clients">Khách hàng</span>
+      </a>
       <div class="lang" role="group" aria-label="Ngôn ngữ" data-en-aria-label="Language">
         <button class="lang-btn" type="button" data-lang-btn="vi" aria-pressed="true">VI</button>
         <button class="lang-btn" type="button" data-lang-btn="en" aria-pressed="false">EN</button>
@@ -68,6 +72,7 @@ tailwind.config = {
   <div id="drawer" hidden class="lg:hidden border-t border-ink-500 bg-ink-900/95 backdrop-blur px-5 py-5">
     <div class="flex flex-col gap-1">
       <a class="nav-link py-3" href="/gallery/" aria-current="page" data-en="Scan library">Thư viện scan</a>
+      <a class="nav-link py-3" href="/khach-hang/" data-en="Clients">Khách hàng</a>
       <a class="nav-link py-3" href="/home/#gioi-thieu" data-en="About us">Về chúng tôi</a>
       <a class="nav-link py-3" href="/home/#cong-nghe" data-en="Technology">Công nghệ</a>
       <a class="nav-link py-3" href="/home/#giao-duc" data-en="Schools">Trường học</a>
@@ -208,6 +213,7 @@ tailwind.config = {
         <p class="font-mono text-[10px] tracking-[.18em] uppercase text-bonemute" data-en="Pages">Trang</p>
         <ul class="mt-5 space-y-3 list-none p-0 text-[.9375rem]">
           <li><a class="foot-link" href="/gallery/" data-en="Scan library">Thư viện scan</a></li>
+          <li><a class="foot-link" href="/khach-hang/" data-en="Client area">Khu vực khách hàng</a></li>
           <li><a class="foot-link" href="/home/#cong-nghe" data-en="3DGS technology">Công nghệ 3DGS</a></li>
           <li><a class="foot-link" href="/home/#gioi-thieu" data-en="About us">Về chúng tôi</a></li>
           <li><a class="foot-link" href="/home/#giao-duc" data-en="Schools programme">Chương trình trường học</a></li>
@@ -434,12 +440,18 @@ tailwind.config = {
   function initMap() {
     if (!window.L) return;
     map = L.map('map', { zoomControl: true, scrollWheelZoom: false, attributionControl: true });
-    /* Nền sáng (CARTO Positron): dễ đọc tên đường, tên tỉnh hơn bản đồ tối,
-       và để ghim đỏ/xanh nổi hẳn lên. */
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd',
+    /* Nền sáng (Esri Light Gray) + lớp tên đường, tên tỉnh phủ lên trên: dễ đọc
+       hơn bản đồ tối, và để ghim đỏ/xanh nổi hẳn lên. (CARTO từ 2026 đòi API key
+       nên không dùng nữa.) Esri chỉ có ảnh tới mức 16, gần hơn thì tự phóng to. */
+    var ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_';
+    L.tileLayer(ESRI + 'Base/MapServer/tile/{z}/{y}/{x}', {
+      maxNativeZoom: 16,
       maxZoom: 19,
-      attribution: '© OpenStreetMap · © CARTO'
+      attribution: 'Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap'
+    }).addTo(map);
+    L.tileLayer(ESRI + 'Reference/MapServer/tile/{z}/{y}/{x}', {
+      maxNativeZoom: 16,
+      maxZoom: 19
     }).addTo(map);
 
     ALL.forEach(function (it) {

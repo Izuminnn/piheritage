@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-en="Client area — PiHeritage">Khu vực khách hàng — PiHeritage</title>
+<meta name="description" content="Khách hàng của PSH Design × Pigo Tour nhập mã dự án để xem bản quét 3DGS riêng của đơn vị mình."
+      data-en-content="PSH Design × Pigo Tour clients enter their project code to view their private 3DGS scan.">
+<!-- Trang riêng của khách: không cho Google lập chỉ mục. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&family=Lora:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/psh.css">
+<link rel="icon" type="image/png" href="/brand_assets/piheritagelogo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      ink:  { 900:'#080d0a', 800:'#0c1410', 700:'#111c16', 600:'#17261e', 500:'#1e3227', 400:'#2a4436' },
+      psh:  '#7842c0', pshb:'#8b51d6', pigo:'#1b9e4b', lime:'#8dc63f',
+      bone: '#ede6d8', bonedim:'#b8ae9c', bonemute:'#7f8a82', brass:'#c9a227'
+    },
+    fontFamily: {
+      display:['Archivo','sans-serif'],
+      body:['"Be Vietnam Pro"','sans-serif'],
+      serif:['Lora','Georgia','serif'],
+      mono:['"JetBrains Mono"','monospace']
+    },
+    maxWidth: { shell:'1240px' }
+  }}
+};
+</script>
+</head>
+<body>
+<a class="skip" href="#main" data-en="Skip to main content">Bỏ qua tới nội dung chính</a>
+
+<!-- ============================ NAV ============================ -->
+<header id="nav" class="nav fixed top-0 inset-x-0 z-50">
+  <div class="mx-auto max-w-shell px-5 sm:px-8 h-[68px] grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+    <a href="/home/" class="group flex items-center gap-2.5 no-underline justify-self-start rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-4" aria-label="PiHeritage — trang chủ" data-en-aria-label="PiHeritage — home">
+      <img src="/brand_assets/piheritagelogo.png" alt="" class="pi-mark w-8 h-7 object-contain flex-none">
+      <span class="leading-none">
+        <span class="block font-display tracking-[-.015em] text-bone text-[16px]"><span class="font-extrabold">Pi</span><span class="font-normal">Heritage</span></span>
+        <span class="block font-mono text-[9px] tracking-[.26em] text-bonemute mt-[4px] whitespace-nowrap">PSH DESIGN × PIGO TOUR</span>
+      </span>
+    </a>
+
+    <a class="btn btn--ghost btn--sm hidden lg:inline-flex justify-self-center" href="/gallery/" data-en="Scan library">Thư viện scan</a>
+
+    <div class="justify-self-end flex items-center gap-3">
+      <a class="nav-link nav-link--key hidden lg:inline-flex" href="/khach-hang/" aria-current="page">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="4" cy="9" r="2.6" stroke="currentColor" stroke-width="1.3"/><path d="M5.9 7.1 11.5 1.5M9.4 3.6l1.6 1.6M10.8 2.2l1.2 1.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="square"/></svg>
+        <span data-en="Clients">Khách hàng</span>
+      </a>
+      <div class="lang" role="group" aria-label="Ngôn ngữ" data-en-aria-label="Language">
+        <button class="lang-btn" type="button" data-lang-btn="vi" aria-pressed="true">VI</button>
+        <button class="lang-btn" type="button" data-lang-btn="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="btn btn--primary btn--sm hidden lg:inline-flex" href="/home/#lien-he" data-en="Contact">Liên hệ</a>
+      <button id="burger" class="lg:hidden inline-flex flex-col justify-center gap-[5px] w-11 h-11 items-center rounded border border-ink-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime"
+              aria-expanded="false" aria-controls="drawer" aria-label="Mở menu" data-en-aria-label="Open menu">
+        <span class="block w-5 h-[2px] bg-bone"></span>
+        <span class="block w-5 h-[2px] bg-psh"></span>
+        <span class="block w-5 h-[2px] bg-bone"></span>
+      </button>
+    </div>
+  </div>
+
+  <div id="drawer" hidden class="lg:hidden border-t border-ink-500 bg-ink-900/95 backdrop-blur px-5 py-5">
+    <div class="flex flex-col gap-1">
+      <a class="nav-link py-3" href="/gallery/" data-en="Scan library">Thư viện scan</a>
+      <a class="nav-link py-3" href="/khach-hang/" aria-current="page" data-en="Clients">Khách hàng</a>
+      <a class="nav-link py-3" href="/home/#gioi-thieu" data-en="About us">Về chúng tôi</a>
+      <a class="nav-link py-3" href="/home/#cong-nghe" data-en="Technology">Công nghệ</a>
+      <a class="nav-link py-3" href="/home/#giao-duc" data-en="Schools">Trường học</a>
+      <a class="btn btn--primary mt-3" href="/home/#lien-he" data-en="Contact">Liên hệ</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============================ ĐẦU TRANG ============================ -->
+<section class="mx-auto max-w-shell px-5 sm:px-8 pt-[116px] lg:pt-[126px]">
+
+  <!-- Lúc chưa nhập mã -->
+  <div id="head-locked">
+    <p class="u-eyebrow rise" data-en="Client area <span class=&quot;dot&quot;>·</span> Code access">Khu vực khách hàng <span class="dot">·</span> Truy cập bằng mã</p>
+    <div class="grid lg:grid-cols-[1.25fr_1fr] gap-8 lg:gap-14 items-end mt-6">
+      <h1 class="u-display text-bone text-[clamp(2.1rem,4.8vw,3.35rem)] leading-[1.1] m-0 rise" data-en="Your scan,<br>opened by your code">
+        Bản scan của bạn,<br>mở bằng mã riêng
+      </h1>
+      <p class="text-bonedim leading-[1.75] m-0 rise"
+         data-en="Enter the project code PSH Design sent with your handover email to view your organisation's 3DGS scan right here. Private scans are not part of the public library — without the code, no one can find them.">
+        Nhập mã dự án PSH Design gửi kèm email bàn giao để xem bản quét 3DGS của đơn vị bạn ngay trên trang này.
+        Bản scan riêng không nằm trong thư viện công khai — không có mã thì không ai tìm thấy.
+      </p>
+    </div>
+  </div>
+
+  <!-- Sau khi mở: JS điền chữ vào các ô có id -->
+  <div id="head-open" hidden>
+    <p class="u-eyebrow m-0">
+      <span data-en="Private project">Dự án riêng</span> <span class="dot">·</span> <span id="o-client" class="text-bonedim"></span>
+    </p>
+    <div class="grid lg:grid-cols-[1.25fr_1fr] gap-8 lg:gap-14 items-end mt-6">
+      <h1 id="o-project" tabindex="-1" class="u-display text-bone text-[clamp(1.9rem,4.4vw,3rem)] leading-[1.1] m-0 focus:outline-none"></h1>
+      <dl class="meta-list">
+        <div id="m-place"><dt data-en="Location">Địa điểm</dt><dd id="o-place"></dd></div>
+        <div id="m-captured"><dt data-en="Captured">Ngày quét</dt><dd id="o-captured"></dd></div>
+        <div id="m-splats"><dt data-en="Splats">Số hạt</dt><dd id="o-splats"></dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SÂN KHẤU VIEWER ============================ -->
+<section class="mx-auto max-w-shell px-5 sm:px-8 mt-10 lg:mt-12">
+
+  <div id="bar" class="stage-bar" hidden>
+    <div id="tabs" class="flex flex-wrap gap-2" role="group" aria-label="Chọn bản scan" data-en-aria-label="Choose a scan"></div>
+    <div class="stage-actions">
+      <button class="locate" type="button" id="act-full">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M1 3.6V1h2.6M6.4 1H9v2.6M9 6.4V9H6.4M3.6 9H1V6.4" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span id="act-full-label"></span>
+      </button>
+      <a class="locate" id="act-tab" href="#" target="_blank" rel="noopener noreferrer">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M4 1H1v8h8V6M6 1h3v3M9 1 4.5 5.5" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span data-en="Open in new tab">Mở tab mới</span>
+      </a>
+      <button class="locate" type="button" id="act-copy">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><rect x="3" y="3" width="6" height="6" stroke="currentColor" stroke-width="1.2"/><path d="M1 7V1h6" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span id="act-copy-label"></span>
+      </button>
+      <button class="locate locate--quiet" type="button" id="act-lock">
+        <span data-en="Lock">Khoá lại</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="frame rise">
+    <div class="stage" id="stage" data-state="locked">
+      <iframe id="viewer" class="stage-viewer" hidden
+              allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope; autoplay"
+              referrerpolicy="no-referrer" title=""></iframe>
+
+      <div class="stage-cover" id="cover">
+        <span class="stage-sweep" aria-hidden="true"></span>
+
+        <form class="plate" id="unlock" novalidate>
+          <p class="u-eyebrow m-0" data-en="Private scan <span class=&quot;dot&quot;>·</span> Locked">Bản scan riêng <span class="dot">·</span> Đang khoá</p>
+          <h2 class="plate-title" data-en="Enter your project code">Nhập mã dự án</h2>
+          <label class="field-label" for="code" data-en="Project code">Mã dự án</label>
+          <div class="plate-row">
+            <input class="field plate-input" id="code" name="code" type="text"
+                   autocomplete="off" autocapitalize="characters" spellcheck="false"
+                   maxlength="24" placeholder="XXXX-XXXX-XXXX" aria-describedby="msg">
+            <button class="btn btn--primary" type="submit" id="unlock-btn"></button>
+          </div>
+          <p class="plate-msg" id="msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <p id="bar-status" class="mt-4 mb-0 font-mono text-[10px] tracking-[.14em] uppercase text-bonemute min-h-[1.2em]" role="status" aria-live="polite"></p>
+</section>
+
+<!-- ============================ DƯỚI SÂN KHẤU ============================ -->
+<section class="mx-auto max-w-shell px-5 sm:px-8 mt-8 pb-24 lg:pb-32">
+
+  <!-- Lúc chưa nhập mã -->
+  <div id="foot-locked">
+    <div class="grid md:grid-cols-2 gap-x-10 gap-y-8">
+      <div class="hairline pt-6 rise">
+        <p class="u-eyebrow m-0" data-en="Lost your code?">Không thấy mã?</p>
+        <p class="mt-4 mb-0 text-bonedim leading-[1.75]"
+           data-en="The code is 12 letters and numbers, in your handover email from PSH Design. Lost it? Call <a class=&quot;inline-link&quot; href=&quot;tel:+84000000000&quot;>+84 000 000 000</a> or write to <a class=&quot;inline-link&quot; href=&quot;mailto:lienhe@pshheritage.vn&quot;>lienhe@pshheritage.vn</a> and we will issue a new one.">
+          Mã gồm 12 chữ và số, nằm trong email bàn giao của PSH Design. Mất mã thì gọi
+          <a class="inline-link" href="tel:+84000000000">+84 000 000 000</a> hoặc gửi mail tới
+          <a class="inline-link" href="mailto:lienhe@pshheritage.vn">lienhe@pshheritage.vn</a> để được cấp lại.
+        </p>
+      </div>
+      <div class="hairline pt-6 rise">
+        <p class="u-eyebrow m-0" data-en="Not a client yet?">Chưa là khách hàng?</p>
+        <p class="mt-4 mb-0 text-bonedim leading-[1.75]"
+           data-en="Site management boards, tourism operators and brands can commission their own scan. <a class=&quot;inline-link&quot; href=&quot;/home/#giao-duc&quot;>See commissioned scans</a>, or <a class=&quot;inline-link&quot; href=&quot;/gallery/&quot;>browse the public library</a> first.">
+          Ban quản lý di tích, đơn vị du lịch và thương hiệu có thể đặt quét riêng.
+          <a class="inline-link" href="/home/#giao-duc">Xem bản quét theo yêu cầu</a>, hoặc
+          <a class="inline-link" href="/gallery/">xem thư viện công khai</a> trước.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sau khi mở -->
+  <div id="foot-open" hidden>
+    <div class="grid lg:grid-cols-[1.4fr_1fr] gap-5">
+      <article id="note-card" class="surface-raised p-7 lg:p-9">
+        <p class="u-eyebrow m-0" data-en="Note from PSH Design">Lời nhắn từ PSH Design</p>
+        <p id="o-note" class="mt-4 mb-0 font-serif text-bone text-[1.0625rem] leading-[1.8] whitespace-pre-line"></p>
+      </article>
+      <article class="surface p-7 lg:p-9">
+        <p class="u-eyebrow m-0" data-en="Need help?">Cần hỗ trợ?</p>
+        <p class="mt-4 mb-0 text-bonedim leading-[1.75] text-[.9375rem]"
+           data-en="Scan not loading, or something looks off? Call or email us with your project code.">
+          Bản scan không tải được hoặc có chỗ chưa đúng? Gọi hoặc gửi mail kèm mã dự án của bạn.
+        </p>
+        <ul class="mt-5 space-y-2 list-none p-0 text-[.9375rem]">
+          <li><a class="foot-link" href="tel:+84000000000">+84 000 000 000</a></li>
+          <li><a class="foot-link" href="mailto:lienhe@pshheritage.vn">lienhe@pshheritage.vn</a></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================ CHÂN TRANG ============================ -->
+<footer class="hairline">
+  <div class="mx-auto max-w-shell px-5 sm:px-8 py-14">
+    <div class="grid md:grid-cols-[1.4fr_1fr_1fr] gap-10">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <img src="/brand_assets/piheritagelogo.png" alt="" class="w-7 h-6 object-contain flex-none" aria-hidden="true">
+          <span class="font-display tracking-[-.015em] text-bone text-[15px]"><span class="font-extrabold">Pi</span><span class="font-normal">Heritage</span></span>
+        </div>
+        <p class="mt-5 text-bonemute text-[.875rem] leading-[1.75] max-w-[38ch]"
+           data-en="A partnership between PSH Design and Pigo Tour, preserving Vietnam's monuments and heritage with 3DGS.">
+          Chương trình hợp tác giữa PSH Design và Pigo Tour, lưu giữ di tích và di sản Việt Nam
+          bằng 3DGS.
+        </p>
+        <div class="mt-6 flex items-center gap-3">
+          <a class="plaque h-9 px-2.5 w-[84px]" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer"
+             aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab"
+          ><img src="/brand_assets/pshlogo.png" alt="" class="max-h-[26px] object-contain"></a>
+          <a class="plaque h-9 w-9" data-brand="pigo" href="https://pigo.com.vn" target="_blank" rel="noopener noreferrer"
+             aria-label="Pigo Tour — mở pigo.com.vn trong tab mới" data-en-aria-label="Pigo Tour — open pigo.com.vn in a new tab"
+          ><img src="/brand_assets/pigotourlogo.png" alt="" class="max-h-[24px] object-contain"></a>
+        </div>
+      </div>
+
+      <nav aria-label="Liên kết trang" data-en-aria-label="Site links">
+        <p class="font-mono text-[10px] tracking-[.18em] uppercase text-bonemute" data-en="Pages">Trang</p>
+        <ul class="mt-5 space-y-3 list-none p-0 text-[.9375rem]">
+          <li><a class="foot-link" href="/gallery/" data-en="Scan library">Thư viện scan</a></li>
+          <li><a class="foot-link" href="/khach-hang/" data-en="Client area">Khu vực khách hàng</a></li>
+          <li><a class="foot-link" href="/home/#cong-nghe" data-en="3DGS technology">Công nghệ 3DGS</a></li>
+          <li><a class="foot-link" href="/home/#gioi-thieu" data-en="About us">Về chúng tôi</a></li>
+          <li><a class="foot-link" href="/home/#giao-duc" data-en="Schools programme">Chương trình trường học</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <p class="font-mono text-[10px] tracking-[.18em] uppercase text-bonemute" data-en="Contact">Liên hệ</p>
+        <ul class="mt-5 space-y-3 list-none p-0 text-[.9375rem]">
+          <li><a class="foot-link" href="mailto:lienhe@pshheritage.vn">lienhe@pshheritage.vn</a></li>
+          <li><a class="foot-link" href="tel:+84000000000">+84 000 000 000</a></li>
+          <li><a class="foot-link" href="/home/#lien-he" data-en="Request a scan">Gửi yêu cầu quét</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 pt-6 hairline flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <p class="font-mono text-[10px] tracking-[.16em] uppercase text-bonemute m-0"
+         data-en="© <span data-year>2026</span> PSH Design × Pigo Tour">
+        © <span data-year>2026</span> PSH Design × Pigo Tour
+      </p>
+      <p class="font-mono text-[10px] tracking-[.16em] uppercase text-bonemute m-0" data-en="Free for education in Vietnam">
+        Miễn phí cho giáo dục Việt Nam
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/heritage-data.js"></script>
+<script src="/assets/client-data.js"></script>
+<script src="/assets/client-vault.js"></script>
+<script src="/assets/i18n.js"></script>
+<script src="/assets/psh.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  var T   = window.PSH_LANG;
+  var V   = window.PSH_VAULT;
+  var CFG = window.PSH_CLIENT || { projects: [] };
+  var $   = function (id) { return document.getElementById(id); };
+
+  var stage = $('stage'), cover = $('cover'), viewer = $('viewer');
+  var form = $('unlock'), input = $('code'), btn = $('unlock-btn'), msg = $('msg');
+  var tabsEl = $('tabs'), barStatus = $('bar-status');
+  var reduce = window.PSH_STILL || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var project = null;   // dữ liệu dự án đã giải mã
+  var code = '';        // mã đang mở, dạng XXXX-XXXX-XXXX
+  var scanIdx = 0;
+  var busy = false;
+  var note = { vi: '', en: '', error: false };   // lời trong tấm nhập mã — vẽ lại khi đổi ngôn ngữ
+  var copyTimer;
+
+  /* ---------------- Chữ tự sinh, theo ngôn ngữ ---------------- */
+
+  var DEFAULT_NOTE = {
+    vi: 'Mã gồm 12 chữ và số. Gõ thường hay hoa, có gạch hay không đều được.',
+    en: 'The code is 12 letters and numbers. Case and dashes don’t matter.'
+  };
+
+  function say(vi, en, isError) {
+    note = { vi: vi, en: en, error: !!isError };
+    paintNote();
+  }
+  function paintNote() {
+    msg.textContent = T.t(note.vi, note.en);
+    msg.classList.toggle('is-error', note.error);
+    input.setAttribute('aria-invalid', String(note.error));
+  }
+
+  function paintStatic() {
+    btn.textContent = busy ? T.t('Đang mở…', 'Opening…') : T.t('Mở bản scan', 'Open scan');
+    $('act-full-label').textContent = T.t('Toàn màn hình', 'Full screen');
+    if (!copyTimer) $('act-copy-label').textContent = T.t('Sao chép link riêng', 'Copy private link');
+    paintNote();
+  }
+
+  /* ---------------- Mở khoá ---------------- */
+
+  function shake() {
+    if (reduce) return;
+    form.classList.remove('is-wrong');
+    void form.offsetWidth;            // chạy lại hiệu ứng nếu bấm sai liên tiếp
+    form.classList.add('is-wrong');
+  }
+
+  function setBusy(on) {
+    busy = on;
+    btn.setAttribute('aria-busy', String(on));
+    if (on) stage.dataset.state = 'busy';
+    else if (stage.dataset.state === 'busy') stage.dataset.state = 'locked';
+    paintStatic();
+  }
+
+  function unlock(raw, fromLink) {
+    if (busy) return;
+    var n = V.normalize(raw);
+
+    if (!V.supported()) {
+      say('Trình duyệt này không mở được bản scan riêng. Hãy dùng bản mới của Chrome, Edge, Safari hoặc Firefox.',
+          'This browser cannot open private scans. Please use a recent Chrome, Edge, Safari or Firefox.', true);
+      return;
+    }
+    if (n.length < V.CODE_LEN) {
+      say('Mã chưa đủ ký tự — cần 12 chữ và số, dạng XXXX-XXXX-XXXX.',
+          'The code is too short — it needs 12 letters and numbers, like XXXX-XXXX-XXXX.', true);
+      shake();
+      input.focus();
+      return;
+    }
+
+    setBusy(true);
+    var started = Date.now();
+
+    V.open(n, CFG).then(function (p) {
+      /* Để vạch quét kịp chạy hết một lượt — giải mã thường xong nhanh hơn thế. */
+      var wait = reduce ? 0 : Math.max(0, 750 - (Date.now() - started));
+      setTimeout(function () {
+        setBusy(false);
+        if (p) { show(p, n); return; }
+        if (fromLink) {
+          say('Link này không còn mở được bản scan nào — có thể mã đã được đổi. Liên hệ PSH Design để nhận link mới.',
+              'This link no longer opens a scan — the code may have been changed. Contact PSH Design for a new link.', true);
+          history.replaceState(null, '', location.pathname + location.search);
+        } else {
+          say('Không có bản scan nào khớp mã này. Kiểm tra lại từng ký tự trong email bàn giao.',
+              'No scan matches this code. Check each character against your handover email.', true);
+        }
+        shake();
+        input.focus();
+        input.select();
+      }, wait);
+    }).catch(function () {
+      setBusy(false);
+      say('Không mở được bản scan do lỗi trình duyệt. Tải lại trang rồi thử lần nữa.',
+          'The scan could not be opened because of a browser error. Reload the page and try again.', true);
+    });
+  }
+
+  /* Chỉ nhận link https — dữ liệu đã giải mã đúng thì là của mình, nhưng cẩn thận vẫn hơn. */
+  function safeURL(u) { return /^https:\/\//i.test(String(u || '')) ? u : ''; }
+
+  function scans() {
+    return (project.scans || []).filter(function (s) { return safeURL(s.viewer); });
+  }
+
+  function show(p, n) {
+    project = p;
+    code = V.format(n);
+    scanIdx = 0;
+    history.replaceState(null, '', location.pathname + location.search + '#ma=' + code);
+
+    $('head-locked').hidden = true;
+    $('foot-locked').hidden = true;
+    $('head-open').hidden = false;
+    $('foot-open').hidden = false;
+    $('bar').hidden = false;
+
+    renderOpen();
+    loadScan(0);
+
+    stage.dataset.state = 'open';
+    setTimeout(function () { if (project) cover.hidden = true; }, reduce ? 0 : 560);
+    $('o-project').focus({ preventScroll: true });
+  }
+
+  function lock() {
+    project = null;
+    code = '';
+    viewer.src = 'about:blank';
+    viewer.hidden = true;
+    cover.hidden = false;
+    void cover.offsetWidth;
+    stage.dataset.state = 'locked';
+
+    $('head-locked').hidden = false;
+    $('foot-locked').hidden = false;
+    $('head-open').hidden = true;
+    $('foot-open').hidden = true;
+    $('bar').hidden = true;
+    barStatus.textContent = '';
+
+    history.replaceState(null, '', location.pathname + location.search);
+    document.title = T.t('Khu vực khách hàng — PiHeritage', 'Client area — PiHeritage');
+    input.value = '';
+    say(DEFAULT_NOTE.vi, DEFAULT_NOTE.en, false);
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    input.focus({ preventScroll: true });
+  }
+
+  /* ---------------- Dựng phần đã mở ---------------- */
+
+  function fill(id, value, rowId) {
+    $(id).textContent = value || '';
+    if (rowId) $(rowId).hidden = !value;
+  }
+
+  function renderOpen() {
+    if (!project) return;
+    var name = T.f(project, 'project') || T.t('Bản scan của bạn', 'Your scan');
+    document.title = name + ' — PiHeritage';
+
+    fill('o-client', T.f(project, 'client'));
+    fill('o-project', name);
+    fill('o-place', T.f(project, 'place'), 'm-place');
+    fill('o-captured', T.f(project, 'captured'), 'm-captured');
+    fill('o-splats', project.splats ? project.splats + T.t(' hạt', ' splats') : '', 'm-splats');
+
+    var noteText = T.f(project, 'note');
+    $('o-note').textContent = noteText || '';
+    $('note-card').hidden = !noteText;
+
+    /* Một bản scan thì không cần nút chọn. */
+    var list = scans();
+    tabsEl.innerHTML = '';
+    if (list.length > 1) {
+      list.forEach(function (s, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'filter-chip';
+        b.textContent = T.f(s, 'label') || T.t('Bản scan ' + (i + 1), 'Scan ' + (i + 1));
+        b.setAttribute('aria-pressed', String(i === scanIdx));
+        b.addEventListener('click', function () { loadScan(i); });
+        tabsEl.appendChild(b);
+      });
+    }
+    paintStatic();
+  }
+
+  function loadScan(i) {
+    var list = scans();
+    var s = list[i];
+    if (!s) {
+      viewer.hidden = true;
+      barStatus.textContent = T.t('Dự án này chưa có link viewer. Liên hệ PSH Design.', 'This project has no viewer link yet. Contact PSH Design.');
+      return;
+    }
+    scanIdx = i;
+    viewer.hidden = false;
+    if (viewer.getAttribute('src') !== s.viewer) viewer.src = s.viewer;
+    viewer.title = T.t('Bản quét 3DGS: ', '3DGS scan: ') + (T.f(s, 'label') || T.f(project, 'project') || '');
+    $('act-tab').href = s.viewer;
+    Array.prototype.forEach.call(tabsEl.children, function (b, k) {
+      b.setAttribute('aria-pressed', String(k === i));
+    });
+  }
+
+  /* ---------------- Nút điều khiển ---------------- */
+
+  var canFull = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+  $('act-full').hidden = !canFull;   // iPhone không hỗ trợ — đã có nút "Mở tab mới"
+  $('act-full').addEventListener('click', function () {
+    var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+    if (fsEl) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+    var req = stage.requestFullscreen || stage.webkitRequestFullscreen;
+    if (req) req.call(stage);
+  });
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (ok, fail) {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? ok() : fail(); } catch (e) { fail(e); }
+      document.body.removeChild(ta);
+    });
+  }
+
+  $('act-copy').addEventListener('click', function () {
+    var url = location.origin + location.pathname + '#ma=' + code;
+    copyText(url).then(function () {
+      clearTimeout(copyTimer);
+      $('act-copy-label').textContent = T.t('Đã sao chép', 'Copied');
+      barStatus.textContent = T.t('Đã sao chép link riêng — ai có link này đều xem được bản scan, chỉ gửi cho người trong đơn vị.',
+                                  'Private link copied — anyone with this link can view the scan, so share it only within your organisation.');
+      copyTimer = setTimeout(function () { copyTimer = null; paintStatic(); }, 2200);
+    }, function () {
+      barStatus.textContent = T.t('Không sao chép được. Link riêng: ', 'Could not copy. Private link: ') + url;
+    });
+  });
+
+  $('act-lock').addEventListener('click', lock);
+
+  /* ---------------- Ô nhập mã ---------------- */
+
+  /* Tự chèn gạch nối khi gõ tới cuối ô. Sửa ở giữa thì để yên, khỏi nhảy con trỏ. */
+  input.addEventListener('input', function () {
+    if (input.selectionStart !== input.value.length) return;
+    var f = V.format(input.value).slice(0, 14);
+    if (f !== input.value) input.value = f;
+    if (note.error) say(DEFAULT_NOTE.vi, DEFAULT_NOTE.en, false);
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    unlock(input.value, false);
+  });
+
+  /* ---------------- Link riêng: /khach-hang/#ma=XXXX-XXXX-XXXX ----------------
+     Mã nằm sau dấu # nên không bao giờ được gửi lên máy chủ. */
+  function codeFromHash() {
+    var m = location.hash.match(/ma=([^&]+)/);
+    if (!m) return '';
+    try { return decodeURIComponent(m[1]); } catch (e) { return m[1]; }
+  }
+  window.addEventListener('hashchange', function () {
+    var c = codeFromHash();
+    if (c && V.normalize(c) !== V.normalize(code)) { input.value = V.format(c); unlock(c, true); }
+  });
+
+  document.addEventListener('psh:lang', function () {
+    paintStatic();
+    if (project) { renderOpen(); loadScan(scanIdx); }
+    else document.title = T.t('Khu vực khách hàng — PiHeritage', 'Client area — PiHeritage');
+  });
+
+  /* ---------------- Khởi động ---------------- */
+  say(DEFAULT_NOTE.vi, DEFAULT_NOTE.en, false);
+  paintStatic();
+  var fromLink = codeFromHash();
+  if (fromLink) { input.value = V.format(fromLink); unlock(fromLink, true); }
+})();
+</script>
+
+</body>
+</html>

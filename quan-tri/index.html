@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quản trị — PiHeritage</title>
+<!-- Trang nội bộ, không có nút nào trên web dẫn tới đây. Bảo vệ thật sự là token GitHub:
+     không có token thì trang này không đọc cũng không ghi được gì. -->
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&family=Lora:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="/assets/psh.css">
+<link rel="icon" type="image/png" href="/brand_assets/piheritagelogo.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      ink:  { 900:'#080d0a', 800:'#0c1410', 700:'#111c16', 600:'#17261e', 500:'#1e3227', 400:'#2a4436' },
+      psh:  '#7842c0', pshb:'#8b51d6', pigo:'#1b9e4b', lime:'#8dc63f',
+      bone: '#ede6d8', bonedim:'#b8ae9c', bonemute:'#7f8a82', brass:'#c9a227'
+    },
+    fontFamily: {
+      display:['Archivo','sans-serif'],
+      body:['"Be Vietnam Pro"','sans-serif'],
+      serif:['Lora','Georgia','serif'],
+      mono:['"JetBrains Mono"','monospace']
+    },
+    maxWidth: { shell:'1240px' }
+  }}
+};
+</script>
+<style>
+  body{padding-bottom:7rem}
+  [hidden]{display:none!important}
+  /* Ô chọn file ẩn đi, nhãn đứng thay — viền focus phải hiện trên nhãn. */
+  .sr-only:focus-visible + .file-btn{outline:2px solid var(--lime);outline-offset:3px}
+
+  /* ---------- Tab ---------- */
+  .tabbar{display:flex;gap:.25rem;border-bottom:1px solid var(--ink-500)}
+  .tab{
+    position:relative;cursor:pointer;background:none;border:0;
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:.8125rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--bone-mute);padding:.95rem 1.1rem;
+    transition:color .28s var(--ease),transform .28s var(--ease);
+  }
+  .tab::after{
+    content:'';position:absolute;left:1.1rem;right:1.1rem;bottom:-1px;height:2px;background:var(--psh);
+    transform:scaleX(0);transform-origin:left;transition:transform .34s var(--ease);
+  }
+  .tab:hover{color:var(--bone)}
+  .tab:focus-visible{outline:2px solid var(--lime);outline-offset:-2px;color:var(--bone)}
+  .tab:active{transform:translate3d(0,1px,0)}
+  .tab[aria-selected="true"]{color:var(--bone)}
+  .tab[aria-selected="true"]::after{transform:scaleX(1)}
+  .tab .n{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.625rem;letter-spacing:.1em;color:var(--bone-mute);margin-left:.45rem}
+
+  /* ---------- Dòng danh sách ---------- */
+  .adm-row{
+    display:grid;grid-template-columns:112px minmax(0,1fr) auto;gap:1rem;align-items:center;
+    padding:.75rem;border:1px solid var(--ink-500);border-radius:var(--r-md);
+    background:linear-gradient(158deg,var(--ink-700) 0%,var(--ink-800) 100%);
+    transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
+  }
+  .adm-row:hover{border-color:var(--ink-400);box-shadow:var(--shade-1)}
+  .adm-row.is-dirty{border-color:rgba(201,162,39,.45)}
+  .adm-row--client{grid-template-columns:minmax(0,1fr) auto auto;padding:1rem 1.1rem}
+  @media(max-width:767px){
+    .adm-row{grid-template-columns:80px minmax(0,1fr)}
+    .adm-row--client{grid-template-columns:minmax(0,1fr)}
+    .adm-row .adm-actions{grid-column:1/-1;justify-content:flex-start}
+  }
+  .adm-thumb{width:100%;aspect-ratio:16/9;border-radius:var(--r-sm);object-fit:cover;background:var(--ink-900);display:block}
+  .adm-thumb--empty{
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-family:'JetBrains Mono',monospace;font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-mute);
+    border:1px dashed var(--ink-400);
+  }
+  .adm-name{font-family:'Lora',Georgia,serif;font-weight:600;font-size:1rem;line-height:1.35;color:var(--bone);margin:0}
+  .adm-sub{font-family:'JetBrains Mono',monospace;font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-mute);margin:.35rem 0 0}
+  .adm-actions{display:flex;flex-wrap:wrap;gap:.35rem;justify-content:flex-end;align-items:center}
+  .adm-code{font-family:'JetBrains Mono',monospace;font-size:.875rem;font-weight:500;letter-spacing:.14em;color:var(--lime);white-space:nowrap}
+  .adm-empty{margin:0;padding:1rem;border:1px dashed var(--ink-400);border-radius:var(--r-md);color:var(--bone-mute);font-size:.875rem}
+  .chip--dirty{border-color:rgba(201,162,39,.45);color:var(--brass);background:rgba(201,162,39,.07)}
+  .chip--sample{border-color:rgba(184,174,156,.3);color:var(--bone-dim);border-style:dashed}
+
+  .locate:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
+  .locate--danger:hover{color:var(--brass);border-color:var(--brass)}
+  .field--sm{padding:.45rem .65rem;font-size:.8125rem;width:auto}
+
+  /* ---------- Công tắc vùng ---------- */
+  .switch{
+    display:inline-flex;align-items:center;gap:.6rem;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-mute);
+  }
+  .switch input{
+    appearance:none;-webkit-appearance:none;margin:0;flex:none;cursor:pointer;position:relative;
+    width:34px;height:18px;border-radius:999px;background:var(--ink-400);
+    transition:background-color .3s var(--ease);
+  }
+  .switch input::after{
+    content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--bone);
+    transition:transform .4s var(--ease-spring);
+  }
+  .switch input:checked{background:var(--pigo)}
+  .switch input:checked::after{transform:translate3d(16px,0,0)}
+  .switch input:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+  .switch:hover{color:var(--bone)}
+  .switch input:active::after{transform:scale(.9)}
+  .switch input:checked:active::after{transform:translate3d(16px,0,0) scale(.9)}
+
+  /* ---------- Ngăn kéo sửa ---------- */
+  dialog.drawer{
+    position:fixed;inset:0 0 0 auto;margin:0;padding:0;border:0;
+    height:100dvh;max-height:none;width:min(680px,100vw);max-width:100vw;
+    background:var(--ink-800);color:var(--bone);
+    border-left:1px solid var(--ink-400);
+    box-shadow:-40px 0 90px -30px rgba(0,0,0,.85);
+  }
+  dialog.modal{
+    margin:auto;padding:0;border:1px solid var(--ink-400);border-radius:var(--r-md);
+    width:min(460px,calc(100vw - 2rem));background:var(--ink-800);color:var(--bone);box-shadow:var(--shade-2);
+  }
+  dialog::backdrop{background:rgba(4,8,6,.62);backdrop-filter:blur(3px)}
+  dialog.drawer[open]{animation:drawer-in .45s var(--ease)}
+  dialog.modal[open]{animation:modal-in .35s var(--ease)}
+  @keyframes drawer-in{from{transform:translate3d(48px,0,0);opacity:0}to{transform:none;opacity:1}}
+  @keyframes modal-in{from{transform:translate3d(0,12px,0);opacity:0}to{transform:none;opacity:1}}
+  .dlg{display:flex;flex-direction:column;height:100%;max-height:100dvh}
+  .dlg-head{display:flex;align-items:center;gap:1rem;padding:1.15rem 1.5rem;border-bottom:1px solid var(--ink-500)}
+  .dlg-body{flex:1;overflow:auto;padding:1.5rem;display:grid;gap:1.75rem;align-content:start}
+  .dlg-foot{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;justify-content:flex-end;padding:1rem 1.5rem;border-top:1px solid var(--ink-500);background:var(--ink-900)}
+  .dlg-title{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.125rem;letter-spacing:-.015em;text-transform:uppercase;margin:0}
+  .grid-2{display:grid;gap:.9rem}
+  @media(min-width:560px){.grid-2{grid-template-columns:1fr 1fr}}
+  .hint{margin:.45rem 0 0;font-size:.78rem;line-height:1.55;color:var(--bone-mute)}
+  .hint--warn{color:var(--brass)}
+  .leaflet-control-layers{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;border-radius:var(--r-sm)!important}
+  .leaflet-control-layers-expanded{padding:.35rem .6rem!important}
+  #pick-map{height:300px;border-radius:var(--r-md);border:1px solid var(--ink-500);overflow:hidden;background:#eceae5}
+  .photo-prev{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r-md);background:var(--ink-900);display:block}
+  .scan-row{display:grid;gap:.6rem;padding:1rem;border:1px dashed var(--ink-400);border-radius:var(--r-md)}
+  @media(min-width:560px){.scan-row{grid-template-columns:1fr 1fr}.scan-row .span-2{grid-column:span 2}}
+  textarea.field{resize:vertical;min-height:88px}
+  .check{display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;font-size:.875rem;color:var(--bone-dim)}
+  .check input{width:16px;height:16px;accent-color:var(--psh);cursor:pointer}
+  .check input:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+
+  /* ---------- Thanh lưu — tầng nổi trên cùng ---------- */
+  .savebar{
+    position:fixed;left:50%;bottom:1.25rem;z-index:60;transform:translate3d(-50%,0,0);
+    width:min(820px,calc(100vw - 2rem));
+    display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem;padding:.85rem 1rem .85rem 1.25rem;
+    background:rgba(17,28,22,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(201,162,39,.45);border-radius:var(--r-md);
+    box-shadow:0 24px 60px -18px rgba(0,0,0,.9),0 0 0 1px rgba(0,0,0,.4),0 10px 40px -20px rgba(201,162,39,.35);
+    animation:modal-in .4s var(--ease);
+  }
+  .savebar[hidden]{display:none}
+  .savebar p{margin:0;flex:1;min-width:200px;font-size:.875rem;color:var(--bone-dim);line-height:1.5}
+  .savebar b{font-family:'JetBrains Mono',monospace;color:var(--brass);font-weight:500}
+
+  .toast{
+    position:fixed;top:84px;right:1rem;z-index:65;width:min(420px,calc(100vw - 2rem));
+    padding:1rem 1.15rem;border-radius:var(--r-md);background:var(--ink-700);
+    border:1px solid rgba(141,198,63,.45);box-shadow:var(--shade-2);font-size:.875rem;line-height:1.6;color:var(--bone);
+    animation:modal-in .35s var(--ease);
+  }
+  .toast.is-error{border-color:rgba(201,162,39,.6)}
+  .toast[hidden]{display:none}
+
+  .adm-help summary{cursor:pointer;font-family:'Archivo',sans-serif;font-weight:700;font-size:.8125rem;letter-spacing:.06em;text-transform:uppercase;color:var(--bone);list-style:none;display:flex;align-items:center;gap:.5rem;border-radius:var(--r-sm)}
+  .adm-help summary::-webkit-details-marker{display:none}
+  .adm-help summary::before{content:'+';font-family:'JetBrains Mono',monospace;color:var(--lime);transition:transform .3s var(--ease)}
+  .adm-help[open] summary::before{transform:rotate(45deg)}
+  .adm-help summary:hover{color:var(--lime)}
+  .adm-help summary:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+  .adm-help ol{margin:1rem 0 0;padding-left:1.25rem;color:var(--bone-dim);font-size:.9rem;line-height:1.75}
+  .adm-help li{margin-bottom:.4rem}
+  .adm-help code{font-family:'JetBrains Mono',monospace;font-size:.8em;color:var(--bone);background:var(--ink-900);padding:.1rem .35rem;border-radius:var(--r-sm)}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Bỏ qua tới nội dung chính</a>
+
+<header id="nav" class="nav fixed top-0 inset-x-0 z-50">
+  <div class="mx-auto max-w-shell px-5 sm:px-8 h-[68px] flex items-center justify-between gap-4">
+    <a href="/home/" class="group flex items-center gap-2.5 no-underline rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-4" aria-label="PiHeritage — trang chủ">
+      <img src="/brand_assets/piheritagelogo.png" alt="" class="pi-mark w-8 h-7 object-contain flex-none">
+      <span class="leading-none">
+        <span class="block font-display tracking-[-.015em] text-bone text-[16px]"><span class="font-extrabold">Pi</span><span class="font-normal">Heritage</span></span>
+        <span class="block font-mono text-[9px] tracking-[.26em] text-bonemute mt-[4px] whitespace-nowrap">QUẢN TRỊ NỘI BỘ</span>
+      </span>
+    </a>
+    <div class="flex items-center gap-2">
+      <span id="repo-chip" class="chip hidden sm:inline-flex" hidden></span>
+      <a class="locate" id="view-site" href="https://piheritage.com/gallery/" target="_blank" rel="noopener noreferrer">Xem web ↗</a>
+      <button class="locate locate--quiet" type="button" id="logout" hidden>Đăng xuất</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============================ KẾT NỐI ============================ -->
+<section id="setup" class="mx-auto max-w-shell px-5 sm:px-8 pt-[116px] lg:pt-[126px] pb-16">
+  <p class="u-eyebrow">Nội bộ <span class="dot">·</span> Không chia sẻ link này ra ngoài</p>
+  <div class="grid lg:grid-cols-[1fr_minmax(0,520px)] gap-10 lg:gap-16 mt-6 items-start">
+    <div>
+      <h1 class="u-display text-bone text-[clamp(2.1rem,4.8vw,3.35rem)] leading-[1.1] m-0">Quản lý<br>bản scan</h1>
+      <p class="mt-6 text-bonedim leading-[1.75] max-w-[52ch]">
+        Thêm, sửa, xoá địa điểm trong thư viện di sản và dự án riêng của khách hàng.
+        Mỗi lần bấm <span class="font-mono text-[11px] text-lime">LƯU LÊN WEB</span>, trang ghi thẳng vào kho GitHub
+        của website — web tự cập nhật sau khoảng 1–2 phút.
+      </p>
+
+      <details class="adm-help mt-10 hairline pt-6">
+        <summary>Cách lấy token GitHub — người quản lý kho làm một lần</summary>
+        <ol>
+          <li>Đăng nhập GitHub bằng tài khoản sở hữu kho website, vào
+            <a class="inline-link" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Settings → Developer settings → Fine-grained tokens → Generate new token</a>.</li>
+          <li><b class="text-bone">Token name</b>: đặt tên dễ nhớ, ví dụ <code>PiHeritage quản trị</code>. <b class="text-bone">Expiration</b>: chọn 1 năm.</li>
+          <li><b class="text-bone">Repository access</b>: chọn <code>Only select repositories</code> → chọn đúng kho website.</li>
+          <li><b class="text-bone">Permissions → Repository permissions → Contents</b>: chọn <code>Read and write</code>. Các quyền khác để nguyên.</li>
+          <li>Bấm <b class="text-bone">Generate token</b>, chép chuỗi bắt đầu bằng <code>github_pat_…</code> rồi gửi riêng cho anh em cần dùng.</li>
+          <li>Ai nghỉ việc hoặc lỡ để lộ token: vào lại trang đó, xoá token cũ, tạo token mới.</li>
+        </ol>
+      </details>
+    </div>
+
+    <form id="setup-form" class="surface-raised p-7 lg:p-9" novalidate>
+      <p class="u-eyebrow m-0">Kết nối với GitHub</p>
+      <div class="mt-6 grid gap-5">
+        <div>
+          <label class="field-label" for="s-repo">Kho GitHub của website</label>
+          <input class="field" id="s-repo" autocomplete="off" spellcheck="false" placeholder="ten-tai-khoan/ten-kho">
+          <p class="hint">Phần sau <span class="font-mono">github.com/</span> trong địa chỉ của kho.</p>
+        </div>
+        <div>
+          <label class="field-label" for="s-branch">Nhánh</label>
+          <input class="field" id="s-branch" autocomplete="off" spellcheck="false" value="main">
+        </div>
+        <div>
+          <label class="field-label" for="s-token">Token GitHub</label>
+          <input class="field font-mono" id="s-token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
+        </div>
+        <label class="check"><input type="checkbox" id="s-remember" checked> Ghi nhớ trên máy này</label>
+      </div>
+      <button class="btn btn--primary mt-7" type="submit" id="s-go">Kết nối</button>
+      <p class="plate-msg" id="s-msg" role="status" aria-live="polite">Token chỉ lưu trong trình duyệt của máy này, không gửi đi đâu ngoài GitHub.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============================ TRÌNH QUẢN TRỊ ============================ -->
+<section id="app" class="mx-auto max-w-shell px-5 sm:px-8 pt-[116px] lg:pt-[126px] pb-16" hidden>
+  <p class="u-eyebrow">Nội bộ <span class="dot">·</span> Không chia sẻ link này ra ngoài</p>
+  <div class="grid lg:grid-cols-[1.25fr_1fr] gap-6 lg:gap-14 items-end mt-6">
+    <h1 class="u-display text-bone text-[clamp(1.9rem,4.4vw,3rem)] leading-[1.1] m-0">Quản lý bản scan</h1>
+    <p class="text-bonedim leading-[1.75] m-0">
+      Sửa thoải mái — mọi thay đổi chỉ nằm trên máy bạn cho tới khi bấm
+      <span class="font-mono text-[11px] text-lime">LƯU LÊN WEB</span> ở thanh dưới cùng.
+    </p>
+  </div>
+
+  <div class="tabbar mt-10" role="tablist" aria-label="Khu vực quản lý">
+    <button class="tab" type="button" role="tab" id="t-heritage" aria-controls="p-heritage" aria-selected="true">Di sản<span class="n" id="n-h"></span></button>
+    <button class="tab" type="button" role="tab" id="t-client" aria-controls="p-client" aria-selected="false">Khách hàng<span class="n" id="n-c"></span></button>
+  </div>
+
+  <div id="p-heritage" role="tabpanel" aria-labelledby="t-heritage" class="pt-10">
+    <div id="h-list" class="space-y-16"></div>
+  </div>
+
+  <div id="p-client" role="tabpanel" aria-labelledby="t-client" class="pt-10" hidden>
+    <div id="c-body"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- Thanh lưu -->
+<div class="savebar" id="savebar" hidden>
+  <p><b id="sb-n">0</b> thay đổi chưa lưu <span class="text-bonemute" id="sb-last"></span></p>
+  <button class="btn btn--ghost btn--sm" type="button" id="sb-discard">Bỏ thay đổi</button>
+  <button class="btn btn--primary btn--sm" type="button" id="sb-save">Lưu lên web</button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<!-- ============================ SỬA ĐỊA ĐIỂM ============================ -->
+<dialog class="drawer" id="d-item" aria-labelledby="d-item-title">
+  <form class="dlg" id="f-item" novalidate>
+    <div class="dlg-head">
+      <h2 class="dlg-title" id="d-item-title">Địa điểm</h2>
+      <button class="locate locate--quiet ml-auto" type="button" data-close>Đóng ✕</button>
+    </div>
+    <div class="dlg-body">
+
+      <fieldset class="grid-2 border-0 p-0 m-0">
+        <div><label class="field-label" for="i-name">Tên *</label><input class="field" id="i-name" required></div>
+        <div><label class="field-label" for="i-name_en">Tên (EN)</label><input class="field" id="i-name_en"></div>
+        <div><label class="field-label" for="i-type">Loại hình / xếp hạng</label><input class="field" id="i-type" placeholder="VD: Di sản"></div>
+        <div><label class="field-label" for="i-type_en">Loại hình (EN)</label><input class="field" id="i-type_en" placeholder="VD: Heritage"></div>
+        <div><label class="field-label" for="i-era">Niên đại</label><input class="field" id="i-era" placeholder="VD: Thế kỷ 17"></div>
+        <div><label class="field-label" for="i-era_en">Niên đại (EN)</label><input class="field" id="i-era_en"></div>
+      </fieldset>
+
+      <div>
+        <label class="field-label" for="i-viewer">Link viewer 3DGS</label>
+        <input class="field" id="i-viewer" type="url" placeholder="https://lcc-viewer.xgrids.com/pub/…">
+        <p class="hint">Để trống thì thẻ hiện “Sắp ra mắt” và không bấm vào được.</p>
+      </div>
+
+      <div>
+        <span class="field-label">Ảnh xem trước</span>
+        <img id="i-photo-prev" class="photo-prev" alt="" hidden>
+        <p id="i-photo-none" class="adm-empty">Chưa có ảnh — thẻ sẽ dùng ảnh mẫu màu xám.</p>
+        <div class="flex flex-wrap gap-2 mt-3">
+          <input id="i-photo-file" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
+          <label class="btn btn--ghost btn--sm file-btn" for="i-photo-file">Chọn ảnh…</label>
+          <button class="locate locate--quiet" type="button" id="i-photo-clear">Bỏ ảnh</button>
+        </div>
+        <p class="hint" id="i-photo-msg">Ảnh ngang 16:9 là đẹp nhất. Ảnh lớn được tự thu nhỏ còn 1600px trước khi tải lên.</p>
+      </div>
+
+      <div>
+        <span class="field-label">Vị trí trên bản đồ *</span>
+        <div id="pick-map"></div>
+        <p class="hint">Bấm vào bản đồ để cắm ghim, kéo ghim để chỉnh. Hoặc dán toạ độ / link Google Maps vào ô dưới.</p>
+        <div class="grid-2 mt-3">
+          <div class="sm:col-span-2"><label class="field-label" for="i-paste">Dán toạ độ hoặc link Google Maps</label><input class="field" id="i-paste" placeholder="VD: 20.9792, 105.7730"></div>
+          <div><label class="field-label" for="i-lat">Vĩ độ (lat)</label><input class="field font-mono" id="i-lat" inputmode="decimal"></div>
+          <div><label class="field-label" for="i-lng">Kinh độ (lng)</label><input class="field font-mono" id="i-lng" inputmode="decimal"></div>
+        </div>
+        <div class="mt-4">
+          <label class="field-label" for="i-gmaps">Link Google Maps cho nút “Mở trên Google Maps”</label>
+          <input class="field" id="i-gmaps" type="url" placeholder="https://maps.app.goo.gl/…">
+          <p class="hint">Không bắt buộc. Để trống thì web tự tìm theo tên + tỉnh.</p>
+        </div>
+      </div>
+
+      <fieldset class="grid-2 border-0 p-0 m-0">
+        <div><label class="field-label" for="i-splats">Số hạt splat</label><input class="field" id="i-splats" placeholder="VD: 48.2M"></div>
+        <div><label class="field-label" for="i-captured">Tháng quét</label><input class="field" id="i-captured" placeholder="VD: 09/2026"></div>
+        <div><label class="field-label" for="i-captured_en">Tháng quét (EN)</label><input class="field" id="i-captured_en" placeholder="Chỉ cần khi có chữ, VD: Planned 10/2026"></div>
+        <div class="flex items-end pb-3"><label class="check"><input type="checkbox" id="i-unesco"> Thuộc danh mục UNESCO</label></div>
+      </fieldset>
+
+      <div>
+        <label class="field-label" for="i-city">Thuộc tỉnh / thành phố</label>
+        <select class="field" id="i-city"></select>
+      </div>
+    </div>
+    <div class="dlg-foot">
+      <p class="plate-msg is-error m-0 mr-auto" id="i-msg" role="alert"></p>
+      <button class="btn btn--ghost btn--sm" type="button" data-close>Huỷ</button>
+      <button class="btn btn--primary btn--sm" type="submit">Xong</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ============================ THÊM TỈNH ============================ -->
+<dialog class="modal" id="d-city" aria-labelledby="d-city-title">
+  <form class="dlg" id="f-city" novalidate>
+    <div class="dlg-head"><h2 class="dlg-title" id="d-city-title">Thêm tỉnh / thành phố</h2></div>
+    <div class="dlg-body">
+      <div><label class="field-label" for="c-city">Tên *</label><input class="field" id="c-city" placeholder="VD: Quảng Nam"></div>
+      <div><label class="field-label" for="c-city_en">Tên (EN)</label><input class="field" id="c-city_en" placeholder="VD: Quang Nam"></div>
+    </div>
+    <div class="dlg-foot">
+      <p class="plate-msg is-error m-0 mr-auto" id="c-msg" role="alert"></p>
+      <button class="btn btn--ghost btn--sm" type="button" data-close>Huỷ</button>
+      <button class="btn btn--primary btn--sm" type="submit">Thêm</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ============================ DỰ ÁN KHÁCH HÀNG ============================ -->
+<dialog class="drawer" id="d-client" aria-labelledby="d-client-title">
+  <form class="dlg" id="f-client" novalidate>
+    <div class="dlg-head">
+      <h2 class="dlg-title" id="d-client-title">Dự án khách hàng</h2>
+      <button class="locate locate--quiet ml-auto" type="button" data-close>Đóng ✕</button>
+    </div>
+    <div class="dlg-body">
+      <div>
+        <label class="field-label" for="k-code">Mã truy cập gửi cho khách</label>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input class="field plate-input" id="k-code" autocomplete="off" spellcheck="false" maxlength="14">
+          <button class="btn btn--ghost btn--sm flex-none" type="button" id="k-newcode">Tạo mã khác</button>
+        </div>
+        <p class="hint" id="k-code-hint">Mã ngẫu nhiên 12 ký tự, đã bỏ các chữ dễ nhầm như O/0, I/1.</p>
+      </div>
+
+      <fieldset class="grid-2 border-0 p-0 m-0">
+        <div><label class="field-label" for="k-client">Tên khách hàng *</label><input class="field" id="k-client" placeholder="VD: Ban quản lý di tích …"></div>
+        <div><label class="field-label" for="k-client_en">Tên khách hàng (EN)</label><input class="field" id="k-client_en"></div>
+        <div><label class="field-label" for="k-project">Tên dự án *</label><input class="field" id="k-project" placeholder="VD: Đình làng … — bản bàn giao"></div>
+        <div><label class="field-label" for="k-project_en">Tên dự án (EN)</label><input class="field" id="k-project_en"></div>
+        <div><label class="field-label" for="k-place">Địa điểm</label><input class="field" id="k-place" placeholder="VD: Hà Đông, Hà Nội"></div>
+        <div><label class="field-label" for="k-place_en">Địa điểm (EN)</label><input class="field" id="k-place_en"></div>
+        <div><label class="field-label" for="k-captured">Tháng quét</label><input class="field" id="k-captured" placeholder="VD: 09/2026"></div>
+        <div><label class="field-label" for="k-splats">Số hạt splat</label><input class="field" id="k-splats" placeholder="VD: 48.2M"></div>
+      </fieldset>
+
+      <div>
+        <span class="field-label">Bản scan *</span>
+        <div id="k-scans" class="space-y-3"></div>
+        <button class="btn btn--ghost btn--sm mt-3" type="button" id="k-addscan">+ Thêm bản scan</button>
+        <p class="hint">Nhiều bản thì khách chọn bằng nút phía trên viewer.</p>
+      </div>
+
+      <fieldset class="grid gap-4 border-0 p-0 m-0">
+        <div><label class="field-label" for="k-note">Lời nhắn cho khách</label><textarea class="field" id="k-note" placeholder="Không bắt buộc"></textarea></div>
+        <div><label class="field-label" for="k-note_en">Lời nhắn (EN)</label><textarea class="field" id="k-note_en"></textarea></div>
+      </fieldset>
+    </div>
+    <div class="dlg-foot">
+      <p class="plate-msg is-error m-0 mr-auto" id="k-msg" role="alert"></p>
+      <button class="btn btn--ghost btn--sm" type="button" data-close>Huỷ</button>
+      <button class="btn btn--primary btn--sm" type="submit">Xong</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/assets/client-vault.js"></script>
+<script src="/quan-tri/format.js"></script>
+<script src="/assets/psh.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     Điền sẵn tên kho để anh em khỏi phải gõ, ví dụ 'pshdesign/piheritage'.
+     Để trống thì mỗi người tự gõ một lần ở màn hình kết nối.
+     ═══════════════════════════════════════════════════════════════════════ */
+  const REPO_DEFAULT = '';
+
+  const SITE = 'https://piheritage.com';            // link gửi cho khách luôn dùng tên miền thật
+  const HERITAGE_FILE = 'assets/heritage-data.js';
+  const CLIENT_FILE = 'assets/client-data.js';
+  const STORE_KEY = 'psh-admin';
+  const ADMIN_OK = 'psh-admin';
+
+  const F = window.PSH_FORMAT;
+  const V = window.PSH_VAULT;
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  /* ---------------- Cài đặt đã nhớ ---------------- */
+
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { /* ẩn danh / bị chặn */ }
+  const S = {
+    repo: saved.repo || REPO_DEFAULT,
+    branch: saved.branch || 'main',
+    token: saved.token || '',
+    pass: saved.pass || ''          // mật khẩu quản trị khách hàng, chỉ khi chọn "ghi nhớ"
+  };
+  function persist(withPass) {
+    try {
+      const o = { repo: S.repo, branch: S.branch, token: S.token };
+      if (withPass || saved.pass) o.pass = S.pass;
+      localStorage.setItem(STORE_KEY, JSON.stringify(o));
+      saved = o;
+    } catch (e) { /* không lưu được thì thôi, phiên này vẫn chạy */ }
+  }
+
+  /* ---------------- Trạng thái ---------------- */
+
+  let H = null;                 // { regions, sha }
+  let C = null;                 // { cfg, sha, rows: [{ entry, info }] }
+  let adminK = null;            // khoá AES từ mật khẩu quản trị
+  let photos = {};              // '/images/x.jpg' → { b64, url, saved }
+  let changes = [];             // mô tả từng thay đổi — gộp thành lời commit
+  let hDirty = false, cDirty = false;
+  let dirty = new WeakSet();    // địa điểm / dự án vừa thêm hoặc sửa, chưa lưu
+  let busy = false;
+
+  /* ---------------- GitHub ---------------- */
+
+  function ghMessage(status, msg) {
+    if (status === 401) return 'Token GitHub sai hoặc đã hết hạn. Bấm "Đăng xuất" rồi kết nối lại bằng token mới.';
+    if (status === 403) return /rate limit/i.test(msg || '')
+      ? 'GitHub đang tạm giới hạn số lần gọi. Đợi vài phút rồi thử lại.'
+      : 'Token không đủ quyền. Token cần quyền "Contents: Read and write" cho đúng kho này.';
+    if (status === 404) return 'Không tìm thấy kho hoặc file. Kiểm tra lại tên kho, và token đã được cấp quyền vào đúng kho này chưa.';
+    if (status === 409 || status === 422) return 'GitHub không nhận bản lưu vì có người vừa lưu cùng lúc. Bấm "Lưu lên web" lần nữa.';
+    return 'GitHub báo lỗi ' + status + (msg ? ': ' + msg : '') + '.';
+  }
+
+  async function gh(path, opts = {}) {
+    let r;
+    try {
+      r = await fetch('https://api.github.com' + path, {
+        method: opts.method || 'GET',
+        headers: Object.assign({
+          Authorization: 'Bearer ' + S.token,
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28'
+        }, opts.body ? { 'Content-Type': 'application/json' } : {}),
+        body: opts.body ? JSON.stringify(opts.body) : undefined,
+        cache: 'no-store'
+      });
+    } catch (e) {
+      throw new Error('Không kết nối được GitHub — kiểm tra mạng rồi thử lại.');
+    }
+    const j = r.status === 204 ? null : await r.json().catch(() => null);
+    if (!r.ok) {
+      const err = new Error(ghMessage(r.status, j && j.message));
+      err.status = r.status;
+      throw err;
+    }
+    return j;
+  }
+
+  function bytesToB64(bytes) {
+    let s = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    return btoa(s);
+  }
+  const textToB64 = (t) => bytesToB64(new TextEncoder().encode(t));
+  const b64ToText = (b) => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g, '')), (c) => c.charCodeAt(0)));
+
+  async function readFile(path) {
+    const j = await gh(`/repos/${S.repo}/contents/${path}?ref=${encodeURIComponent(S.branch)}`);
+    return { text: b64ToText(j.content), sha: j.sha };
+  }
+
+  /* Ghi nhiều file trong MỘT commit (Git Data API), để mỗi lần lưu chỉ
+     kích hoạt một lần đăng lại web. Trả về sha của từng file vừa ghi. */
+  async function commit(files, message) {
+    const g = `/repos/${S.repo}/git`;
+    const ref = await gh(`${g}/ref/heads/${S.branch}`);
+    const head = await gh(`${g}/commits/${ref.object.sha}`);
+    const shas = {};
+    const tree = [];
+    for (const f of files) {
+      const blob = await gh(`${g}/blobs`, { method: 'POST', body: { content: f.b64, encoding: 'base64' } });
+      shas[f.path] = blob.sha;
+      tree.push({ path: f.path, mode: '100644', type: 'blob', sha: blob.sha });
+    }
+    const t = await gh(`${g}/trees`, { method: 'POST', body: { base_tree: head.tree.sha, tree: tree } });
+    const c = await gh(`${g}/commits`, { method: 'POST', body: { message: message, tree: t.sha, parents: [ref.object.sha] } });
+    await gh(`${g}/refs/heads/${S.branch}`, { method: 'PATCH', body: { sha: c.sha } });
+    return shas;
+  }
+
+  /* ---------------- Tải dữ liệu ---------------- */
+
+  async function loadAll() {
+    const [h, c] = await Promise.all([readFile(HERITAGE_FILE), readFile(CLIENT_FILE)]);
+    F.splice(h.text, '');           // báo lỗi sớm nếu file trên GitHub thiếu dòng mốc
+    F.splice(c.text, '');
+    let regions, cfg;
+    try {
+      regions = F.parseHeritage(h.text);
+      cfg = F.parseClient(c.text);
+    } catch (e) {
+      throw new Error('File dữ liệu trên GitHub đang bị lỗi cú pháp (' + e.message + '). Sửa tay file đó trước.');
+    }
+    H = { regions: regions, sha: h.sha };
+    C = { cfg: cfg, sha: c.sha, rows: cfg.projects.map((entry) => ({ entry: entry, info: null })) };
+    photos = {};
+    changes = [];
+    hDirty = cDirty = false;
+    dirty = new WeakSet();
+    if (adminK || (S.pass && cfg.adminSalt)) {
+      const ok = await unlockAdmin(S.pass);
+      if (!ok) { adminK = null; S.pass = ''; }
+    }
+    render();
+  }
+
+  /* ---------------- Mật khẩu quản trị khách hàng ---------------- */
+
+  async function unlockAdmin(pass) {
+    if (!C.cfg.adminSalt || !C.cfg.adminCheck) return false;
+    const k = await V.adminKey(pass, C.cfg);
+    const ok = await V.openKey(k, C.cfg.adminCheck);
+    if (!ok || ok.ok !== ADMIN_OK) return false;
+    adminK = k;
+    S.pass = pass;
+    C.rows = await Promise.all(C.cfg.projects.map(async (entry) => ({
+      entry: entry,
+      info: entry.adm ? await V.openKey(k, entry.adm) : null
+    })));
+    return true;
+  }
+
+  async function setupAdmin(pass) {
+    C.cfg.adminSalt = V.makeSalt();
+    adminK = await V.adminKey(pass, C.cfg);
+    C.cfg.adminCheck = await V.sealKey(adminK, { ok: ADMIN_OK });
+    S.pass = pass;
+    change('client', 'Đặt mật khẩu quản trị khách hàng');
+  }
+
+  /* ---------------- Ghi nhận thay đổi ---------------- */
+
+  function change(kind, text) {
+    if (kind === 'heritage') hDirty = true; else cDirty = true;
+    changes.push(text);
+    render();
+  }
+
+  function renderSavebar() {
+    const bar = $('savebar');
+    bar.hidden = !changes.length;
+    $('sb-n').textContent = changes.length;
+    $('sb-last').textContent = changes.length ? '— gần nhất: ' + changes[changes.length - 1] : '';
+  }
+
+  window.addEventListener('beforeunload', (e) => {
+    if (changes.length) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  /* ---------------- Thông báo ---------------- */
+
+  let toastTimer;
+  function toast(html, isError) {
+    const t = $('toast');
+    t.innerHTML = html;
+    t.classList.toggle('is-error', !!isError);
+    t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.hidden = true; }, isError ? 12000 : 7000);
+  }
+
+  /* ---------------- Vẽ giao diện ---------------- */
+
+  function render() {
+    renderHeritage();
+    renderClients();
+    renderSavebar();
+    let n = 0;
+    H.regions.forEach((r) => r.cities.forEach((c) => { n += c.items.length; }));
+    $('n-h').textContent = n;
+    $('n-c').textContent = C.cfg.projects.length;
+  }
+
+  function thumbSrc(it) {
+    if (!it.photo) return '';
+    return photos[it.photo] ? photos[it.photo].url : it.photo;
+  }
+
+  const isSample = (it) => /REPLACE_ME/.test(it.viewer || '');
+
+  function itemRow(it, ri, ci, ii, len) {
+    const src = thumbSrc(it);
+    const sub = [it.type, it.era, it.captured].filter(Boolean).join(' · ');
+    const at = `data-r="${ri}" data-c="${ci}" data-i="${ii}"`;
+    return `<div class="adm-row${dirty.has(it) ? ' is-dirty' : ''}">
+      ${src ? `<img class="adm-thumb" src="${esc(src)}" alt="" loading="lazy">` : '<span class="adm-thumb adm-thumb--empty">Chưa có ảnh</span>'}
+      <div class="min-w-0">
+        <p class="adm-name">${esc(it.name)}</p>
+        <p class="adm-sub">${esc(sub || '—')}</p>
+        <div class="flex flex-wrap gap-1.5 mt-2">
+          ${it.viewer ? '<span class="chip chip--live">Có bản scan</span>' : '<span class="chip chip--soon">Sắp ra mắt</span>'}
+          ${isSample(it) ? '<span class="chip chip--sample">Dữ liệu mẫu</span>' : ''}
+          ${it.unesco ? '<span class="chip chip--unesco">UNESCO</span>' : ''}
+          ${dirty.has(it) ? '<span class="chip chip--dirty">Chưa lưu</span>' : ''}
+        </div>
+      </div>
+      <div class="adm-actions">
+        <button class="locate" type="button" data-act="up" ${at} ${ii === 0 ? 'disabled' : ''} aria-label="Đưa ${esc(it.name)} lên trên">↑</button>
+        <button class="locate" type="button" data-act="down" ${at} ${ii === len - 1 ? 'disabled' : ''} aria-label="Đưa ${esc(it.name)} xuống dưới">↓</button>
+        <button class="locate" type="button" data-act="edit" ${at}>Sửa</button>
+        <button class="locate locate--danger" type="button" data-act="del" ${at}>Xoá</button>
+      </div>
+    </div>`;
+  }
+
+  function renderHeritage() {
+    $('h-list').innerHTML = H.regions.map((r, ri) => {
+      const n = r.cities.reduce((a, c) => a + c.items.length, 0);
+      return `<section aria-label="${esc(r.region)}">
+        <div class="region-head flex-wrap">
+          <h2 class="region-name m-0">${esc(r.region)}</h2>
+          <label class="switch">
+            <input type="checkbox" data-act="soon" data-r="${ri}" ${r.soon ? '' : 'checked'}>
+            <span>${r.soon ? 'Đang ẩn · web hiện “Sắp mở rộng”' : 'Đang hiện trên web'}</span>
+          </label>
+          <span class="ml-auto font-mono text-[10px] tracking-[.16em] uppercase text-bonemute">${n} địa điểm</span>
+        </div>
+        ${r.cities.map((c, ci) => `
+          <div class="mt-8">
+            <h3 class="city-head m-0">${esc(c.city)}</h3>
+            <div class="space-y-2 mt-4">
+              ${c.items.map((it, ii) => itemRow(it, ri, ci, ii, c.items.length)).join('') || '<p class="adm-empty">Chưa có địa điểm nào ở đây.</p>'}
+            </div>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <button class="locate" type="button" data-act="add" data-r="${ri}" data-c="${ci}">+ Thêm địa điểm ở ${esc(c.city)}</button>
+              ${c.items.length ? '' : `<button class="locate locate--quiet locate--danger" type="button" data-act="del-city" data-r="${ri}" data-c="${ci}">Xoá ${esc(c.city)}</button>`}
+            </div>
+          </div>`).join('')}
+        <button class="btn btn--ghost btn--sm mt-8" type="button" data-act="add-city" data-r="${ri}">+ Thêm tỉnh / thành phố vào ${esc(r.region)}</button>
+      </section>`;
+    }).join('');
+  }
+
+  function clientRow(row, i) {
+    const e = row.entry;
+    if (!row.info) {
+      return `<div class="adm-row adm-row--client">
+        <div class="min-w-0">
+          <p class="adm-name">Dự án chưa nhận diện</p>
+          <p class="adm-sub">Tạo trước khi có mật khẩu quản trị · nhập mã của khách để nhận diện</p>
+        </div>
+        <form class="adm-actions" data-claim="${i}" novalidate>
+          <input class="field field--sm font-mono uppercase" placeholder="XXXX-XXXX-XXXX" aria-label="Mã của dự án này" maxlength="14">
+          <button class="locate" type="submit">Nhận diện</button>
+        </form>
+        <div class="adm-actions"><button class="locate locate--danger" type="button" data-act="del-client" data-i="${i}">Xoá</button></div>
+      </div>`;
+    }
+    const d = row.info.data;
+    const isNew = dirty.has(e);
+    const sub = [d.client, d.place, (d.scans || []).length + ' bản scan', row.info.created ? 'tạo ' + row.info.created : '']
+      .filter(Boolean).join(' · ');
+    return `<div class="adm-row adm-row--client${isNew ? ' is-dirty' : ''}">
+      <div class="min-w-0">
+        <p class="adm-name">${esc(d.project)}</p>
+        <p class="adm-sub">${esc(sub)}</p>
+        ${isNew ? '<div class="mt-2"><span class="chip chip--dirty">Chưa lưu — khách chưa mở được</span></div>' : ''}
+      </div>
+      <span class="adm-code">${esc(row.info.code)}</span>
+      <div class="adm-actions">
+        <button class="locate" type="button" data-act="copy-code" data-i="${i}">Sao chép mã</button>
+        <button class="locate" type="button" data-act="copy-link" data-i="${i}">Sao chép link</button>
+        ${isNew ? '' : `<a class="locate" href="${SITE}/khach-hang/#ma=${esc(row.info.code)}" target="_blank" rel="noopener noreferrer">Mở thử</a>`}
+        <button class="locate" type="button" data-act="edit-client" data-i="${i}">Sửa</button>
+        <button class="locate locate--danger" type="button" data-act="del-client" data-i="${i}">Xoá</button>
+      </div>
+    </div>`;
+  }
+
+  function renderClients() {
+    const el = $('c-body');
+
+    if (!C.cfg.adminSalt) {
+      el.innerHTML = `<form id="adm-setup" class="surface-raised p-7 lg:p-9 max-w-[640px]" novalidate>
+        <p class="u-eyebrow m-0">Lần đầu dùng</p>
+        <h2 class="plate-title">Đặt mật khẩu quản trị khách hàng</h2>
+        <p class="m-0 text-bonedim leading-[1.75] text-[.9375rem]">
+          Mật khẩu này dùng chung cho anh em trong công ty để xem lại mã của mọi khách. Không có nó thì không ai
+          đọc được danh sách khách — kể cả người có token GitHub. Lỡ quên thì khách vẫn mở bản scan bằng mã cũ bình
+          thường, chỉ là trang này không xem lại được mã nữa.
+        </p>
+        <div class="grid-2 mt-6">
+          <div><label class="field-label" for="a-p1">Mật khẩu (ít nhất 10 ký tự)</label><input class="field" id="a-p1" type="password" autocomplete="new-password"></div>
+          <div><label class="field-label" for="a-p2">Nhập lại</label><input class="field" id="a-p2" type="password" autocomplete="new-password"></div>
+        </div>
+        <label class="check mt-4"><input type="checkbox" id="a-remember"> Ghi nhớ trên máy này</label>
+        <div class="mt-6"><button class="btn btn--primary" type="submit">Đặt mật khẩu</button></div>
+        <p class="plate-msg" id="a-msg" role="alert"></p>
+      </form>`;
+      return;
+    }
+
+    if (!adminK) {
+      el.innerHTML = `<form id="adm-unlock" class="surface-raised p-7 lg:p-9 max-w-[560px]" novalidate>
+        <p class="u-eyebrow m-0">Danh sách khách đang khoá</p>
+        <h2 class="plate-title">Nhập mật khẩu quản trị</h2>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input class="field" id="a-pass" type="password" autocomplete="current-password" aria-label="Mật khẩu quản trị">
+          <button class="btn btn--primary flex-none" type="submit">Mở danh sách</button>
+        </div>
+        <label class="check mt-4"><input type="checkbox" id="a-remember"> Ghi nhớ trên máy này</label>
+        <p class="plate-msg" id="a-msg" role="alert">Hỏi người quản lý nếu chưa có mật khẩu.</p>
+      </form>`;
+      return;
+    }
+
+    el.innerHTML = `<div class="flex flex-wrap items-center gap-4 mb-6">
+        <p class="m-0 text-bonedim text-[.9375rem]">${C.rows.length} dự án · link gửi khách có dạng <span class="font-mono text-[12px] text-bone">${SITE.replace('https://', '')}/khach-hang/#ma=…</span></p>
+        <button class="btn btn--primary btn--sm ml-auto" type="button" data-act="add-client">+ Thêm dự án khách hàng</button>
+      </div>
+      <div class="space-y-2">${C.rows.map(clientRow).join('') || '<p class="adm-empty">Chưa có dự án nào. Bấm “Thêm dự án khách hàng” để tạo mã đầu tiên.</p>'}</div>`;
+  }
+
+  /* ---------------- Tab ---------------- */
+
+  function selectTab(which) {
+    ['heritage', 'client'].forEach((k) => {
+      const on = k === which;
+      $('t-' + k).setAttribute('aria-selected', String(on));
+      $('t-' + k).tabIndex = on ? 0 : -1;
+      $('p-' + k).hidden = !on;
+    });
+  }
+  $('t-heritage').addEventListener('click', () => selectTab('heritage'));
+  $('t-client').addEventListener('click', () => selectTab('client'));
+  document.querySelector('.tabbar').addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const next = $('t-heritage').getAttribute('aria-selected') === 'true' ? 'client' : 'heritage';
+    selectTab(next);
+    $('t-' + next).focus();
+  });
+
+  /* ═══════════════════════════ DI SẢN ═══════════════════════════ */
+
+  let editing = null;          // { ri, ci, ii } hoặc { ri, ci, ii: null } khi thêm mới
+  let pendingPhoto = null;     // ảnh vừa chọn trong ngăn sửa: { path, b64, url } | 'clear'
+
+  function slug(s) {
+    return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D')
+      .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48) || 'anh';
+  }
+
+  function cityOptions(selR, selC) {
+    return H.regions.map((r, ri) => r.cities.map((c, ci) =>
+      `<option value="${ri}:${ci}" ${ri === selR && ci === selC ? 'selected' : ''}>${esc(r.region)} › ${esc(c.city)}</option>`
+    ).join('')).join('');
+  }
+
+  function openItem(ri, ci, ii) {
+    editing = { ri: ri, ci: ci, ii: ii };
+    pendingPhoto = null;
+    const it = ii == null ? {} : H.regions[ri].cities[ci].items[ii];
+    $('d-item-title').textContent = ii == null ? 'Thêm địa điểm' : 'Sửa địa điểm';
+    ['name', 'name_en', 'type', 'type_en', 'era', 'era_en', 'viewer', 'gmaps', 'splats', 'captured', 'captured_en']
+      .forEach((k) => { $('i-' + k).value = it[k] || ''; });
+    $('i-lat').value = it.lat != null ? it.lat : '';
+    $('i-lng').value = it.lng != null ? it.lng : '';
+    $('i-paste').value = '';
+    $('i-unesco').checked = !!it.unesco;
+    $('i-city').innerHTML = cityOptions(ri, ci);
+    $('i-msg').textContent = '';
+    $('i-photo-msg').textContent = 'Ảnh ngang 16:9 là đẹp nhất. Ảnh lớn được tự thu nhỏ còn 1600px trước khi tải lên.';
+    $('i-photo-msg').classList.remove('hint--warn');
+    showPhoto(thumbSrc(it));
+    $('d-item').showModal();
+    initPicker(parseFloat(it.lat), parseFloat(it.lng));
+    $('i-name').focus();
+  }
+
+  function showPhoto(src) {
+    $('i-photo-prev').hidden = !src;
+    $('i-photo-none').hidden = !!src;
+    if (src) $('i-photo-prev').src = src;
+    $('i-photo-clear').hidden = !src;
+  }
+
+  /* Thu nhỏ ảnh về tối đa 1600px, nén JPG — giữ kho GitHub gọn và web tải nhanh. */
+  async function resizeImage(file) {
+    const bmp = await createImageBitmap(file);
+    const scale = Math.min(1, 1600 / bmp.width);
+    const w = Math.round(bmp.width * scale), h = Math.round(bmp.height * scale);
+    const cv = document.createElement('canvas');
+    cv.width = w; cv.height = h;
+    cv.getContext('2d').drawImage(bmp, 0, 0, w, h);
+    const blob = await new Promise((ok) => cv.toBlob(ok, 'image/jpeg', 0.84));
+    return { b64: bytesToB64(new Uint8Array(await blob.arrayBuffer())), url: URL.createObjectURL(blob), size: blob.size, w: w, h: h };
+  }
+
+  $('i-photo-file').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    const msg = $('i-photo-msg');
+    msg.classList.remove('hint--warn');
+    msg.textContent = 'Đang xử lý ảnh…';
+    try {
+      const img = await resizeImage(file);
+      const base = slug($('i-name').value || file.name.replace(/\.[^.]+$/, ''));
+      img.path = '/images/' + base + '-' + Date.now().toString(36) + '.jpg';
+      pendingPhoto = img;
+      showPhoto(img.url);
+      msg.textContent = `Ảnh ${img.w}×${img.h}, ${Math.round(img.size / 1024)} KB — sẽ tải lên khi bấm “Lưu lên web”.`;
+    } catch (err) {
+      msg.classList.add('hint--warn');
+      msg.textContent = 'Không đọc được ảnh này (ảnh HEIC từ iPhone chẳng hạn). Đổi sang JPG hoặc PNG rồi chọn lại.';
+    }
+  });
+  $('i-photo-clear').addEventListener('click', () => { pendingPhoto = 'clear'; showPhoto(''); });
+
+  /* --- Bản đồ chọn vị trí --- */
+  let pickMap = null, pickMarker = null;
+  const round6 = (n) => +(+n).toFixed(6);
+
+  function initPicker(lat, lng) {
+    if (!window.L) {
+      $('pick-map').innerHTML = '<p class="adm-empty m-0" style="height:100%">Không tải được bản đồ — vẫn gõ hoặc dán toạ độ ở dưới được.</p>';
+      return;
+    }
+    if (!pickMap) {
+      pickMap = L.map('pick-map', { scrollWheelZoom: true });
+      /* Esri: không cần API key. Ảnh vệ tinh giúp cắm ghim đúng vào mái công trình. */
+      const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
+      const street = L.tileLayer(ESRI + 'World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        maxNativeZoom: 18, maxZoom: 20, attribution: 'Tiles © Esri'
+      }).addTo(pickMap);
+      const sat = L.tileLayer(ESRI + 'World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        maxNativeZoom: 18, maxZoom: 20, attribution: 'Tiles © Esri — Maxar, Earthstar Geographics'
+      });
+      L.control.layers({ 'Bản đồ': street, 'Vệ tinh': sat }, null, { collapsed: false, position: 'topright' }).addTo(pickMap);
+      pickMap.on('click', (e) => setPoint(e.latlng.lat, e.latlng.lng));
+    }
+    const has = isFinite(lat) && isFinite(lng);
+    placeMarker(has ? [lat, lng] : null);
+    setTimeout(() => {
+      pickMap.invalidateSize();
+      pickMap.setView(has ? [lat, lng] : [21.0285, 105.8542], has ? 17 : 11);   // chưa có thì mở ở Hà Nội
+    }, 60);
+  }
+
+  function placeMarker(c) {
+    if (!pickMap) return;
+    if (!c) { if (pickMarker) { pickMap.removeLayer(pickMarker); pickMarker = null; } return; }
+    if (!pickMarker) {
+      pickMarker = L.marker(c, {
+        draggable: true,
+        icon: L.divIcon({ className: '', html: '<span class="pin is-active"><b></b></span>', iconSize: [20, 20], iconAnchor: [10, 10] })
+      }).addTo(pickMap);
+      pickMarker.on('dragend', () => { const p = pickMarker.getLatLng(); setPoint(p.lat, p.lng); });
+    } else {
+      pickMarker.setLatLng(c);
+    }
+  }
+
+  function setPoint(lat, lng, pan) {
+    $('i-lat').value = round6(lat);
+    $('i-lng').value = round6(lng);
+    placeMarker([lat, lng]);
+    if (pan && pickMap) pickMap.setView([lat, lng], Math.max(pickMap.getZoom(), 16));
+  }
+
+  /* Nhận cả "20.97, 105.77" lẫn link Google Maps có "@20.97,105.77". */
+  $('i-paste').addEventListener('input', () => {
+    const m = $('i-paste').value.match(/(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/);
+    if (m) setPoint(parseFloat(m[1]), parseFloat(m[2]), true);
+  });
+  ['i-lat', 'i-lng'].forEach((id) => $(id).addEventListener('change', () => {
+    const lat = parseFloat($('i-lat').value), lng = parseFloat($('i-lng').value);
+    if (isFinite(lat) && isFinite(lng)) setPoint(lat, lng, true);
+  }));
+
+  $('f-item').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = (id) => $('i-' + id).value.trim();
+    const say = (t, focusId) => { $('i-msg').textContent = t; if (focusId) $(focusId).focus(); };
+    const lat = parseFloat(v('lat')), lng = parseFloat(v('lng'));
+
+    if (!v('name')) return say('Chưa điền tên địa điểm.', 'i-name');
+    if (v('viewer') && !/^https:\/\//i.test(v('viewer'))) return say('Link viewer phải bắt đầu bằng https://', 'i-viewer');
+    if (v('gmaps') && !/^https:\/\//i.test(v('gmaps'))) return say('Link Google Maps phải bắt đầu bằng https://', 'i-gmaps');
+    if (!isFinite(lat) || !isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
+      return say('Chưa có vị trí. Bấm vào bản đồ hoặc dán toạ độ.', 'i-paste');
+    }
+
+    const { ri, ci, ii } = editing;
+    const old = ii == null ? null : H.regions[ri].cities[ci].items[ii];
+    const it = Object.assign({}, old || {});
+    it.name = v('name'); it.name_en = v('name_en');
+    it.type = v('type'); it.type_en = v('type_en');
+    it.era = v('era'); it.era_en = v('era_en');
+    it.lat = round6(lat); it.lng = round6(lng);
+    it.viewer = v('viewer');
+    it.splats = v('splats') || '—';
+    it.captured = v('captured');
+    it.unesco = $('i-unesco').checked;
+    if (it.tone == null) it.tone = Math.floor(Math.random() * 4);
+    /* Ô không bắt buộc: trống thì bỏ hẳn khỏi file cho gọn. */
+    if (v('gmaps')) it.gmaps = v('gmaps'); else delete it.gmaps;
+    if (v('captured_en')) it.captured_en = v('captured_en'); else delete it.captured_en;
+    if (pendingPhoto === 'clear') delete it.photo;
+    else if (pendingPhoto) { photos[pendingPhoto.path] = pendingPhoto; it.photo = pendingPhoto.path; }
+
+    const [nr, nc] = $('i-city').value.split(':').map(Number);
+    const src = H.regions[ri].cities[ci].items;
+    if (old && nr === ri && nc === ci) {
+      src[ii] = it;
+    } else {
+      if (old) src.splice(ii, 1);
+      H.regions[nr].cities[nc].items.push(it);
+    }
+    dirty.add(it);
+    $('d-item').close();
+    change('heritage', (old ? 'Sửa' : 'Thêm') + ' địa điểm: ' + it.name);
+  });
+
+  /* --- Thêm tỉnh --- */
+  let cityRegion = 0;
+  $('f-city').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = $('c-city').value.trim();
+    if (!name) { $('c-msg').textContent = 'Chưa điền tên.'; $('c-city').focus(); return; }
+    const r = H.regions[cityRegion];
+    if (r.cities.some((c) => c.city.toLowerCase() === name.toLowerCase())) {
+      $('c-msg').textContent = name + ' đã có trong ' + r.region + '.';
+      return;
+    }
+    r.cities.push({ city: name, city_en: $('c-city_en').value.trim() || name, items: [] });
+    $('d-city').close();
+    change('heritage', 'Thêm ' + name + ' vào ' + r.region);
+  });
+
+  /* ═══════════════════════════ KHÁCH HÀNG ═══════════════════════════ */
+
+  let editingClient = null;     // chỉ số trong C.rows, hoặc null khi thêm mới
+
+  function scanRow(s) {
+    s = s || {};
+    const n = $('k-scans').children.length + 1;
+    const id = 'ks' + Date.now().toString(36) + n;
+    const row = document.createElement('div');
+    row.className = 'scan-row';
+    row.innerHTML =
+      `<div><label class="field-label" for="${id}a">Nhãn</label><input class="field" id="${id}a" data-k="label" placeholder="VD: ${n === 1 ? 'Toàn cảnh' : 'Bản scan ' + n}"></div>` +
+      `<div><label class="field-label" for="${id}b">Nhãn (EN)</label><input class="field" id="${id}b" data-k="label_en"></div>` +
+      `<div class="span-2"><label class="field-label" for="${id}c">Link viewer *</label><input class="field" id="${id}c" data-k="viewer" type="url" placeholder="https://lcc-viewer.xgrids.com/pub/…"></div>` +
+      `<div class="span-2"><button class="locate locate--quiet locate--danger" type="button" data-remove-scan>Bỏ bản scan này</button></div>`;
+    row.querySelector('[data-k="label"]').value = s.label || '';
+    row.querySelector('[data-k="label_en"]').value = s.label_en || '';
+    row.querySelector('[data-k="viewer"]').value = s.viewer || '';
+    $('k-scans').appendChild(row);
+    return row;
+  }
+  $('k-addscan').addEventListener('click', () => scanRow().querySelector('input').focus());
+  $('k-scans').addEventListener('click', (e) => {
+    if (e.target.closest('[data-remove-scan]') && $('k-scans').children.length > 1) e.target.closest('.scan-row').remove();
+  });
+  $('k-newcode').addEventListener('click', () => { $('k-code').value = V.makeCode(); codeHint(); });
+  $('k-code').addEventListener('input', codeHint);
+
+  function codeHint() {
+    const h = $('k-code-hint');
+    const orig = editingClient != null ? C.rows[editingClient].info.code : null;
+    const changed = orig && V.normalize($('k-code').value) !== V.normalize(orig);
+    h.classList.toggle('hint--warn', !!changed);
+    h.textContent = changed
+      ? 'Đổi mã thì mã cũ (' + orig + ') và link cũ sẽ hết mở được sau khi lưu. Nhớ gửi mã mới cho khách.'
+      : 'Mã ngẫu nhiên 12 ký tự, đã bỏ các chữ dễ nhầm như O/0, I/1.';
+  }
+
+  function openClient(i) {
+    editingClient = i;
+    const info = i == null ? null : C.rows[i].info;
+    const d = info ? info.data : {};
+    $('d-client-title').textContent = info ? 'Sửa dự án khách hàng' : 'Thêm dự án khách hàng';
+    $('k-code').value = info ? info.code : V.makeCode();
+    ['client', 'client_en', 'project', 'project_en', 'place', 'place_en', 'captured', 'splats', 'note', 'note_en']
+      .forEach((k) => { $('k-' + k).value = d[k] || ''; });
+    $('k-scans').innerHTML = '';
+    (d.scans && d.scans.length ? d.scans : [{}]).forEach(scanRow);
+    $('k-msg').textContent = '';
+    codeHint();
+    $('d-client').showModal();
+    $('k-client').focus();
+  }
+
+  const today = () => {
+    const d = new Date();
+    return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear();
+  };
+  const rid = () => Math.random().toString(36).slice(2, 8);
+  function compact(o) {
+    Object.keys(o).forEach((k) => { if (o[k] === '' || o[k] == null) delete o[k]; });
+    return o;
+  }
+
+  $('f-client').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const v = (id) => $('k-' + id).value.trim();
+    const say = (t, el) => { $('k-msg').textContent = t; if (el) el.focus(); };
+
+    const code = V.format(v('code'));
+    if (V.normalize(code).length !== V.CODE_LEN) return say('Mã phải đúng 12 chữ và số. Bấm “Tạo mã khác” để lấy mã mới.', $('k-code'));
+    const clash = C.rows.some((r, k) => k !== editingClient && r.info && V.normalize(r.info.code) === V.normalize(code));
+    if (clash) return say('Mã này đang dùng cho dự án khác. Bấm “Tạo mã khác”.', $('k-code'));
+    if (!v('client')) return say('Chưa điền tên khách hàng.', $('k-client'));
+    if (!v('project')) return say('Chưa điền tên dự án.', $('k-project'));
+
+    const scans = [];
+    let bad = null;
+    $('k-scans').querySelectorAll('.scan-row').forEach((row) => {
+      const get = (k) => row.querySelector(`[data-k="${k}"]`).value.trim();
+      if (!get('viewer')) return;
+      if (!/^https:\/\//i.test(get('viewer'))) { bad = bad || row.querySelector('[data-k="viewer"]'); return; }
+      scans.push(compact({ label: get('label'), label_en: get('label_en'), viewer: get('viewer') }));
+    });
+    if (bad) return say('Link viewer phải bắt đầu bằng https://', bad);
+    if (!scans.length) return say('Cần ít nhất một link viewer.', $('k-scans').querySelector('[data-k="viewer"]'));
+
+    const data = compact({
+      client: v('client'), client_en: v('client_en'),
+      project: v('project'), project_en: v('project_en'),
+      place: v('place'), place_en: v('place_en'),
+      captured: v('captured'), splats: v('splats'),
+      note: v('note'), note_en: v('note_en'),
+      scans: scans
+    });
+
+    say('');
+    const old = editingClient != null ? C.rows[editingClient] : null;
+    const created = old && old.info.created ? old.info.created : today();
+    const info = { code: code, created: created, data: data };
+    const box = await V.seal(code, data, C.cfg);
+    const adm = await V.sealKey(adminK, info);
+    const entry = { id: old && old.entry.id ? old.entry.id : rid(), iv: box.iv, data: box.data, adm: adm };
+
+    if (old) {
+      C.cfg.projects[editingClient] = entry;
+      C.rows[editingClient] = { entry: entry, info: info };
+    } else {
+      C.cfg.projects.push(entry);
+      C.rows.push({ entry: entry, info: info });
+    }
+    dirty.add(entry);
+    $('d-client').close();
+    /* Lịch sử commit trên GitHub ai cũng xem được → không ghi tên khách vào lời commit. */
+    change('client', (old ? 'Sửa' : 'Thêm') + ' một dự án khách hàng');
+  });
+
+  /* Dự án tạo trước khi có mật khẩu quản trị: nhập mã của khách để thêm bản sao `adm`. */
+  async function claim(i, raw) {
+    const row = C.rows[i];
+    const d = await V.openKey(await V.clientKey(raw, C.cfg), row.entry);
+    if (!d) { toast('Mã đó không mở được dự án này. Kiểm tra lại mã.', true); return; }
+    const info = { code: V.format(raw), created: today(), data: d };
+    row.entry.id = row.entry.id || rid();
+    row.entry.adm = await V.sealKey(adminK, info);
+    row.info = info;
+    dirty.add(row.entry);
+    change('client', 'Nhận diện một dự án khách hàng');
+  }
+
+  function copy(text, label) {
+    const done = () => toast(esc(label) + ' đã được sao chép:<br><span class="font-mono text-lime break-all">' + esc(text) + '</span>');
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, () => toast(esc(text)));
+    else toast('Chép thủ công: <span class="font-mono text-lime break-all">' + esc(text) + '</span>');
+  }
+
+  /* ═══════════════════════════ SỰ KIỆN CHUNG ═══════════════════════════ */
+
+  document.addEventListener('click', (e) => {
+    const closeBtn = e.target.closest('[data-close]');
+    if (closeBtn) { closeBtn.closest('dialog').close(); return; }
+
+    const b = e.target.closest('[data-act]');
+    if (!b || b.type === 'checkbox') return;
+    const ri = +b.dataset.r, ci = +b.dataset.c, ii = +b.dataset.i;
+    const act = b.dataset.act;
+
+    if (act === 'add') openItem(ri, ci, null);
+    else if (act === 'edit') openItem(ri, ci, ii);
+    else if (act === 'up' || act === 'down') {
+      const list = H.regions[ri].cities[ci].items;
+      const j = act === 'up' ? ii - 1 : ii + 1;
+      if (j < 0 || j >= list.length) return;
+      [list[ii], list[j]] = [list[j], list[ii]];
+      change('heritage', 'Đổi thứ tự: ' + list[j].name);
+    }
+    else if (act === 'del') {
+      const it = H.regions[ri].cities[ci].items[ii];
+      if (!confirm('Xoá “' + it.name + '” khỏi thư viện?\n\nẢnh của địa điểm vẫn giữ trong thư mục images/.')) return;
+      H.regions[ri].cities[ci].items.splice(ii, 1);
+      change('heritage', 'Xoá địa điểm: ' + it.name);
+    }
+    else if (act === 'add-city') {
+      cityRegion = ri;
+      $('c-city').value = ''; $('c-city_en').value = ''; $('c-msg').textContent = '';
+      $('d-city-title').textContent = 'Thêm tỉnh / thành phố vào ' + H.regions[ri].region;
+      $('d-city').showModal();
+    }
+    else if (act === 'del-city') {
+      const c = H.regions[ri].cities[ci];
+      H.regions[ri].cities.splice(ci, 1);
+      change('heritage', 'Xoá ' + c.city);
+    }
+    else if (act === 'add-client') openClient(null);
+    else if (act === 'edit-client') openClient(ii);
+    else if (act === 'del-client') {
+      const info = C.rows[ii].info;
+      const label = info ? '“' + info.data.project + '” (mã ' + info.code + ')' : 'dự án chưa nhận diện này';
+      if (!confirm('Xoá ' + label + '?\n\nSau khi lưu, khách sẽ không mở được bản scan bằng mã hay link cũ nữa.')) return;
+      C.cfg.projects.splice(ii, 1);
+      C.rows.splice(ii, 1);
+      change('client', 'Xoá một dự án khách hàng');
+    }
+    else if (act === 'copy-code') copy(C.rows[ii].info.code, 'Mã');
+    else if (act === 'copy-link') copy(SITE + '/khach-hang/#ma=' + C.rows[ii].info.code, 'Link riêng');
+  });
+
+  /* Bật / tắt vùng */
+  document.addEventListener('change', (e) => {
+    const sw = e.target.closest('input[data-act="soon"]');
+    if (!sw) return;
+    const r = H.regions[+sw.dataset.r];
+    if (sw.checked) {
+      const sample = r.cities.some((c) => c.items.some(isSample));
+      if (sample && !confirm(r.region + ' còn địa điểm “Dữ liệu mẫu” (link REPLACE_ME).\nMở vùng này thì khách sẽ thấy cả dữ liệu mẫu — nhớ sửa hoặc xoá chúng.\n\nVẫn mở?')) {
+        sw.checked = false;
+        return;
+      }
+      delete r.soon;
+    } else {
+      r.soon = true;
+    }
+    change('heritage', r.region + (r.soon ? ': ẩn, hiện “Sắp mở rộng”' : ': hiện trên web'));
+  });
+
+  /* Form tự sinh trong tab khách hàng */
+  document.addEventListener('submit', async (e) => {
+    const f = e.target;
+    if (f.id === 'adm-setup') {
+      e.preventDefault();
+      const p1 = $('a-p1').value, p2 = $('a-p2').value;
+      if (p1.length < 10) { $('a-msg').textContent = 'Mật khẩu cần ít nhất 10 ký tự.'; $('a-msg').classList.add('is-error'); return; }
+      if (p1 !== p2) { $('a-msg').textContent = 'Hai lần nhập không khớp.'; $('a-msg').classList.add('is-error'); return; }
+      const remember = $('a-remember').checked;
+      await setupAdmin(p1);
+      if (remember) persist(true);
+      toast('Đã đặt mật khẩu. Bấm “Lưu lên web” để ghi lại — trước đó anh em khác chưa dùng được mật khẩu này.');
+    } else if (f.id === 'adm-unlock') {
+      e.preventDefault();
+      const msg = $('a-msg');
+      msg.textContent = 'Đang mở…'; msg.classList.remove('is-error');
+      const remember = $('a-remember').checked;
+      if (await unlockAdmin($('a-pass').value)) {
+        if (remember) persist(true);
+        render();
+      } else {
+        msg.textContent = 'Sai mật khẩu quản trị.'; msg.classList.add('is-error');
+        $('a-pass').select();
+      }
+    } else if (f.dataset.claim != null) {
+      e.preventDefault();
+      const raw = f.querySelector('input').value;
+      if (V.normalize(raw).length !== V.CODE_LEN) { toast('Mã cần đủ 12 chữ và số.', true); return; }
+      await claim(+f.dataset.claim, raw);
+    }
+  });
+
+  /* ═══════════════════════════ LƯU ═══════════════════════════ */
+
+  function summary(list) {
+    const head = list.slice(0, 4).join('; ');
+    return list.length > 4 ? head + '; … (+' + (list.length - 4) + ')' : head;
+  }
+
+  async function saveAll() {
+    if (busy || !changes.length) return;
+    busy = true;
+    $('sb-save').setAttribute('aria-busy', 'true');
+    $('sb-save').textContent = 'Đang lưu…';
+    try {
+      /* Ghép vào bản mới nhất trên GitHub, để không đè mất phần hướng dẫn hay code
+         ai đó vừa sửa tay ở ngoài phần dữ liệu. */
+      const [h, c] = await Promise.all([hDirty ? readFile(HERITAGE_FILE) : null, cDirty ? readFile(CLIENT_FILE) : null]);
+      const stale = (h && h.sha !== H.sha) || (c && c.sha !== C.sha);
+      if (stale && !confirm('Có người khác vừa lưu lên GitHub sau khi bạn mở trang này.\n\n' +
+          'OK = vẫn lưu — phần dữ liệu sẽ là bản trên máy bạn (thay đổi của người kia ở phần đó sẽ mất).\n' +
+          'Huỷ = dừng lại, rồi bấm “Bỏ thay đổi” để tải bản mới nhất.')) return;
+
+      const files = [];
+      let hText = null, cText = null;
+      if (h) {
+        hText = F.splice(h.text, F.heritageJS(H.regions));
+        files.push({ path: HERITAGE_FILE, b64: textToB64(hText) });
+        const used = new Set();
+        H.regions.forEach((r) => r.cities.forEach((ct) => ct.items.forEach((it) => { if (it.photo) used.add(it.photo); })));
+        Object.keys(photos).forEach((p) => {
+          if (used.has(p) && !photos[p].saved) files.push({ path: p.replace(/^\//, ''), b64: photos[p].b64 });
+        });
+      }
+      if (c) {
+        cText = F.splice(c.text, F.clientJS(C.cfg));
+        files.push({ path: CLIENT_FILE, b64: textToB64(cText) });
+      }
+
+      const shas = await commit(files, 'Quản trị: ' + summary(changes));
+
+      if (hText) H.sha = shas[HERITAGE_FILE];
+      if (cText) C.sha = shas[CLIENT_FILE];
+      Object.keys(photos).forEach((p) => { if (shas[p.replace(/^\//, '')]) photos[p].saved = true; });
+      const n = changes.length;
+      changes = [];
+      hDirty = cDirty = false;
+      dirty = new WeakSet();
+      render();
+      toast(`Đã lưu ${n} thay đổi lên GitHub. Web sẽ cập nhật sau khoảng 1–2 phút — ` +
+        `<a class="inline-link" href="https://github.com/${esc(S.repo)}/actions" target="_blank" rel="noopener noreferrer">xem tiến độ</a>.`);
+    } catch (err) {
+      toast(esc(err.message), true);
+    } finally {
+      busy = false;
+      $('sb-save').removeAttribute('aria-busy');
+      $('sb-save').textContent = 'Lưu lên web';
+    }
+  }
+
+  $('sb-save').addEventListener('click', saveAll);
+  $('sb-discard').addEventListener('click', async () => {
+    if (!confirm('Bỏ ' + changes.length + ' thay đổi chưa lưu và tải lại bản đang có trên GitHub?')) return;
+    try { await loadAll(); toast('Đã tải lại bản mới nhất trên GitHub.'); }
+    catch (err) { toast(esc(err.message), true); }
+  });
+
+  /* ═══════════════════════════ KẾT NỐI ═══════════════════════════ */
+
+  function setupSay(text, isError) {
+    $('s-msg').textContent = text;
+    $('s-msg').classList.toggle('is-error', !!isError);
+  }
+
+  function showApp() {
+    $('setup').hidden = true;
+    $('app').hidden = false;
+    $('logout').hidden = false;
+    $('repo-chip').hidden = false;
+    $('repo-chip').textContent = S.repo + ' · ' + S.branch;
+  }
+
+  async function connect() {
+    $('s-go').setAttribute('aria-busy', 'true');
+    setupSay('Đang kết nối…');
+    try {
+      const info = await gh(`/repos/${S.repo}`);
+      if (info.permissions && !info.permissions.push) {
+        throw new Error('Token này chỉ có quyền đọc. Cần quyền "Contents: Read and write".');
+      }
+      await loadAll();
+      showApp();
+      return true;
+    } catch (err) {
+      setupSay(err.message, true);
+      return false;
+    } finally {
+      $('s-go').removeAttribute('aria-busy');
+    }
+  }
+
+  $('setup-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    S.repo = $('s-repo').value.trim()
+      .replace(/^https?:\/\/github\.com\//i, '').replace(/\.git$/i, '').replace(/\/+$/, '');
+    S.branch = $('s-branch').value.trim() || 'main';
+    S.token = $('s-token').value.trim();
+    if (!/^[\w.-]+\/[\w.-]+$/.test(S.repo)) { setupSay('Tên kho phải có dạng ten-tai-khoan/ten-kho.', true); $('s-repo').focus(); return; }
+    if (!S.token) { setupSay('Chưa dán token GitHub.', true); $('s-token').focus(); return; }
+    if (await connect() && $('s-remember').checked) persist(false);
+  });
+
+  $('logout').addEventListener('click', () => {
+    if (changes.length && !confirm('Còn ' + changes.length + ' thay đổi chưa lưu. Vẫn đăng xuất?')) return;
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* bỏ qua */ }
+    changes = [];
+    location.reload();
+  });
+
+  /* ---------------- Khởi động ---------------- */
+  $('s-repo').value = S.repo;
+  $('s-branch').value = S.branch;
+  if (!V.supported()) {
+    setupSay('Trình duyệt này không hỗ trợ mã hoá. Mở trang bằng https:// trên Chrome, Edge, Safari hoặc Firefox bản mới.', true);
+    $('s-go').disabled = true;
+  } else if (S.token && S.repo) {
+    $('s-token').value = S.token;
+    connect();
+  }
+})();
+</script>
+<style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}</style>
+</body>
+</html>
