@@ -83,6 +83,23 @@
     return clientKey(code, cfg).then(function (key) { return sealKey(key, obj); });
   }
 
+  /* Ảnh bìa của dự án riêng: mã hoá bằng một khoá ngẫu nhiên riêng cho ảnh đó.
+     Khoá nằm bên trong dữ liệu đã mã hoá của dự án, nên chỉ ai có mã mới xem được ảnh,
+     và đổi mã dự án không cần mã hoá lại ảnh. */
+  function sealBytes(bytes) {
+    var raw = crypto.getRandomValues(new Uint8Array(32));
+    var iv = crypto.getRandomValues(new Uint8Array(12));
+    return crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt'])
+      .then(function (k) { return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, k, bytes); })
+      .then(function (ct) { return { key: toB64(raw), iv: toB64(iv), bytes: new Uint8Array(ct) }; });
+  }
+
+  function openBytes(ref, bytes) {
+    return crypto.subtle.importKey('raw', fromB64(ref.key), 'AES-GCM', false, ['decrypt'])
+      .then(function (k) { return crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromB64(ref.iv) }, k, bytes); })
+      .then(function (b) { return new Uint8Array(b); });
+  }
+
   function makeSalt() { return toB64(crypto.getRandomValues(new Uint8Array(16))); }
 
   function makeCode() {
@@ -105,6 +122,8 @@
     adminKey: adminKey,
     sealKey: sealKey,
     openKey: openKey,
+    sealBytes: sealBytes,
+    openBytes: openBytes,
     makeSalt: makeSalt,
     makeCode: makeCode,
     CODE_LEN: CODE_LEN

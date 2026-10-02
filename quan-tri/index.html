@@ -67,11 +67,10 @@ tailwind.config = {
   }
   .adm-row:hover{border-color:var(--ink-400);box-shadow:var(--shade-1)}
   .adm-row.is-dirty{border-color:rgba(201,162,39,.45)}
-  .adm-row--client{grid-template-columns:minmax(0,1fr) auto auto;padding:1rem 1.1rem}
+  .adm-row--client{grid-template-columns:112px minmax(0,1fr) auto auto}
   @media(max-width:767px){
-    .adm-row{grid-template-columns:80px minmax(0,1fr)}
-    .adm-row--client{grid-template-columns:minmax(0,1fr)}
-    .adm-row .adm-actions{grid-column:1/-1;justify-content:flex-start}
+    .adm-row,.adm-row--client{grid-template-columns:80px minmax(0,1fr)}
+    .adm-row .adm-actions,.adm-row .adm-code{grid-column:1/-1;justify-content:flex-start}
   }
   .adm-thumb{width:100%;aspect-ratio:16/9;border-radius:var(--r-sm);object-fit:cover;background:var(--ink-900);display:block}
   .adm-thumb--empty{
@@ -414,6 +413,25 @@ tailwind.config = {
         <p class="hint">Nhiều bản thì khách chọn bằng nút phía trên viewer.</p>
       </div>
 
+      <div>
+        <span class="field-label">Ảnh bìa bản scan</span>
+        <img id="k-cover-prev" class="photo-prev" alt="" hidden>
+        <p id="k-cover-none" class="adm-empty">Chưa có ảnh — trước nút “Xem bản scan” sẽ là nền chấm sáng.</p>
+        <div class="flex flex-wrap gap-2 mt-3">
+          <input id="k-cover-file" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
+          <label class="btn btn--ghost btn--sm file-btn" for="k-cover-file">Chọn ảnh…</label>
+          <button class="locate locate--quiet" type="button" id="k-cover-clear">Bỏ ảnh</button>
+        </div>
+        <p class="hint" id="k-cover-msg">Khách thấy ảnh này ngay sau khi nhập mã, kèm nút “Xem bản scan 3D”. Ảnh của dự án riêng được mã hoá — chỉ ai có mã mới xem được.</p>
+      </div>
+
+      <div class="surface p-5">
+        <label class="check"><input type="checkbox" id="k-public"> <b class="text-bone font-semibold">Công khai trên trang Dự án</b></label>
+        <p class="hint">Bật thì ai cũng xem được dự án này — tên, ảnh bìa, lời nhắn và bản scan — ở
+          <span class="font-mono">piheritage.com/du-an/</span>, không cần mã. Mã riêng vẫn dùng được.
+          <span class="text-brass">Chỉ bật khi khách đã đồng ý.</span></p>
+      </div>
+
       <fieldset class="grid gap-4 border-0 p-0 m-0">
         <div><label class="field-label" for="k-note">Lời nhắn cho khách</label><textarea class="field" id="k-note" placeholder="Không bắt buộc"></textarea></div>
         <div><label class="field-label" for="k-note_en">Lời nhắn (EN)</label><textarea class="field" id="k-note_en"></textarea></div>
@@ -483,6 +501,9 @@ tailwind.config = {
   let hDirty = false, cDirty = false;
   let dirty = new WeakSet();    // địa điểm / dự án vừa thêm hoặc sửa, chưa lưu
   let busy = false;
+  let clientFiles = {};         // ảnh bìa khách chờ tải lên: 'images/…' → { b64, saved }
+  let removeFiles = new Set();  // file sẽ xoá khỏi kho ở lần lưu tới
+  const coverCache = {};        // '/images/rieng/….bin' → Promise<{ bytes, url }> đã giải mã
 
   /* ---------------- GitHub ---------------- */
 
@@ -534,9 +555,26 @@ tailwind.config = {
     return { text: b64ToText(j.content), sha: j.sha };
   }
 
+  /* Đọc nguyên file nhị phân (ảnh bìa đã mã hoá) thẳng từ kho — kể cả file
+     vừa lưu mà web chưa kịp đăng lại. */
+  async function readBytes(path) {
+    let r;
+    try {
+      r = await fetch(`https://api.github.com/repos/${S.repo}/contents/${path}?ref=${encodeURIComponent(S.branch)}`, {
+        headers: { Authorization: 'Bearer ' + S.token, Accept: 'application/vnd.github.raw', 'X-GitHub-Api-Version': '2022-11-28' },
+        cache: 'no-store'
+      });
+    } catch (e) {
+      throw new Error('Không kết nối được GitHub — kiểm tra mạng rồi thử lại.');
+    }
+    if (!r.ok) throw new Error(ghMessage(r.status));
+    return new Uint8Array(await r.arrayBuffer());
+  }
+
   /* Ghi nhiều file trong MỘT commit (Git Data API), để mỗi lần lưu chỉ
-     kích hoạt một lần đăng lại web. Trả về sha của từng file vừa ghi. */
-  async function commit(files, message) {
+     kích hoạt một lần đăng lại web. `removes`: các file cần xoá khỏi kho.
+     Trả về sha của từng file vừa ghi. */
+  async function commit(files, message, removes) {
     const g = `/repos/${S.repo}/git`;
     const ref = await gh(`${g}/ref/heads/${S.branch}`);
     const head = await gh(`${g}/commits/${ref.object.sha}`);
@@ -547,6 +585,7 @@ tailwind.config = {
       shas[f.path] = blob.sha;
       tree.push({ path: f.path, mode: '100644', type: 'blob', sha: blob.sha });
     }
+    (removes || []).forEach((p) => tree.push({ path: p, mode: '100644', type: 'blob', sha: null }));
     const t = await gh(`${g}/trees`, { method: 'POST', body: { base_tree: head.tree.sha, tree: tree } });
     const c = await gh(`${g}/commits`, { method: 'POST', body: { message: message, tree: t.sha, parents: [ref.object.sha] } });
     await gh(`${g}/refs/heads/${S.branch}`, { method: 'PATCH', body: { sha: c.sha } });
@@ -569,6 +608,8 @@ tailwind.config = {
     H = { regions: regions, sha: h.sha };
     C = { cfg: cfg, sha: c.sha, rows: cfg.projects.map((entry) => ({ entry: entry, info: null })) };
     photos = {};
+    clientFiles = {};
+    removeFiles = new Set();
     changes = [];
     hDirty = cDirty = false;
     dirty = new WeakSet();
@@ -710,6 +751,7 @@ tailwind.config = {
     const e = row.entry;
     if (!row.info) {
       return `<div class="adm-row adm-row--client">
+        <span class="adm-thumb adm-thumb--empty">?</span>
         <div class="min-w-0">
           <p class="adm-name">Dự án chưa nhận diện</p>
           <p class="adm-sub">Tạo trước khi có mật khẩu quản trị · nhập mã của khách để nhận diện</p>
@@ -725,17 +767,25 @@ tailwind.config = {
     const isNew = dirty.has(e);
     const sub = [d.client, d.place, (d.scans || []).length + ' bản scan', row.info.created ? 'tạo ' + row.info.created : '']
       .filter(Boolean).join(' · ');
+    const thumb = d.cover && d.cover.path
+      ? `<span class="adm-thumb adm-thumb--empty" data-cover-path="${esc(d.cover.path)}">Đang tải…</span>`
+      : '<span class="adm-thumb adm-thumb--empty">Chưa có ảnh</span>';
     return `<div class="adm-row adm-row--client${isNew ? ' is-dirty' : ''}">
+      ${thumb}
       <div class="min-w-0">
         <p class="adm-name">${esc(d.project)}</p>
         <p class="adm-sub">${esc(sub)}</p>
-        ${isNew ? '<div class="mt-2"><span class="chip chip--dirty">Chưa lưu — khách chưa mở được</span></div>' : ''}
+        <div class="flex flex-wrap gap-1.5 mt-2">
+          ${row.info.public ? '<span class="chip chip--live">Công khai</span>' : '<span class="chip chip--soon">Riêng tư · chỉ mở bằng mã</span>'}
+          ${isNew ? '<span class="chip chip--dirty">Chưa lưu</span>' : ''}
+        </div>
       </div>
       <span class="adm-code">${esc(row.info.code)}</span>
       <div class="adm-actions">
         <button class="locate" type="button" data-act="copy-code" data-i="${i}">Sao chép mã</button>
         <button class="locate" type="button" data-act="copy-link" data-i="${i}">Sao chép link</button>
         ${isNew ? '' : `<a class="locate" href="${SITE}/khach-hang/#ma=${esc(row.info.code)}" target="_blank" rel="noopener noreferrer">Mở thử</a>`}
+        ${!isNew && row.info.public ? `<a class="locate" href="${SITE}/du-an/#${esc(e.id)}" target="_blank" rel="noopener noreferrer">Trang công khai ↗</a>` : ''}
         <button class="locate" type="button" data-act="edit-client" data-i="${i}">Sửa</button>
         <button class="locate locate--danger" type="button" data-act="del-client" data-i="${i}">Xoá</button>
       </div>
@@ -784,6 +834,49 @@ tailwind.config = {
         <button class="btn btn--primary btn--sm ml-auto" type="button" data-act="add-client">+ Thêm dự án khách hàng</button>
       </div>
       <div class="space-y-2">${C.rows.map(clientRow).join('') || '<p class="adm-empty">Chưa có dự án nào. Bấm “Thêm dự án khách hàng” để tạo mã đầu tiên.</p>'}</div>`;
+
+    /* Ảnh bìa riêng được mã hoá → tải từ kho rồi giải mã mới hiện được. */
+    C.rows.forEach((row) => {
+      const ref = row.info && row.info.data.cover;
+      if (!ref || !ref.path) return;
+      getCover(ref).then((c) => {
+        el.querySelectorAll(`[data-cover-path="${CSS.escape(ref.path)}"]`).forEach((slot) => {
+          const img = document.createElement('img');
+          img.className = 'adm-thumb';
+          img.alt = '';
+          img.src = c.url;
+          slot.replaceWith(img);
+        });
+      }, () => {
+        el.querySelectorAll(`[data-cover-path="${CSS.escape(ref.path)}"]`).forEach((slot) => { slot.textContent = 'Lỗi tải ảnh'; });
+      });
+    });
+  }
+
+  /* ---------------- Ảnh bìa dự án khách ---------------- */
+
+  function getCover(ref) {
+    if (!ref || !ref.path) return Promise.resolve(null);
+    if (!coverCache[ref.path]) {
+      const p = readBytes(ref.path.replace(/^\//, ''))
+        .then((enc) => V.openBytes(ref, enc))
+        .then((bytes) => ({ bytes: bytes, url: URL.createObjectURL(new Blob([bytes], { type: 'image/jpeg' })) }));
+      p.catch(() => { delete coverCache[ref.path]; });
+      coverCache[ref.path] = p;
+    }
+    return coverCache[ref.path];
+  }
+
+  function stageFile(path, bytes) {
+    clientFiles[path.replace(/^\//, '')] = { b64: bytesToB64(bytes) };
+  }
+
+  /* Bỏ một file: chưa lưu thì chỉ cần quên nó đi, đã có trong kho thì xoá ở lần lưu tới. */
+  function dropFile(path) {
+    if (!path) return;
+    const p = path.replace(/^\//, '');
+    if (clientFiles[p] && !clientFiles[p].saved) delete clientFiles[p];
+    else removeFiles.add(p);
   }
 
   /* ---------------- Tab ---------------- */
@@ -858,7 +951,8 @@ tailwind.config = {
     cv.width = w; cv.height = h;
     cv.getContext('2d').drawImage(bmp, 0, 0, w, h);
     const blob = await new Promise((ok) => cv.toBlob(ok, 'image/jpeg', 0.84));
-    return { b64: bytesToB64(new Uint8Array(await blob.arrayBuffer())), url: URL.createObjectURL(blob), size: blob.size, w: w, h: h };
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    return { bytes: bytes, b64: bytesToB64(bytes), url: URL.createObjectURL(blob), size: blob.size, w: w, h: h };
   }
 
   $('i-photo-file').addEventListener('change', async (e) => {
@@ -1006,6 +1100,34 @@ tailwind.config = {
   /* ═══════════════════════════ KHÁCH HÀNG ═══════════════════════════ */
 
   let editingClient = null;     // chỉ số trong C.rows, hoặc null khi thêm mới
+  let pendingCover = null;      // ảnh bìa vừa chọn: { bytes, url, … } | 'clear'
+  const COVER_HINT = 'Khách thấy ảnh này ngay sau khi nhập mã, kèm nút “Xem bản scan 3D”. Ảnh của dự án riêng được mã hoá — chỉ ai có mã mới xem được.';
+
+  function showCover(src) {
+    $('k-cover-prev').hidden = !src;
+    $('k-cover-none').hidden = !!src;
+    if (src) $('k-cover-prev').src = src;
+    $('k-cover-clear').hidden = !src;
+  }
+
+  $('k-cover-file').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    const msg = $('k-cover-msg');
+    msg.classList.remove('hint--warn');
+    msg.textContent = 'Đang xử lý ảnh…';
+    try {
+      const img = await resizeImage(file);
+      pendingCover = img;
+      showCover(img.url);
+      msg.textContent = `Ảnh ${img.w}×${img.h}, ${Math.round(img.size / 1024)} KB — sẽ được mã hoá và tải lên khi bấm “Lưu lên web”.`;
+    } catch (err) {
+      msg.classList.add('hint--warn');
+      msg.textContent = 'Không đọc được ảnh này (ảnh HEIC từ iPhone chẳng hạn). Đổi sang JPG hoặc PNG rồi chọn lại.';
+    }
+  });
+  $('k-cover-clear').addEventListener('click', () => { pendingCover = 'clear'; showCover(''); });
 
   function scanRow(s) {
     s = s || {};
@@ -1051,6 +1173,18 @@ tailwind.config = {
       .forEach((k) => { $('k-' + k).value = d[k] || ''; });
     $('k-scans').innerHTML = '';
     (d.scans && d.scans.length ? d.scans : [{}]).forEach(scanRow);
+    $('k-public').checked = !!(info && info.public);
+    pendingCover = null;
+    $('k-cover-msg').textContent = COVER_HINT;
+    $('k-cover-msg').classList.remove('hint--warn');
+    showCover('');
+    if (d.cover && d.cover.path) {
+      $('k-cover-none').textContent = 'Đang tải ảnh…';
+      getCover(d.cover).then((c) => { if (editingClient === i && !pendingCover) showCover(c.url); },
+        () => { $('k-cover-none').textContent = 'Không tải được ảnh bìa hiện tại. Có thể chọn ảnh mới.'; });
+    } else {
+      $('k-cover-none').textContent = 'Chưa có ảnh — trước nút “Xem bản scan” sẽ là nền chấm sáng.';
+    }
     $('k-msg').textContent = '';
     codeHint();
     $('d-client').showModal();
@@ -1099,10 +1233,45 @@ tailwind.config = {
       scans: scans
     });
 
-    say('');
+    say('Đang mã hoá…');
     const old = editingClient != null ? C.rows[editingClient] : null;
     const created = old && old.info.created ? old.info.created : today();
-    const info = { code: code, created: created, data: data };
+    const isPublic = $('k-public').checked;
+
+    /* --- Ảnh bìa ---
+       cover       : bản mã hoá, khách mở bằng mã mới xem được   → images/rieng/<ngẫu nhiên>.bin
+       publicCover : bản JPG thường, chỉ có khi dự án công khai → images/du-an/<tên>-….jpg */
+    let cover = old ? old.info.data.cover : undefined;
+    let publicCover = old ? old.info.publicCover : undefined;
+    let plain = null;
+    try {
+      if (pendingCover === 'clear' || (pendingCover && cover)) {
+        dropFile(cover && cover.path);
+        dropFile(publicCover);
+        cover = publicCover = undefined;
+      }
+      if (pendingCover && pendingCover !== 'clear') {
+        const sealed = await V.sealBytes(pendingCover.bytes);
+        cover = { path: '/images/rieng/' + rid() + rid() + '.bin', key: sealed.key, iv: sealed.iv };
+        stageFile(cover.path, sealed.bytes);
+        coverCache[cover.path] = Promise.resolve({ bytes: pendingCover.bytes, url: pendingCover.url });
+        plain = pendingCover.bytes;
+      }
+      if (isPublic && cover && !publicCover) {
+        plain = plain || (await getCover(cover)).bytes;
+        publicCover = '/images/du-an/' + slug(v('project')) + '-' + rid() + '.jpg';
+        stageFile(publicCover, plain);
+      }
+      if (!isPublic && publicCover) {
+        dropFile(publicCover);
+        publicCover = undefined;
+      }
+    } catch (err) {
+      return say('Không xử lý được ảnh bìa: ' + err.message);
+    }
+    if (cover) data.cover = cover;
+
+    const info = compact({ code: code, created: created, public: isPublic || undefined, publicCover: publicCover, data: data });
     const box = await V.seal(code, data, C.cfg);
     const adm = await V.sealKey(adminK, info);
     const entry = { id: old && old.entry.id ? old.entry.id : rid(), iv: box.iv, data: box.data, adm: adm };
@@ -1182,6 +1351,10 @@ tailwind.config = {
       const info = C.rows[ii].info;
       const label = info ? '“' + info.data.project + '” (mã ' + info.code + ')' : 'dự án chưa nhận diện này';
       if (!confirm('Xoá ' + label + '?\n\nSau khi lưu, khách sẽ không mở được bản scan bằng mã hay link cũ nữa.')) return;
+      if (info) {
+        dropFile(info.data.cover && info.data.cover.path);
+        dropFile(info.publicCover);
+      }
       C.cfg.projects.splice(ii, 1);
       C.rows.splice(ii, 1);
       change('client', 'Xoá một dự án khách hàng');
@@ -1272,12 +1445,40 @@ tailwind.config = {
           if (used.has(p) && !photos[p].saved) files.push({ path: p.replace(/^\//, ''), b64: photos[p].b64 });
         });
       }
+      let removes = [];
       if (c) {
+        /* Bản đọc được của các dự án đã tick "Công khai" — trang /du-an/ dùng. */
+        C.cfg.showcase = C.rows.filter((r) => r.info && r.info.public).map((r) => {
+          const d = r.info.data;
+          return compact({
+            id: r.entry.id,
+            client: d.client, client_en: d.client_en,
+            project: d.project, project_en: d.project_en,
+            place: d.place, place_en: d.place_en,
+            captured: d.captured, splats: d.splats,
+            note: d.note, note_en: d.note_en,
+            cover: r.info.publicCover,
+            scans: d.scans
+          });
+        });
         cText = F.splice(c.text, F.clientJS(C.cfg));
         files.push({ path: CLIENT_FILE, b64: textToB64(cText) });
+
+        const used = new Set();
+        C.rows.forEach((r) => {
+          if (!r.info) return;
+          if (r.info.data.cover) used.add(r.info.data.cover.path.replace(/^\//, ''));
+          if (r.info.publicCover) used.add(r.info.publicCover.replace(/^\//, ''));
+        });
+        Object.keys(clientFiles).forEach((p) => {
+          if (used.has(p) && !clientFiles[p].saved) files.push({ path: p, b64: clientFiles[p].b64 });
+        });
+        removes = Array.from(removeFiles).filter((p) => !used.has(p));
       }
 
-      const shas = await commit(files, 'Quản trị: ' + summary(changes));
+      const shas = await commit(files, 'Quản trị: ' + summary(changes), removes);
+      Object.keys(clientFiles).forEach((p) => { if (shas[p]) clientFiles[p].saved = true; });
+      removeFiles = new Set();
 
       if (hText) H.sha = shas[HERITAGE_FILE];
       if (cText) C.sha = shas[CLIENT_FILE];

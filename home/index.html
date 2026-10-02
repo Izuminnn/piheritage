@@ -47,7 +47,10 @@ tailwind.config = {
       </span>
     </a>
 
-    <a class="btn btn--ghost btn--sm hidden lg:inline-flex justify-self-center" href="/gallery/" data-en="Scan library">Thư viện scan</a>
+    <div class="hidden lg:flex items-center gap-2 justify-self-center">
+      <a class="btn btn--ghost btn--sm" href="/gallery/" data-en="Scan library">Thư viện scan</a>
+      <a class="btn btn--ghost btn--sm" href="/du-an/" data-en="Projects">Dự án</a>
+    </div>
 
     <div class="justify-self-end flex items-center gap-3">
       <a class="nav-link nav-link--key hidden lg:inline-flex" href="/khach-hang/">
@@ -80,6 +83,7 @@ tailwind.config = {
   <div id="drawer" hidden class="lg:hidden border-t border-ink-500 bg-ink-900/95 backdrop-blur px-5 py-5">
     <div class="flex flex-col gap-1">
       <a class="nav-link py-3" href="/gallery/" data-en="Scan library">Thư viện scan</a>
+      <a class="nav-link py-3" href="/du-an/" data-en="Projects">Dự án</a>
       <a class="nav-link py-3" href="/khach-hang/" data-en="Clients">Khách hàng</a>
       <a class="nav-link py-3" href="#gioi-thieu" data-en="About us">Về chúng tôi</a>
       <a class="nav-link py-3" href="#cong-nghe" data-en="Technology">Công nghệ</a>
@@ -142,17 +146,40 @@ tailwind.config = {
           xoay mọi góc và khám phá mọi ngóc ngách như đang ở đó.
         </p>
 
-        <div class="mt-9 flex flex-wrap gap-3 rise">
-          <a class="btn btn--primary" href="/gallery/"
-             data-en="Browse the scan library <svg width=&quot;14&quot; height=&quot;10&quot; viewBox=&quot;0 0 14 10&quot; fill=&quot;none&quot; aria-hidden=&quot;true&quot;><path d=&quot;M9 1l4 4-4 4M13 5H1&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;1.8&quot; stroke-linecap=&quot;square&quot;/></svg>">
-            Xem thư viện scan
-            <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true"><path d="M9 1l4 4-4 4M13 5H1" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/></svg>
-          </a>
-          <a class="btn btn--ghost" href="#giao-duc" data-en="Free for schools">Miễn phí cho trường học</a>
+        <!-- Hai lối vào: bản scan công khai (ai cũng xem) và bản scan riêng (cần mã).
+             Nằm ở cột chữ — vùng đã làm mờ sẵn — để nửa phải giữ trọn cho video. -->
+        <div class="choice-grid rise" role="group" aria-label="Chọn loại bản scan" data-en-aria-label="Choose a kind of scan">
+          <div class="choice">
+            <p class="choice-tag">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M1 6h10M6 1c1.6 1.4 2.4 3 2.4 5S7.6 9.6 6 11C4.4 9.6 3.6 8 3.6 6S4.4 2.4 6 1Z" stroke="currentColor" stroke-width="1.2"/></svg>
+              <span data-en="Public · open to everyone">Công khai · ai cũng xem được</span>
+            </p>
+            <div class="choice-actions">
+              <a class="btn btn--primary btn--sm" href="/gallery/" data-en="Heritage library →">Thư viện di sản →</a>
+              <a class="btn btn--ghost btn--sm" href="/du-an/" data-en="Projects →">Dự án →</a>
+            </div>
+          </div>
+
+          <div class="choice choice--private">
+            <p class="choice-tag">
+              <svg width="11" height="12" viewBox="0 0 11 12" fill="none" aria-hidden="true"><rect x="1" y="5" width="9" height="6" stroke="currentColor" stroke-width="1.2"/><path d="M3 5V3.5a2.5 2.5 0 0 1 5 0V5" stroke="currentColor" stroke-width="1.2"/></svg>
+              <span data-en="Private · project code needed">Riêng tư · cần mã dự án</span>
+            </p>
+            <div class="choice-actions">
+              <a class="btn btn--key btn--sm" href="/khach-hang/">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="4" cy="9" r="2.6" stroke="currentColor" stroke-width="1.4"/><path d="M5.9 7.1 11.5 1.5M9.4 3.6l1.6 1.6M10.8 2.2l1.2 1.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/></svg>
+                <span data-en="Enter project code →">Nhập mã dự án →</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 rise">
+          <a class="btn btn--ghost btn--sm" href="#giao-duc" data-en="Free for schools">Miễn phí cho trường học</a>
         </div>
       </div>
 
-      <!-- Cột phải: hai đơn vị hợp tác -->
+      <!-- Cột phải: hai đơn vị hợp tác — phần còn lại để trống cho video -->
       <div class="rise lg:pb-2">
         <div class="pt-8 border-t border-bone/25">
           <p class="font-mono text-[10px] tracking-[.22em] uppercase text-bonedim m-0" data-en="A partnership between">Chương trình hợp tác giữa</p>
@@ -413,6 +440,7 @@ tailwind.config = {
         <p class="font-mono text-[10px] tracking-[.18em] uppercase text-bonemute" data-en="Pages">Trang</p>
         <ul class="mt-5 space-y-3 list-none p-0 text-[.9375rem]">
           <li><a class="foot-link" href="/gallery/" data-en="Scan library">Thư viện scan</a></li>
+          <li><a class="foot-link" href="/du-an/" data-en="Projects">Dự án đã quét</a></li>
           <li><a class="foot-link" href="/khach-hang/" data-en="Client area">Khu vực khách hàng</a></li>
           <li><a class="foot-link" href="#cong-nghe" data-en="3DGS technology">Công nghệ 3DGS</a></li>
           <li><a class="foot-link" href="#gioi-thieu" data-en="About us">Về chúng tôi</a></li>

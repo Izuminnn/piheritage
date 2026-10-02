@@ -101,8 +101,13 @@
     out += '  projects: [\n' + list.map(function (p) {
       var head = (p.id ? 'id:' + q(p.id) + ', ' : '') + 'iv:' + q(p.iv) + ', data:' + q(p.data);
       return '    { ' + head + (p.adm ? ',\n      adm:' + boxJS(p.adm) : '') + ' }';
-    }).join(',\n') + (list.length ? '\n' : '') + '  ]\n};\n';
-    return out;
+    }).join(',\n') + (list.length ? '\n' : '') + '  ]';
+    /* Dự án khách đồng ý công khai — bản đọc được, cho trang /du-an/. */
+    if (cfg.showcase) {
+      out += ',\n  showcase: [\n' + cfg.showcase.map(function (e) { return '    ' + JSON.stringify(e); }).join(',\n') +
+        (cfg.showcase.length ? '\n' : '') + '  ]';
+    }
+    return out + '\n};\n';
   }
 
   /* Thay phần giữa hai mốc. Thiếu mốc thì báo lỗi rõ ràng thay vì ghi bừa. */

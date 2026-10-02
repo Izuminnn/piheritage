@@ -49,7 +49,10 @@ tailwind.config = {
       </span>
     </a>
 
-    <a class="btn btn--ghost btn--sm hidden lg:inline-flex justify-self-center" href="/gallery/" data-en="Scan library">Thư viện scan</a>
+    <div class="hidden lg:flex items-center gap-2 justify-self-center">
+      <a class="btn btn--ghost btn--sm" href="/gallery/" data-en="Scan library">Thư viện scan</a>
+      <a class="btn btn--ghost btn--sm" href="/du-an/" data-en="Projects">Dự án</a>
+    </div>
 
     <div class="justify-self-end flex items-center gap-3">
       <a class="nav-link nav-link--key hidden lg:inline-flex" href="/khach-hang/" aria-current="page">
@@ -73,6 +76,7 @@ tailwind.config = {
   <div id="drawer" hidden class="lg:hidden border-t border-ink-500 bg-ink-900/95 backdrop-blur px-5 py-5">
     <div class="flex flex-col gap-1">
       <a class="nav-link py-3" href="/gallery/" data-en="Scan library">Thư viện scan</a>
+      <a class="nav-link py-3" href="/du-an/" data-en="Projects">Dự án</a>
       <a class="nav-link py-3" href="/khach-hang/" aria-current="page" data-en="Clients">Khách hàng</a>
       <a class="nav-link py-3" href="/home/#gioi-thieu" data-en="About us">Về chúng tôi</a>
       <a class="nav-link py-3" href="/home/#cong-nghe" data-en="Technology">Công nghệ</a>
@@ -147,6 +151,16 @@ tailwind.config = {
       <iframe id="viewer" class="stage-viewer" hidden
               allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope; autoplay"
               referrerpolicy="no-referrer" title=""></iframe>
+
+      <!-- Ảnh bìa + nút xem: hiện sau khi nhập đúng mã -->
+      <div class="stage-poster" id="poster" hidden>
+        <img id="poster-img" alt="" decoding="async">
+        <button class="stage-play" type="button" id="play">
+          <span class="stage-play-disc" aria-hidden="true"><svg width="26" height="30" viewBox="0 0 26 30"><path d="M2 2.5v25L24 15 2 2.5Z" fill="#fff"/></svg></span>
+          <span class="stage-play-label" id="play-label"></span>
+        </button>
+        <p class="stage-poster-title" id="poster-title" hidden></p>
+      </div>
 
       <div class="stage-cover" id="cover">
         <span class="stage-sweep" aria-hidden="true"></span>
@@ -249,6 +263,7 @@ tailwind.config = {
         <p class="font-mono text-[10px] tracking-[.18em] uppercase text-bonemute" data-en="Pages">Trang</p>
         <ul class="mt-5 space-y-3 list-none p-0 text-[.9375rem]">
           <li><a class="foot-link" href="/gallery/" data-en="Scan library">Thư viện scan</a></li>
+          <li><a class="foot-link" href="/du-an/" data-en="Projects">Dự án đã quét</a></li>
           <li><a class="foot-link" href="/khach-hang/" data-en="Client area">Khu vực khách hàng</a></li>
           <li><a class="foot-link" href="/home/#cong-nghe" data-en="3DGS technology">Công nghệ 3DGS</a></li>
           <li><a class="foot-link" href="/home/#gioi-thieu" data-en="About us">Về chúng tôi</a></li>
@@ -283,6 +298,7 @@ tailwind.config = {
 <script src="/assets/client-vault.js"></script>
 <script src="/assets/i18n.js"></script>
 <script src="/assets/psh.js"></script>
+<script src="/assets/project-view.js"></script>
 
 <script>
 (function () {
@@ -293,19 +309,43 @@ tailwind.config = {
   var CFG = window.PSH_CLIENT || { projects: [] };
   var $   = function (id) { return document.getElementById(id); };
 
-  var stage = $('stage'), cover = $('cover'), viewer = $('viewer');
+  var stage = $('stage'), cover = $('cover');
   var form = $('unlock'), input = $('code'), btn = $('unlock-btn'), msg = $('msg');
-  var tabsEl = $('tabs'), barStatus = $('bar-status');
   var reduce = window.PSH_STILL || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var project = null;   // dữ liệu dự án đã giải mã
   var code = '';        // mã đang mở, dạng XXXX-XXXX-XXXX
-  var scanIdx = 0;
   var busy = false;
   var note = { vi: '', en: '', error: false };   // lời trong tấm nhập mã — vẽ lại khi đổi ngôn ngữ
-  var copyTimer;
+  var coverURL = null;  // ảnh bìa đã giải mã, giữ để thu hồi khi khoá lại
 
-  /* ---------------- Chữ tự sinh, theo ngôn ngữ ---------------- */
+  /* Ảnh bìa của dự án riêng được mã hoá: tải file .bin về rồi giải mã bằng khoá
+     nằm trong dữ liệu dự án. Không có ảnh thì sân khấu giữ nền chấm sáng. */
+  function loadCover(p) {
+    if (!p.cover || !p.cover.path) return null;
+    return fetch(p.cover.path)
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+      .then(function (buf) { return V.openBytes(p.cover, new Uint8Array(buf)); })
+      .then(function (bytes) {
+        if (coverURL) URL.revokeObjectURL(coverURL);
+        coverURL = URL.createObjectURL(new Blob([bytes], { type: 'image/jpeg' }));
+        return coverURL;
+      });
+  }
+
+  var view = window.PSH_VIEW({
+    cover: loadCover,
+    share: {
+      url: function () { return location.origin + location.pathname + '#ma=' + code; },
+      label: { vi: 'Sao chép link riêng', en: 'Copy private link' },
+      done: {
+        vi: 'Đã sao chép link riêng — ai có link này đều xem được bản scan, chỉ gửi cho người trong đơn vị.',
+        en: 'Private link copied — anyone with this link can view the scan, so share it only within your organisation.'
+      }
+    },
+    onLock: lock
+  });
+
+  /* ---------------- Lời trong tấm nhập mã ---------------- */
 
   var DEFAULT_NOTE = {
     vi: 'Mã gồm 12 chữ và số. Gõ thường hay hoa, có gạch hay không đều được.',
@@ -321,11 +361,8 @@ tailwind.config = {
     msg.classList.toggle('is-error', note.error);
     input.setAttribute('aria-invalid', String(note.error));
   }
-
   function paintStatic() {
     btn.textContent = busy ? T.t('Đang mở…', 'Opening…') : T.t('Mở bản scan', 'Open scan');
-    $('act-full-label').textContent = T.t('Toàn màn hình', 'Full screen');
-    if (!copyTimer) $('act-copy-label').textContent = T.t('Sao chép link riêng', 'Copy private link');
     paintNote();
   }
 
@@ -391,48 +428,26 @@ tailwind.config = {
     });
   }
 
-  /* Chỉ nhận link https — dữ liệu đã giải mã đúng thì là của mình, nhưng cẩn thận vẫn hơn. */
-  function safeURL(u) { return /^https:\/\//i.test(String(u || '')) ? u : ''; }
-
-  function scans() {
-    return (project.scans || []).filter(function (s) { return safeURL(s.viewer); });
-  }
-
   function show(p, n) {
-    project = p;
     code = V.format(n);
-    scanIdx = 0;
     history.replaceState(null, '', location.pathname + location.search + '#ma=' + code);
-
     $('head-locked').hidden = true;
     $('foot-locked').hidden = true;
-    $('head-open').hidden = false;
-    $('foot-open').hidden = false;
-    $('bar').hidden = false;
-
-    renderOpen();
-    loadScan(0);
-
-    stage.dataset.state = 'open';
-    setTimeout(function () { if (project) cover.hidden = true; }, reduce ? 0 : 560);
+    view.show(p);
+    setTimeout(function () { if (view.project) cover.hidden = true; }, reduce ? 0 : 560);
     $('o-project').focus({ preventScroll: true });
   }
 
   function lock() {
-    project = null;
     code = '';
-    viewer.src = 'about:blank';
-    viewer.hidden = true;
+    view.hide();
+    if (coverURL) { URL.revokeObjectURL(coverURL); coverURL = null; }
     cover.hidden = false;
     void cover.offsetWidth;
     stage.dataset.state = 'locked';
 
     $('head-locked').hidden = false;
     $('foot-locked').hidden = false;
-    $('head-open').hidden = true;
-    $('foot-open').hidden = true;
-    $('bar').hidden = true;
-    barStatus.textContent = '';
 
     history.replaceState(null, '', location.pathname + location.search);
     document.title = T.t('Khu vực khách hàng — PiHeritage', 'Client area — PiHeritage');
@@ -441,100 +456,6 @@ tailwind.config = {
     window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
     input.focus({ preventScroll: true });
   }
-
-  /* ---------------- Dựng phần đã mở ---------------- */
-
-  function fill(id, value, rowId) {
-    $(id).textContent = value || '';
-    if (rowId) $(rowId).hidden = !value;
-  }
-
-  function renderOpen() {
-    if (!project) return;
-    var name = T.f(project, 'project') || T.t('Bản scan của bạn', 'Your scan');
-    document.title = name + ' — PiHeritage';
-
-    fill('o-client', T.f(project, 'client'));
-    fill('o-project', name);
-    fill('o-place', T.f(project, 'place'), 'm-place');
-    fill('o-captured', T.f(project, 'captured'), 'm-captured');
-    fill('o-splats', project.splats ? project.splats + T.t(' hạt', ' splats') : '', 'm-splats');
-
-    var noteText = T.f(project, 'note');
-    $('o-note').textContent = noteText || '';
-    $('note-card').hidden = !noteText;
-
-    /* Một bản scan thì không cần nút chọn. */
-    var list = scans();
-    tabsEl.innerHTML = '';
-    if (list.length > 1) {
-      list.forEach(function (s, i) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'filter-chip';
-        b.textContent = T.f(s, 'label') || T.t('Bản scan ' + (i + 1), 'Scan ' + (i + 1));
-        b.setAttribute('aria-pressed', String(i === scanIdx));
-        b.addEventListener('click', function () { loadScan(i); });
-        tabsEl.appendChild(b);
-      });
-    }
-    paintStatic();
-  }
-
-  function loadScan(i) {
-    var list = scans();
-    var s = list[i];
-    if (!s) {
-      viewer.hidden = true;
-      barStatus.textContent = T.t('Dự án này chưa có link viewer. Liên hệ PSH Design.', 'This project has no viewer link yet. Contact PSH Design.');
-      return;
-    }
-    scanIdx = i;
-    viewer.hidden = false;
-    if (viewer.getAttribute('src') !== s.viewer) viewer.src = s.viewer;
-    viewer.title = T.t('Bản quét 3DGS: ', '3DGS scan: ') + (T.f(s, 'label') || T.f(project, 'project') || '');
-    $('act-tab').href = s.viewer;
-    Array.prototype.forEach.call(tabsEl.children, function (b, k) {
-      b.setAttribute('aria-pressed', String(k === i));
-    });
-  }
-
-  /* ---------------- Nút điều khiển ---------------- */
-
-  var canFull = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
-  $('act-full').hidden = !canFull;   // iPhone không hỗ trợ — đã có nút "Mở tab mới"
-  $('act-full').addEventListener('click', function () {
-    var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-    if (fsEl) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
-    var req = stage.requestFullscreen || stage.webkitRequestFullscreen;
-    if (req) req.call(stage);
-  });
-
-  function copyText(text) {
-    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
-    return new Promise(function (ok, fail) {
-      var ta = document.createElement('textarea');
-      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy') ? ok() : fail(); } catch (e) { fail(e); }
-      document.body.removeChild(ta);
-    });
-  }
-
-  $('act-copy').addEventListener('click', function () {
-    var url = location.origin + location.pathname + '#ma=' + code;
-    copyText(url).then(function () {
-      clearTimeout(copyTimer);
-      $('act-copy-label').textContent = T.t('Đã sao chép', 'Copied');
-      barStatus.textContent = T.t('Đã sao chép link riêng — ai có link này đều xem được bản scan, chỉ gửi cho người trong đơn vị.',
-                                  'Private link copied — anyone with this link can view the scan, so share it only within your organisation.');
-      copyTimer = setTimeout(function () { copyTimer = null; paintStatic(); }, 2200);
-    }, function () {
-      barStatus.textContent = T.t('Không sao chép được. Link riêng: ', 'Could not copy. Private link: ') + url;
-    });
-  });
-
-  $('act-lock').addEventListener('click', lock);
 
   /* ---------------- Ô nhập mã ---------------- */
 
@@ -565,8 +486,7 @@ tailwind.config = {
 
   document.addEventListener('psh:lang', function () {
     paintStatic();
-    if (project) { renderOpen(); loadScan(scanIdx); }
-    else document.title = T.t('Khu vực khách hàng — PiHeritage', 'Client area — PiHeritage');
+    if (!view.project) document.title = T.t('Khu vực khách hàng — PiHeritage', 'Client area — PiHeritage');
   });
 
   /* ---------------- Khởi động ---------------- */

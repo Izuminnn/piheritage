@@ -48,7 +48,10 @@ tailwind.config = {
       </span>
     </a>
 
-    <a class="btn btn--ghost btn--sm hidden lg:inline-flex justify-self-center" href="/gallery/" aria-current="page" data-en="Scan library">Thư viện scan</a>
+    <div class="hidden lg:flex items-center gap-2 justify-self-center">
+      <a class="btn btn--ghost btn--sm" href="/gallery/" aria-current="page" data-en="Scan library">Thư viện scan</a>
+      <a class="btn btn--ghost btn--sm" href="/du-an/" data-en="Projects">Dự án</a>
+    </div>
 
     <div class="justify-self-end flex items-center gap-3">
       <a class="nav-link nav-link--key hidden lg:inline-flex" href="/khach-hang/">
@@ -72,6 +75,7 @@ tailwind.config = {
   <div id="drawer" hidden class="lg:hidden border-t border-ink-500 bg-ink-900/95 backdrop-blur px-5 py-5">
     <div class="flex flex-col gap-1">
       <a class="nav-link py-3" href="/gallery/" aria-current="page" data-en="Scan library">Thư viện scan</a>
+      <a class="nav-link py-3" href="/du-an/" data-en="Projects">Dự án</a>
       <a class="nav-link py-3" href="/khach-hang/" data-en="Clients">Khách hàng</a>
       <a class="nav-link py-3" href="/home/#gioi-thieu" data-en="About us">Về chúng tôi</a>
       <a class="nav-link py-3" href="/home/#cong-nghe" data-en="Technology">Công nghệ</a>
@@ -213,6 +217,7 @@ tailwind.config = {
         <p class="font-mono text-[10px] tracking-[.18em] uppercase text-bonemute" data-en="Pages">Trang</p>
         <ul class="mt-5 space-y-3 list-none p-0 text-[.9375rem]">
           <li><a class="foot-link" href="/gallery/" data-en="Scan library">Thư viện scan</a></li>
+          <li><a class="foot-link" href="/du-an/" data-en="Projects">Dự án đã quét</a></li>
           <li><a class="foot-link" href="/khach-hang/" data-en="Client area">Khu vực khách hàng</a></li>
           <li><a class="foot-link" href="/home/#cong-nghe" data-en="3DGS technology">Công nghệ 3DGS</a></li>
           <li><a class="foot-link" href="/home/#gioi-thieu" data-en="About us">Về chúng tôi</a></li>
