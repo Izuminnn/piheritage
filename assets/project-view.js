@@ -123,10 +123,38 @@
       stage.dataset.state = 'open';
       clearTimeout(hideTimer);
       hideTimer = setTimeout(function () { if (stage.dataset.state === 'open') poster.hidden = true; }, reduce ? 0 : 650);
+      barStatus.textContent = T.t('Lăn chuột trong khung chỉ điều khiển bản scan — đưa chuột ra ngoài khung để cuộn trang.',
+                                  'Scrolling inside the frame only moves the scan — move the pointer outside to scroll the page.');
+      if (stage.matches(':hover')) lockScroll(true);   // vừa bấm nút xem, chuột còn nằm trong khung
     }
+
+    /* ---------------- Lăn chuột trong viewer ----------------
+       Viewer là trang của xgrids nhúng qua iframe, ta không sửa được bên trong.
+       Nó không giữ lại cú lăn chuột, nên trình duyệt chuyển cú lăn ra ngoài và cả
+       trang cuộn theo. Cách chữa: chuột nằm trên khung viewer thì tạm khoá cuộn
+       trang; chuột ra ngoài thì mở lại. Máy có thanh cuộn chiếm chỗ (Windows) thì
+       giữ chỗ cho nó bằng `scrollbar-gutter`, để trang không bị giật ngang khi khoá;
+       máy có thanh cuộn nổi (Mac, điện thoại) thì không cần. */
+    var scrollLocked = false;
+    function lockScroll(on) {
+      if (on === scrollLocked) return;
+      scrollLocked = on;
+      var html = document.documentElement;
+      var bar = on ? window.innerWidth - html.clientWidth : 0;
+      html.style.scrollbarGutter = bar > 0 ? 'stable' : '';
+      html.style.overflow = on ? 'hidden' : '';
+    }
+    stage.addEventListener('mouseenter', function () { if (stage.dataset.state === 'open') lockScroll(true); });
+    stage.addEventListener('mouseleave', function () { lockScroll(false); });
+    /* Lưới an toàn: chuột đã ở ngoài khung mà vì lý do nào đó chưa mở khoá. */
+    document.addEventListener('pointermove', function (e) {
+      if (scrollLocked && !stage.contains(e.target)) lockScroll(false);
+    }, { passive: true });
+    document.addEventListener('fullscreenchange', function () { lockScroll(false); });
 
     function showCover() {
       clearTimeout(hideTimer);
+      lockScroll(false);
       poster.hidden = false;
       posterImg.classList.remove('is-in');
       posterImg.removeAttribute('src');
@@ -158,6 +186,7 @@
     function hide() {
       project = null;
       coverToken++;
+      lockScroll(false);
       clearTimeout(hideTimer);
       viewer.src = 'about:blank';
       viewer.hidden = true;
