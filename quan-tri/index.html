@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="vi">
+<html lang="vi" data-no-smooth>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&family=Lora:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=Be+Vietnam+Pro:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="/assets/psh.css">
 <link rel="icon" type="image/png" href="/brand_assets/piheritagelogo.png">
@@ -19,22 +19,26 @@
 tailwind.config = {
   theme: { extend: {
     colors: {
-      ink:  { 900:'#080d0a', 800:'#0c1410', 700:'#111c16', 600:'#17261e', 500:'#1e3227', 400:'#2a4436' },
-      psh:  '#7842c0', pshb:'#8b51d6', pigo:'#1b9e4b', lime:'#8dc63f',
-      bone: '#ede6d8', bonedim:'#b8ae9c', bonemute:'#7f8a82', brass:'#c9a227'
+      ink:  { 900:'#07060d', 800:'#110f1c', 700:'#181527', 600:'#1f1b31', 500:'#2b2640', 400:'#3a3354' },
+      psh:  '#7842c0', pshb:'#8b51d6', pshl:'#b591ef', pigo:'#a46ae8', lime:'#d9cff0',
+      bone: '#ffffff', bonedim:'#c8c2dc', bonemute:'#8f88ab', brass:'#f2b84b',
+      navy: { 900:'#1d1650', 700:'#322a6b', 500:'#5a5288', 300:'#8d86b3' },
+      slate:{ 50:'#f3f1f8', 100:'#e6e1f2', 200:'#d9cff0', 300:'#c6bde0' }
     },
     fontFamily: {
-      display:['Archivo','sans-serif'],
+      display:['"Inter Tight"','"Be Vietnam Pro"','sans-serif'],
       body:['"Be Vietnam Pro"','sans-serif'],
-      serif:['Lora','Georgia','serif'],
-      mono:['"JetBrains Mono"','monospace']
+      serif:['"Inter Tight"','sans-serif'],
+      mono:['"Geist Mono"','ui-monospace','monospace']
     },
-    maxWidth: { shell:'1240px' }
+    maxWidth: { shell:'1720px' }
   }}
 };
 </script>
 <style>
   body{padding-bottom:7rem}
+  /* Nền ánh tím của đầu trang phủ hết màn hình, không để lộ đường cắt */
+  #setup,#app{min-height:100svh}
   [hidden]{display:none!important}
   /* Ô chọn file ẩn đi, nhãn đứng thay — viền focus phải hiện trên nhãn. */
   .sr-only:focus-visible + .file-btn{outline:2px solid var(--lime);outline-offset:3px}
@@ -43,7 +47,7 @@ tailwind.config = {
   .tabbar{display:flex;gap:.25rem;border-bottom:1px solid var(--ink-500)}
   .tab{
     position:relative;cursor:pointer;background:none;border:0;
-    font-family:'Archivo',sans-serif;font-weight:700;font-size:.8125rem;letter-spacing:.08em;text-transform:uppercase;
+    font-family:var(--f-mono);font-weight:500;font-size:.6875rem;letter-spacing:.04em;text-transform:uppercase;
     color:var(--bone-mute);padding:.95rem 1.1rem;
     transition:color .28s var(--ease),transform .28s var(--ease);
   }
@@ -56,7 +60,7 @@ tailwind.config = {
   .tab:active{transform:translate3d(0,1px,0)}
   .tab[aria-selected="true"]{color:var(--bone)}
   .tab[aria-selected="true"]::after{transform:scaleX(1)}
-  .tab .n{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.625rem;letter-spacing:.1em;color:var(--bone-mute);margin-left:.45rem}
+  .tab .n{font-family:var(--f-mono);font-weight:500;font-size:.625rem;letter-spacing:.1em;color:var(--bone-mute);margin-left:.45rem}
 
   /* ---------- Dòng danh sách ---------- */
   .adm-row{
@@ -75,13 +79,13 @@ tailwind.config = {
   .adm-thumb{width:100%;aspect-ratio:16/9;border-radius:var(--r-sm);object-fit:cover;background:var(--ink-900);display:block}
   .adm-thumb--empty{
     display:flex;align-items:center;justify-content:center;text-align:center;
-    font-family:'JetBrains Mono',monospace;font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-mute);
+    font-family:var(--f-mono);font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-mute);
     border:1px dashed var(--ink-400);
   }
-  .adm-name{font-family:'Lora',Georgia,serif;font-weight:600;font-size:1rem;line-height:1.35;color:var(--bone);margin:0}
-  .adm-sub{font-family:'JetBrains Mono',monospace;font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-mute);margin:.35rem 0 0}
+  .adm-name{font-family:var(--f-display);font-weight:400;font-size:1.125rem;letter-spacing:-.02em;line-height:1.3;color:var(--bone);margin:0}
+  .adm-sub{font-family:var(--f-mono);font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-mute);margin:.35rem 0 0}
   .adm-actions{display:flex;flex-wrap:wrap;gap:.35rem;justify-content:flex-end;align-items:center}
-  .adm-code{font-family:'JetBrains Mono',monospace;font-size:.875rem;font-weight:500;letter-spacing:.14em;color:var(--lime);white-space:nowrap}
+  .adm-code{font-family:var(--f-mono);font-size:.875rem;font-weight:500;letter-spacing:.14em;color:var(--lime);white-space:nowrap}
   .adm-empty{margin:0;padding:1rem;border:1px dashed var(--ink-400);border-radius:var(--r-md);color:var(--bone-mute);font-size:.875rem}
   .chip--dirty{border-color:rgba(201,162,39,.45);color:var(--brass);background:rgba(201,162,39,.07)}
   .chip--sample{border-color:rgba(184,174,156,.3);color:var(--bone-dim);border-style:dashed}
@@ -93,7 +97,7 @@ tailwind.config = {
   /* ---------- Công tắc vùng ---------- */
   .switch{
     display:inline-flex;align-items:center;gap:.6rem;cursor:pointer;
-    font-family:'JetBrains Mono',monospace;font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-mute);
+    font-family:var(--f-mono);font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-mute);
   }
   .switch input{
     appearance:none;-webkit-appearance:none;margin:0;flex:none;cursor:pointer;position:relative;
@@ -123,7 +127,7 @@ tailwind.config = {
     margin:auto;padding:0;border:1px solid var(--ink-400);border-radius:var(--r-md);
     width:min(460px,calc(100vw - 2rem));background:var(--ink-800);color:var(--bone);box-shadow:var(--shade-2);
   }
-  dialog::backdrop{background:rgba(4,8,6,.62);backdrop-filter:blur(3px)}
+  dialog::backdrop{background:rgba(5,8,20,.62);backdrop-filter:blur(3px)}
   dialog.drawer[open]{animation:drawer-in .45s var(--ease)}
   dialog.modal[open]{animation:modal-in .35s var(--ease)}
   @keyframes drawer-in{from{transform:translate3d(48px,0,0);opacity:0}to{transform:none;opacity:1}}
@@ -132,12 +136,12 @@ tailwind.config = {
   .dlg-head{display:flex;align-items:center;gap:1rem;padding:1.15rem 1.5rem;border-bottom:1px solid var(--ink-500)}
   .dlg-body{flex:1;overflow:auto;padding:1.5rem;display:grid;gap:1.75rem;align-content:start}
   .dlg-foot{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;justify-content:flex-end;padding:1rem 1.5rem;border-top:1px solid var(--ink-500);background:var(--ink-900)}
-  .dlg-title{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.125rem;letter-spacing:-.015em;text-transform:uppercase;margin:0}
+  .dlg-title{font-family:var(--f-display);font-weight:400;font-size:1.5rem;letter-spacing:-.03em;margin:0}
   .grid-2{display:grid;gap:.9rem}
   @media(min-width:560px){.grid-2{grid-template-columns:1fr 1fr}}
   .hint{margin:.45rem 0 0;font-size:.78rem;line-height:1.55;color:var(--bone-mute)}
   .hint--warn{color:var(--brass)}
-  .leaflet-control-layers{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;border-radius:var(--r-sm)!important}
+  .leaflet-control-layers{font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;border-radius:var(--r-sm)!important}
   .leaflet-control-layers-expanded{padding:.35rem .6rem!important}
   #pick-map{height:300px;border-radius:var(--r-md);border:1px solid var(--ink-500);overflow:hidden;background:#eceae5}
   .photo-prev{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r-md);background:var(--ink-900);display:block}
@@ -153,51 +157,49 @@ tailwind.config = {
     position:fixed;left:50%;bottom:1.25rem;z-index:60;transform:translate3d(-50%,0,0);
     width:min(820px,calc(100vw - 2rem));
     display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem;padding:.85rem 1rem .85rem 1.25rem;
-    background:rgba(17,28,22,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    border:1px solid rgba(201,162,39,.45);border-radius:var(--r-md);
-    box-shadow:0 24px 60px -18px rgba(0,0,0,.9),0 0 0 1px rgba(0,0,0,.4),0 10px 40px -20px rgba(201,162,39,.35);
+    background:rgba(22,27,41,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(242,184,75,.45);border-radius:var(--r-md);
+    box-shadow:0 24px 60px -18px rgba(0,0,0,.9),0 0 0 1px rgba(0,0,0,.4),0 10px 40px -20px rgba(242,184,75,.3);
     animation:modal-in .4s var(--ease);
   }
   .savebar[hidden]{display:none}
   .savebar p{margin:0;flex:1;min-width:200px;font-size:.875rem;color:var(--bone-dim);line-height:1.5}
-  .savebar b{font-family:'JetBrains Mono',monospace;color:var(--brass);font-weight:500}
+  .savebar b{font-family:var(--f-mono);color:var(--brass);font-weight:500}
 
   .toast{
     position:fixed;top:84px;right:1rem;z-index:65;width:min(420px,calc(100vw - 2rem));
     padding:1rem 1.15rem;border-radius:var(--r-md);background:var(--ink-700);
-    border:1px solid rgba(141,198,63,.45);box-shadow:var(--shade-2);font-size:.875rem;line-height:1.6;color:var(--bone);
+    border:1px solid rgba(181,145,239,.45);box-shadow:var(--shade-2);font-size:.875rem;line-height:1.6;color:var(--bone);
     animation:modal-in .35s var(--ease);
   }
   .toast.is-error{border-color:rgba(201,162,39,.6)}
   .toast[hidden]{display:none}
 
-  .adm-help summary{cursor:pointer;font-family:'Archivo',sans-serif;font-weight:700;font-size:.8125rem;letter-spacing:.06em;text-transform:uppercase;color:var(--bone);list-style:none;display:flex;align-items:center;gap:.5rem;border-radius:var(--r-sm)}
+  .adm-help summary{cursor:pointer;font-family:var(--f-mono);font-weight:500;font-size:.75rem;letter-spacing:.04em;text-transform:uppercase;color:var(--bone);list-style:none;display:flex;align-items:center;gap:.5rem;border-radius:var(--r-sm)}
   .adm-help summary::-webkit-details-marker{display:none}
-  .adm-help summary::before{content:'+';font-family:'JetBrains Mono',monospace;color:var(--lime);transition:transform .3s var(--ease)}
+  .adm-help summary::before{content:'+';font-family:var(--f-mono);color:var(--lime);transition:transform .3s var(--ease)}
   .adm-help[open] summary::before{transform:rotate(45deg)}
   .adm-help summary:hover{color:var(--lime)}
   .adm-help summary:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
   .adm-help ol{margin:1rem 0 0;padding-left:1.25rem;color:var(--bone-dim);font-size:.9rem;line-height:1.75}
   .adm-help li{margin-bottom:.4rem}
-  .adm-help code{font-family:'JetBrains Mono',monospace;font-size:.8em;color:var(--bone);background:var(--ink-900);padding:.1rem .35rem;border-radius:var(--r-sm)}
+  .adm-help code{font-family:var(--f-mono);font-size:.8em;color:var(--bone);background:var(--ink-900);padding:.1rem .35rem;border-radius:var(--r-sm)}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Bỏ qua tới nội dung chính</a>
 
-<header id="nav" class="nav fixed top-0 inset-x-0 z-50">
-  <div class="mx-auto max-w-shell px-5 sm:px-8 h-[68px] flex items-center justify-between gap-4">
-    <a href="/home/" class="group flex items-center gap-2.5 no-underline rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-4" aria-label="PiHeritage — trang chủ">
-      <img src="/brand_assets/piheritagelogo.png" alt="" class="pi-mark w-8 h-7 object-contain flex-none">
-      <span class="leading-none">
-        <span class="block font-display tracking-[-.015em] text-bone text-[16px]"><span class="font-extrabold">Pi</span><span class="font-normal">Heritage</span></span>
-        <span class="block font-mono text-[9px] tracking-[.26em] text-bonemute mt-[4px] whitespace-nowrap">QUẢN TRỊ NỘI BỘ</span>
-      </span>
+<header id="nav" class="hnav">
+  <div class="shell hnav-row">
+    <a href="/home/" class="group hnav-logo" aria-label="PiHeritage — trang chủ">
+      <img src="/brand_assets/piheritagelogo.png" alt="" class="pi-mark w-7 h-6 object-contain flex-none">
+      <span class="hnav-word">PiHeritage</span>
+      <span class="hnav-sub hidden sm:inline">Quản trị nội bộ</span>
     </a>
-    <div class="flex items-center gap-2">
+    <div class="nav-pill px-2 gap-2">
       <span id="repo-chip" class="chip hidden sm:inline-flex" hidden></span>
-      <a class="locate" id="view-site" href="https://piheritage.com/gallery/" target="_blank" rel="noopener noreferrer">Xem web ↗</a>
-      <button class="locate locate--quiet" type="button" id="logout" hidden>Đăng xuất</button>
+      <a class="nav-link" id="view-site" href="https://piheritage.com/gallery/" target="_blank" rel="noopener noreferrer">Xem web ↗</a>
+      <button class="nav-link border-0 bg-transparent cursor-pointer" type="button" id="logout" hidden>Đăng xuất</button>
     </div>
   </div>
 </header>
@@ -205,14 +207,14 @@ tailwind.config = {
 <main id="main">
 
 <!-- ============================ KẾT NỐI ============================ -->
-<section id="setup" class="mx-auto max-w-shell px-5 sm:px-8 pt-[116px] lg:pt-[126px] pb-16">
+<section id="setup" class="phero"><div class="shell pb-16">
   <p class="u-eyebrow">Nội bộ <span class="dot">·</span> Không chia sẻ link này ra ngoài</p>
   <div class="grid lg:grid-cols-[1fr_minmax(0,520px)] gap-10 lg:gap-16 mt-6 items-start">
     <div>
-      <h1 class="u-display text-bone text-[clamp(2.1rem,4.8vw,3.35rem)] leading-[1.1] m-0">Quản lý<br>bản scan</h1>
+      <h1 class="u-display phero-title">Quản lý<br><span class="u-grad">bản scan</span></h1>
       <p class="mt-6 text-bonedim leading-[1.75] max-w-[52ch]">
         Thêm, sửa, xoá địa điểm trong thư viện di sản và dự án riêng của khách hàng.
-        Mỗi lần bấm <span class="font-mono text-[11px] text-lime">LƯU LÊN WEB</span>, trang ghi thẳng vào kho GitHub
+        Mỗi lần bấm <span class="font-mono text-[11px] text-pshl">LƯU LÊN WEB</span>, trang ghi thẳng vào kho GitHub
         của website — web tự cập nhật sau khoảng 1–2 phút.
       </p>
 
@@ -252,16 +254,16 @@ tailwind.config = {
       <p class="plate-msg" id="s-msg" role="status" aria-live="polite">Token chỉ lưu trong trình duyệt của máy này, không gửi đi đâu ngoài GitHub.</p>
     </form>
   </div>
-</section>
+</div></section>
 
 <!-- ============================ TRÌNH QUẢN TRỊ ============================ -->
-<section id="app" class="mx-auto max-w-shell px-5 sm:px-8 pt-[116px] lg:pt-[126px] pb-16" hidden>
+<section id="app" class="phero" hidden><div class="shell pb-16">
   <p class="u-eyebrow">Nội bộ <span class="dot">·</span> Không chia sẻ link này ra ngoài</p>
   <div class="grid lg:grid-cols-[1.25fr_1fr] gap-6 lg:gap-14 items-end mt-6">
-    <h1 class="u-display text-bone text-[clamp(1.9rem,4.4vw,3rem)] leading-[1.1] m-0">Quản lý bản scan</h1>
+    <h1 class="u-display phero-title">Quản lý <span class="u-grad">bản scan</span></h1>
     <p class="text-bonedim leading-[1.75] m-0">
       Sửa thoải mái — mọi thay đổi chỉ nằm trên máy bạn cho tới khi bấm
-      <span class="font-mono text-[11px] text-lime">LƯU LÊN WEB</span> ở thanh dưới cùng.
+      <span class="font-mono text-[11px] text-pshl">LƯU LÊN WEB</span> ở thanh dưới cùng.
     </p>
   </div>
 
@@ -277,7 +279,7 @@ tailwind.config = {
   <div id="p-client" role="tabpanel" aria-labelledby="t-client" class="pt-10" hidden>
     <div id="c-body"></div>
   </div>
-</section>
+</div></section>
 
 </main>
 
@@ -1303,9 +1305,9 @@ tailwind.config = {
   }
 
   function copy(text, label) {
-    const done = () => toast(esc(label) + ' đã được sao chép:<br><span class="font-mono text-lime break-all">' + esc(text) + '</span>');
+    const done = () => toast(esc(label) + ' đã được sao chép:<br><span class="font-mono text-pshl break-all">' + esc(text) + '</span>');
     if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, () => toast(esc(text)));
-    else toast('Chép thủ công: <span class="font-mono text-lime break-all">' + esc(text) + '</span>');
+    else toast('Chép thủ công: <span class="font-mono text-pshl break-all">' + esc(text) + '</span>');
   }
 
   /* ═══════════════════════════ SỰ KIỆN CHUNG ═══════════════════════════ */
