@@ -9,7 +9,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&family=Lora:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=Be+Vietnam+Pro:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="/assets/psh.css">
 <link rel="icon" type="image/png" href="/brand_assets/piheritagelogo.png">
@@ -18,17 +18,19 @@
 tailwind.config = {
   theme: { extend: {
     colors: {
-      ink:  { 900:'#080d0a', 800:'#0c1410', 700:'#111c16', 600:'#17261e', 500:'#1e3227', 400:'#2a4436' },
-      psh:  '#7842c0', pshb:'#8b51d6', pigo:'#1b9e4b', lime:'#8dc63f',
-      bone: '#ede6d8', bonedim:'#b8ae9c', bonemute:'#7f8a82', brass:'#c9a227'
+      ink:  { 900:'#07060d', 800:'#110f1c', 700:'#181527', 600:'#1f1b31', 500:'#2b2640', 400:'#3a3354' },
+      psh:  '#7842c0', pshb:'#8b51d6', pshl:'#b591ef', pigo:'#a46ae8', lime:'#d9cff0',
+      bone: '#ffffff', bonedim:'#c8c2dc', bonemute:'#8f88ab', brass:'#f2b84b',
+      navy: { 900:'#1d1650', 700:'#322a6b', 500:'#5a5288', 300:'#8d86b3' },
+      slate:{ 50:'#f3f1f8', 100:'#e6e1f2', 200:'#d9cff0', 300:'#c6bde0' }
     },
     fontFamily: {
-      display:['Archivo','sans-serif'],
+      display:['"Inter Tight"','"Be Vietnam Pro"','sans-serif'],
       body:['"Be Vietnam Pro"','sans-serif'],
-      serif:['Lora','Georgia','serif'],
-      mono:['"JetBrains Mono"','monospace']
+      serif:['"Inter Tight"','sans-serif'],
+      mono:['"Geist Mono"','ui-monospace','monospace']
     },
-    maxWidth: { shell:'1240px' }
+    maxWidth: { shell:'1720px' }
   }}
 };
 </script>
@@ -37,42 +39,42 @@ tailwind.config = {
 <a class="skip" href="#main" data-en="Skip to main content">Bỏ qua tới nội dung chính</a>
 
 <!-- ============================ NAV ============================ -->
-<header id="nav" class="nav fixed top-0 inset-x-0 z-50">
-  <!-- Tầng trên: logo trái · thư viện scan giữa · ngôn ngữ + liên hệ phải -->
-  <div class="mx-auto max-w-shell px-5 sm:px-8 h-[68px] grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-    <a href="/home/" class="group flex items-center gap-2.5 no-underline justify-self-start rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-4" aria-label="PiHeritage — trang chủ" data-en-aria-label="PiHeritage — home">
-      <img src="/brand_assets/piheritagelogo.png" alt="" class="pi-mark w-8 h-7 object-contain flex-none">
-      <span class="leading-none">
-        <span class="block font-display tracking-[-.015em] text-bone text-[16px]"><span class="font-extrabold">Pi</span><span class="font-normal">Heritage</span></span>
-        <span class="block font-mono text-[9px] tracking-[.26em] text-bonemute mt-[4px] whitespace-nowrap">PSH DESIGN × PIGO TOUR</span>
-      </span>
+<header id="nav" class="hnav">
+  <div class="shell hnav-row">
+    <a href="/home/" class="group hnav-logo" aria-label="PiHeritage — trang chủ" data-en-aria-label="PiHeritage — home">
+      <img src="/brand_assets/piheritagelogo.png" alt="" class="pi-mark w-7 h-6 object-contain flex-none">
+      <span class="hnav-word">PiHeritage</span>
     </a>
 
-    <div class="hidden lg:flex items-center gap-2 justify-self-center">
-      <a class="btn btn--ghost btn--sm" href="/gallery/" aria-current="page" data-en="Scan library">Thư viện scan</a>
-      <a class="btn btn--ghost btn--sm" href="/du-an/" data-en="Projects">Dự án</a>
-    </div>
-
-    <div class="justify-self-end flex items-center gap-3">
-      <a class="nav-link nav-link--key hidden lg:inline-flex" href="/khach-hang/">
+    <div class="hnav-right">
+      <nav class="nav-pill hidden lg:flex" aria-label="Điều hướng chính" data-en-aria-label="Main navigation">
+        <a class="nav-link" href="/gallery/" aria-current="page" data-en="Scan library">Thư viện scan</a>
+        <a class="nav-link" href="/du-an/" data-en="Projects">Dự án</a>
+        <a class="nav-link" href="/home/#cong-nghe" data-en="Technology">Công nghệ</a>
+        <a class="nav-link" href="/home/#giao-duc" data-en="Schools">Trường học</a>
+        <a class="nav-link" href="/home/#gioi-thieu" data-en="About us">Về chúng tôi</a>
+        <span class="pill-sep" aria-hidden="true"></span>
+        <div class="lang" role="group" aria-label="Ngôn ngữ" data-en-aria-label="Language">
+          <button class="lang-btn" type="button" data-lang-btn="vi" aria-pressed="true">VI</button>
+          <button class="lang-btn" type="button" data-lang-btn="en" aria-pressed="false">EN</button>
+        </div>
+      </nav>
+      <a class="btn btn--key hidden lg:inline-flex" href="/khach-hang/">
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="4" cy="9" r="2.6" stroke="currentColor" stroke-width="1.3"/><path d="M5.9 7.1 11.5 1.5M9.4 3.6l1.6 1.6M10.8 2.2l1.2 1.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="square"/></svg>
         <span data-en="Clients">Khách hàng</span>
       </a>
-      <div class="lang" role="group" aria-label="Ngôn ngữ" data-en-aria-label="Language">
+      <a class="btn btn--primary hidden sm:inline-flex" href="/home/#lien-he" data-en="Contact">Liên hệ</a>
+      <div class="lang lang-float lg:hidden" role="group" aria-label="Ngôn ngữ" data-en-aria-label="Language">
         <button class="lang-btn" type="button" data-lang-btn="vi" aria-pressed="true">VI</button>
         <button class="lang-btn" type="button" data-lang-btn="en" aria-pressed="false">EN</button>
       </div>
-      <a class="btn btn--primary btn--sm hidden lg:inline-flex" href="/home/#lien-he" data-en="Contact">Liên hệ</a>
-      <button id="burger" class="lg:hidden inline-flex flex-col justify-center gap-[5px] w-11 h-11 items-center rounded border border-ink-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lime"
-              aria-expanded="false" aria-controls="drawer" aria-label="Mở menu" data-en-aria-label="Open menu">
-        <span class="block w-5 h-[2px] bg-bone"></span>
-        <span class="block w-5 h-[2px] bg-psh"></span>
-        <span class="block w-5 h-[2px] bg-bone"></span>
+      <button id="burger" class="burger lg:hidden" aria-expanded="false" aria-controls="drawer" aria-label="Mở menu" data-en-aria-label="Open menu">
+        <span></span><span></span><span></span>
       </button>
     </div>
   </div>
 
-  <div id="drawer" hidden class="lg:hidden border-t border-ink-500 bg-ink-900/95 backdrop-blur px-5 py-5">
+  <div id="drawer" hidden class="nav-drawer lg:hidden">
     <div class="flex flex-col gap-1">
       <a class="nav-link py-3" href="/gallery/" aria-current="page" data-en="Scan library">Thư viện scan</a>
       <a class="nav-link py-3" href="/du-an/" data-en="Projects">Dự án</a>
@@ -88,134 +90,100 @@ tailwind.config = {
 <main id="main">
 
 <!-- ============================ ĐẦU TRANG ============================ -->
-<section class="mx-auto max-w-shell px-5 sm:px-8 pt-[116px] lg:pt-[126px]">
-  <p class="u-eyebrow rise" data-en="Scan library <span class=&quot;dot&quot;>·</span> <span data-count=&quot;sites&quot;>5</span> sites">Thư viện scan <span class="dot">·</span> <span data-count="sites">5</span> địa điểm</p>
-
-  <div class="grid lg:grid-cols-[1.25fr_1fr] gap-8 lg:gap-14 items-end mt-6">
-    <h1 class="u-display text-bone text-[clamp(2.1rem,4.8vw,3.35rem)] m-0 rise" data-en="Pick a monument.<br>Step inside.">
-      Chọn một di tích.<br>Bước vào bên trong.
-    </h1>
-    <p class="text-bonedim leading-[1.75] m-0 rise"
-       data-en="Sorted by region and province. Rest on a card to highlight its pin, press <span class=&quot;font-mono text-[11px] text-lime&quot;>LOCATE</span> to hold that site on the map, and click the card to open its 3DGS scan in a new tab.">
-      Danh sách xếp theo vùng miền và tỉnh thành. Rê chuột lên thẻ để làm nổi ghim của nó, bấm nút
-      <span class="font-mono text-[11px] text-lime">VỊ TRÍ</span> để giữ địa điểm đó trên bản đồ,
-      bấm vào thẻ để mở bản quét 3DGS trong tab mới.
-    </p>
-  </div>
-
-</section>
-
-<!-- ============================ BỘ LỌC ============================ -->
-<section class="mx-auto max-w-shell px-5 sm:px-8 mt-10">
-  <div class="surface p-5 rise">
-    <div class="flex flex-col lg:flex-row lg:items-center gap-5">
-      <div class="flex-1 min-w-0">
-        <label class="field-label" for="q" data-en="Search by monument, heritage site or province">Tìm di tích, di sản hoặc tỉnh thành</label>
-        <input class="field" id="q" type="search" autocomplete="off"
-               placeholder="Ví dụ: Huế, Mỹ Sơn, hoi an, tháp Chăm…"
-               data-en-placeholder="e.g. Hue, My Son, hoi an, Cham tower…">
+<section class="phero">
+  <div class="shell">
+    <div class="g12 gap-y-8 items-end pb-14 lg:pb-16">
+      <div class="col-span-6 lg:col-span-7">
+        <p class="u-eyebrow rise" data-en="Scan library <span class=&quot;dot&quot;>·</span> <span data-count=&quot;sites&quot;>5</span> sites">Thư viện scan <span class="dot">·</span> <span data-count="sites">5</span> địa điểm</p>
+        <h1 class="u-display phero-title mt-8 rise" data-en="Pick a monument.<br><span class=&quot;u-grad&quot;>Step inside.</span>">
+          Chọn một di tích.<br><span class="u-grad">Bước vào bên trong.</span>
+        </h1>
       </div>
-      <div>
-        <span class="field-label" id="region-label" data-en="Region">Vùng miền</span>
-        <div class="flex flex-wrap gap-2" role="group" aria-labelledby="region-label">
-          <button class="filter-chip" type="button" data-region="all" aria-pressed="true" data-en="All">Tất cả</button>
-          <button class="filter-chip" type="button" data-region="Miền Bắc" aria-pressed="false" data-en="North">Miền Bắc</button>
-          <button class="filter-chip" type="button" data-region="Miền Trung" aria-pressed="false" data-en="Central">Miền Trung</button>
-          <button class="filter-chip" type="button" data-region="Miền Nam" aria-pressed="false" data-en="South">Miền Nam</button>
-        </div>
-      </div>
-    </div>
-    <p id="result-count" class="mt-4 mb-0 font-mono text-[10px] tracking-[.16em] uppercase text-bonemute" role="status" aria-live="polite"></p>
-  </div>
-</section>
-
-<!-- ============================ DANH SÁCH + BẢN ĐỒ ============================ -->
-<section class="mx-auto max-w-shell px-5 sm:px-8 mt-8 pb-24 lg:pb-32">
-  <div class="flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_384px] gap-8 items-start">
-
-    <!-- Bản đồ: trên cùng ở mobile, cột phải dính ở desktop -->
-    <aside class="order-1 lg:order-2 w-full lg:sticky lg:top-[132px]">
-      <div class="frame">
-        <div class="map-shell"><div id="map" role="application" aria-label="Bản đồ vị trí các di tích đã quét" data-en-aria-label="Map of scanned monument locations"></div></div>
-      </div>
-
-      <div class="surface mt-5 p-5" id="readout" aria-live="polite">
-        <p class="u-eyebrow" data-en="Currently viewing">Vị trí đang xem</p>
-        <p class="font-serif text-bone text-[1.0625rem] leading-snug mt-3 mb-0" id="ro-name">Toàn bộ thư viện</p>
-        <p class="font-mono text-[10px] tracking-[.16em] uppercase text-bonemute mt-2 mb-0" id="ro-city"></p>
-        <p class="font-mono text-[10px] tracking-[.14em] text-bonemute mt-4 mb-0" id="ro-coords">—</p>
-        <!-- Hiện lên khi đã chốt một địa điểm; href do JS gắn theo địa điểm đang xem. -->
-        <div class="ro-actions" id="ro-actions" hidden>
-          <a class="locate" id="ro-gmaps" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer"
-             data-en="Open in Google Maps">Mở trên Google Maps</a>
-          <button class="locate locate--quiet" type="button" id="ro-clear" data-en="Show whole library">Xem toàn thư viện</button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Danh sách -->
-    <div class="order-2 lg:order-1 w-full">
-      <div id="list" class="space-y-16"></div>
-      <p id="empty" hidden class="surface p-10 text-center text-bonedim m-0"
-         data-en="No sites match. Try another keyword, or <a class=&quot;text-lime no-underline hover:underline&quot; href=&quot;/home/#lien-he&quot;>suggest a monument</a>.">
-        Không tìm thấy địa điểm nào khớp. Thử từ khoá khác, hoặc
-        <a class="text-lime no-underline hover:underline" href="/home/#lien-he">đề xuất một di tích</a>.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<!-- ============================ KÊU GỌI ============================ -->
-<section class="mx-auto max-w-shell px-5 sm:px-8 pb-24 lg:pb-32">
-  <div class="frame surface-raised p-8 lg:p-12 rise">
-    <div class="grid lg:grid-cols-[1.3fr_auto] gap-8 lg:items-center">
-      <div>
-        <p class="u-eyebrow" data-en="Missing the site you need?">Chưa có di tích bạn cần?</p>
-        <h2 class="u-display text-bone text-[clamp(1.6rem,3.6vw,2.4rem)] mt-4 m-0" data-en="Suggest a monument to scan">Đề xuất một địa điểm để quét</h2>
-        <p class="mt-4 text-bonedim leading-[1.75] max-w-[56ch] mb-0"
-           data-en="Schools and educational institutions get one local monument scanned free each quarter. Other organisations can request a quote based on the size of the site.">
-          Trường học và tổ chức giáo dục được quét miễn phí một di tích tại địa phương mỗi quý.
-          Đơn vị khác gửi yêu cầu để nhận báo giá theo quy mô công trình.
+      <div class="col-span-6 lg:col-start-9 lg:col-span-4 2xl:col-start-9 2xl:col-span-3 lg:pb-3 rise">
+        <p class="phero-copy"
+           data-en="Sorted by region and province. Rest on a card to highlight its pin, press <span class=&quot;font-mono text-[11px] text-pshl&quot;>LOCATE</span> to hold that site on the map, and click the card to open its 3DGS scan in a new tab.">
+          Danh sách xếp theo vùng miền và tỉnh thành. Rê chuột lên thẻ để làm nổi ghim của nó, bấm nút
+          <span class="font-mono text-[11px] text-pshl">VỊ TRÍ</span> để giữ địa điểm đó trên bản đồ,
+          bấm vào thẻ để mở bản quét 3DGS trong tab mới.
         </p>
       </div>
-      <div class="flex flex-wrap gap-3">
-        <a class="btn btn--primary" href="/home/#lien-he" data-en="Send a suggestion">Gửi đề xuất</a>
-        <a class="btn btn--ghost" href="/home/#giao-duc" data-en="See the terms">Xem điều kiện</a>
+    </div>
+    <div class="phero-rule"></div>
+  </div>
+  <div class="h-14 lg:h-20" aria-hidden="true"></div>
+</section>
+
+<!-- ============================ TẤM NỘI DUNG ============================ -->
+<div class="sheet sheet--slate">
+  <div class="shell pt-8 lg:pt-12 pb-24 lg:pb-32">
+
+    <!-- Bộ lọc -->
+    <div class="flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-4 rise">
+      <div class="relative flex-1 min-w-0">
+        <label class="sr-only" for="q" data-en="Search by monument, heritage site or province">Tìm di tích, di sản hoặc tỉnh thành</label>
+        <svg class="search-ico" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5.2" stroke="currentColor" stroke-width="1.4"/><path d="m11 11 3.5 3.5" stroke="currentColor" stroke-width="1.4"/></svg>
+        <input class="field field--search" id="q" type="search" autocomplete="off"
+               placeholder="Tìm di tích, di sản hoặc tỉnh thành — ví dụ: Vạn Phúc, Huế, hoi an…"
+               data-en-placeholder="Search a monument, site or province — e.g. Van Phuc, Hue, hoi an…">
+      </div>
+      <div class="seg-group" role="group" aria-label="Vùng miền" data-en-aria-label="Region">
+        <button class="seg-tab" type="button" data-region="all" aria-pressed="true" data-en="All">Tất cả</button>
+        <button class="seg-tab" type="button" data-region="Miền Bắc" aria-pressed="false" data-en="North">Miền Bắc</button>
+        <button class="seg-tab" type="button" data-region="Miền Trung" aria-pressed="false" data-en="Central">Miền Trung</button>
+        <button class="seg-tab" type="button" data-region="Miền Nam" aria-pressed="false" data-en="South">Miền Nam</button>
+      </div>
+    </div>
+    <p id="result-count" class="mt-3 font-mono text-[10px] tracking-[.06em] uppercase text-navy-500" role="status" aria-live="polite"></p>
+
+    <!-- Danh sách + bản đồ -->
+    <div class="mt-8 lg:mt-10 flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(340px,32%)] gap-8 lg:gap-12 items-start">
+
+      <!-- Bản đồ: trên cùng ở mobile, cột phải dính ở desktop -->
+      <aside class="order-1 lg:order-2 w-full lg:sticky lg:top-[96px]">
+        <div class="map-shell"><div id="map" role="application" aria-label="Bản đồ vị trí các di tích đã quét" data-en-aria-label="Map of scanned monument locations"></div></div>
+
+        <div class="panel-light mt-4 p-5" id="readout" aria-live="polite">
+          <p class="u-eyebrow" data-en="Currently viewing">Vị trí đang xem</p>
+          <p class="font-display tracking-[-.025em] text-navy-900 text-[1.5rem] leading-tight mt-3" id="ro-name">Toàn bộ thư viện</p>
+          <p class="font-mono text-[10px] tracking-[.06em] uppercase text-navy-500 mt-2" id="ro-city"></p>
+          <p class="font-mono text-[10px] tracking-[.06em] text-navy-300 mt-4" id="ro-coords">—</p>
+          <!-- Hiện lên khi đã chốt một địa điểm; href do JS gắn theo địa điểm đang xem. -->
+          <div class="ro-actions" id="ro-actions" hidden>
+            <a class="locate" id="ro-gmaps" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer"
+               data-en="Open in Google Maps">Mở trên Google Maps</a>
+            <button class="locate locate--quiet" type="button" id="ro-clear" data-en="Show whole library">Xem toàn thư viện</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Danh sách -->
+      <div class="order-2 lg:order-1 w-full">
+        <div id="list" class="space-y-14"></div>
+        <p id="empty" hidden class="panel-light p-10 text-center text-navy-500"
+           data-en="No sites match. Try another keyword, or <a class=&quot;inline-link&quot; href=&quot;/home/#lien-he&quot;>suggest a monument</a>.">
+          Không tìm thấy địa điểm nào khớp. Thử từ khoá khác, hoặc
+          <a class="inline-link" href="/home/#lien-he">đề xuất một di tích</a>.
+        </p>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 </main>
 
 <!-- ============================ CHÂN TRANG ============================ -->
-<footer class="hairline">
-  <div class="mx-auto max-w-shell px-5 sm:px-8 py-14">
-    <div class="grid md:grid-cols-[1.4fr_1fr_1fr] gap-10">
-      <div>
-        <div class="flex items-center gap-2.5">
-          <img src="/brand_assets/piheritagelogo.png" alt="" class="w-7 h-6 object-contain flex-none" aria-hidden="true">
-          <span class="font-display tracking-[-.015em] text-bone text-[15px]"><span class="font-extrabold">Pi</span><span class="font-normal">Heritage</span></span>
-        </div>
-        <p class="mt-5 text-bonemute text-[.875rem] leading-[1.75] max-w-[38ch]"
-           data-en="A partnership between PSH Design and Pigo Tour, preserving Vietnam's monuments and heritage with 3D Gaussian Splatting.">
-          Chương trình hợp tác giữa PSH Design và Pigo Tour, lưu giữ di tích và di sản Việt Nam
-          bằng 3D Gaussian Splatting.
-        </p>
-        <div class="mt-6 flex items-center gap-3">
-          <a class="plaque h-9 px-2.5 w-[84px]" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer"
-             aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab"
-          ><img src="/brand_assets/pshlogo.png" alt="" class="max-h-[26px] object-contain"></a>
-          <a class="plaque h-9 w-9" data-brand="pigo" href="https://pigo.com.vn" target="_blank" rel="noopener noreferrer"
-             aria-label="Pigo Tour — mở pigo.com.vn trong tab mới" data-en-aria-label="Pigo Tour — open pigo.com.vn in a new tab"
-          ><img src="/brand_assets/pigotourlogo.png" alt="" class="max-h-[24px] object-contain"></a>
-        </div>
+<footer class="foot">
+  <div class="shell pt-12">
+    <div class="g12 gap-y-10">
+      <div class="col-span-6 lg:col-span-6 flex items-start gap-2">
+        <a class="foot-ico" href="/home/" aria-label="PiHeritage — trang chủ" data-en-aria-label="PiHeritage — home"><img src="/brand_assets/piheritagelogo.png" alt="" class="w-5 h-5 object-contain mono-white"></a>
+        <a class="foot-ico" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer" aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab"><img src="/assets/pshlogo-white.png" alt="" class="w-6"></a>
+        <a class="foot-ico" href="https://pigotour.com" target="_blank" rel="noopener noreferrer" aria-label="Pigo Tour — mở pigotour.com trong tab mới" data-en-aria-label="Pigo Tour — open pigotour.com in a new tab"><img src="/brand_assets/pigotourlogo.png" alt="" class="w-6 mono-white"></a>
       </div>
 
-      <nav aria-label="Liên kết trang" data-en-aria-label="Site links">
-        <p class="font-mono text-[10px] tracking-[.18em] uppercase text-bonemute" data-en="Pages">Trang</p>
-        <ul class="mt-5 space-y-3 list-none p-0 text-[.9375rem]">
+      <nav class="col-span-3 lg:col-start-7 lg:col-span-3" aria-label="Liên kết trang" data-en-aria-label="Site links">
+        <p class="foot-head" data-en="Pages">Trang</p>
+        <ul class="foot-list">
           <li><a class="foot-link" href="/gallery/" data-en="Scan library">Thư viện scan</a></li>
           <li><a class="foot-link" href="/du-an/" data-en="Projects">Dự án đã quét</a></li>
           <li><a class="foot-link" href="/khach-hang/" data-en="Client area">Khu vực khách hàng</a></li>
@@ -225,23 +193,41 @@ tailwind.config = {
         </ul>
       </nav>
 
-      <div>
-        <p class="font-mono text-[10px] tracking-[.18em] uppercase text-bonemute" data-en="Contact">Liên hệ</p>
-        <ul class="mt-5 space-y-3 list-none p-0 text-[.9375rem]">
+      <div class="col-span-3 lg:col-start-10 lg:col-span-3">
+        <p class="foot-head" data-en="Contact">Liên hệ</p>
+        <ul class="foot-list">
           <li><a class="foot-link" href="mailto:lienhe@pshheritage.vn">lienhe@pshheritage.vn</a></li>
-          <li><a class="foot-link" href="tel:+84382963920">+84 382 963 920</a></li>
+          <li><a class="foot-link" href="tel:+84000000000">+84 000 000 000</a></li>
           <li><a class="foot-link" href="/home/#lien-he" data-en="Request a scan">Gửi yêu cầu quét</a></li>
         </ul>
       </div>
     </div>
 
-    <div class="mt-12 pt-6 hairline flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-      <p class="font-mono text-[10px] tracking-[.16em] uppercase text-bonemute m-0"
-         data-en="© <span data-year>2026</span> PSH Design × Pigo Tour">
-        © <span data-year>2026</span> PSH Design × Pigo Tour
+    <!-- Kêu gọi riêng của trang thư viện -->
+    <div class="g12 mt-24 lg:mt-36">
+      <div class="col-span-6 lg:col-start-7 lg:col-span-6">
+        <p class="u-eyebrow" data-en="Missing the site you need?">Chưa có di tích bạn cần?</p>
+        <h2 class="u-display h-sm mt-6 mb-0 leading-[1.15]" data-en="Suggest a monument to scan">Đề xuất một địa điểm để quét</h2>
+        <p class="mt-4 text-bonedim leading-[1.6] max-w-[52ch] m-0"
+           data-en="Schools and educational institutions get one local monument scanned free each quarter. Other organisations can request a quote based on the size of the site.">
+          Trường học và tổ chức giáo dục được quét miễn phí một di tích tại địa phương mỗi quý.
+          Đơn vị khác gửi yêu cầu để nhận báo giá theo quy mô công trình.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a class="btn btn--primary" href="/home/#lien-he" data-en="Send a suggestion">Gửi đề xuất</a>
+          <a class="btn btn--ghost" href="/home/#giao-duc" data-en="See the terms">Xem điều kiện</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-20 lg:mt-28 py-6 border-t border-white/10 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+      <p class="m-0 text-[.9375rem] font-medium" data-en="<span data-year>2026</span> © PSH Design × Pigo Tour">
+        <span data-year>2026</span> © PSH Design × Pigo Tour
       </p>
-      <p class="font-mono text-[10px] tracking-[.16em] uppercase text-bonemute m-0" data-en="Free for education in Vietnam">
-        Miễn phí cho giáo dục Việt Nam
+      <p class="m-0 flex flex-wrap gap-x-5 gap-y-2">
+        <a class="foot-mono" href="/gallery/" data-en="Scan library">Thư viện scan</a>
+        <a class="foot-mono" href="/khach-hang/" data-en="Clients">Khách hàng</a>
+        <span class="font-mono text-[11px] uppercase tracking-[.03em] text-bonemute" data-en="Free for education in Vietnam">Miễn phí cho giáo dục Việt Nam</span>
       </p>
     </div>
   </div>
@@ -276,10 +262,10 @@ tailwind.config = {
   var previewId = null;  // địa điểm đang rê chuột / focus — chỉ làm nổi ghim
   var lastRows = ALL;    // danh sách sau bộ lọc gần nhất, dùng cho nút "Xem toàn thư viện"
 
-  /* Nền/chữ cho ảnh placeholder — đủ sáng để đọc được sau khi phủ lớp màu. */
+  /* Nền/chữ cho ảnh placeholder — tông tím cho khớp lớp màu phủ ảnh. */
   var TONES = [
-    ['24352c', '8ca396'], ['2a3d33', '94ab9e'],
-    ['1f2f27', '859a8e'], ['2f4438', '9bb2a5']
+    ['2b2640', 'c6bde0'], ['322a6b', 'd9cff0'],
+    ['1f1b31', 'b9b0d8'], ['3a3354', 'e6e1f2']
   ];
 
   function esc(s) {
@@ -296,14 +282,27 @@ tailwind.config = {
     return 'https://placehold.co/640x420/' + t[0] + '/' + t[1] + '?text=' + encodeURIComponent(label);
   }
 
+  /* Cuộn tới một phần tử, đặt nó giữa màn hình — dùng Lenis nếu đang bật cuộn mượt. */
+  function smoothTo(el) {
+    if (window.PSH_LENIS) {
+      var off = -(window.innerHeight - el.getBoundingClientRect().height) / 2;
+      window.PSH_LENIS.scrollTo(el, { offset: off });
+    } else {
+      el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    }
+  }
+
   /* ---------------- Dựng danh sách ---------------- */
 
-  function cardHTML(it) {
+  function cardHTML(it, i) {
     var open = it.live;
     var captured = T.get() === 'en' && it.captured_en ? it.captured_en : it.captured;
+    var meta = [T.f(it, 'type'), T.f(it, 'era')].filter(Boolean).join(' · ');
 
+    /* Một hàng danh mục: ảnh nhỏ · tên + loại hình · số hạt / tháng quét · nút.
+       Cả hàng bấm được (mở bản scan) — nút Vị trí nằm đè lên trên. */
     return '' +
-    '<article class="card" data-id="' + it.id + '" data-lat="' + it.lat + '" data-lng="' + it.lng + '">' +
+    '<article class="card site-row stagger-in" style="--i:' + (i || 0) + '" data-id="' + it.id + '" data-lat="' + it.lat + '" data-lng="' + it.lng + '">' +
       (open
         ? '<a class="card-link" href="' + esc(it.viewer) + '" target="_blank" rel="noopener noreferrer">' +
             '<span class="sr-only">' +
@@ -312,31 +311,27 @@ tailwind.config = {
             '</span></a>'
         : '') +
 
-      '<div class="shot aspect-[16/9]">' +
-        '<img src="' + thumb(it) + '" alt="" loading="lazy" width="640" height="420">' +
-        '<div class="shot-body absolute inset-0 flex items-start justify-end p-3">' +
-          (it.unesco ? '<span class="chip chip--unesco">UNESCO</span>' : '') +
-        '</div>' +
+      '<div class="site-thumb shot">' +
+        '<img src="' + thumb(it) + '" alt="" loading="lazy" width="320" height="200">' +
       '</div>' +
 
-      '<div class="p-4 flex flex-col flex-1">' +
-        '<h4 class="card-name m-0">' + esc(T.f(it, 'name')) + '</h4>' +
-        '<p class="m-0 mt-1.5 text-bonemute text-[.78rem] leading-snug">' +
-          esc(T.f(it, 'type')) + ' · ' + esc(T.f(it, 'era')) +
-        '</p>' +
+      '<div class="site-main">' +
+        '<h4 class="card-name m-0">' + esc(T.f(it, 'name')) +
+          (it.unesco ? ' <span class="chip chip--unesco align-middle">UNESCO</span>' : '') + '</h4>' +
+        (meta ? '<p class="card-meta">' + esc(meta) + '</p>' : '') +
+      '</div>' +
 
-        '<p class="m-0 mt-3 font-mono text-[10px] tracking-[.12em] uppercase text-bonedim">' +
-          esc(it.splats) + T.t(' hạt', ' splats') + ' <span class="text-bonemute/60">·</span> ' + esc(captured) +
-        '</p>' +
+      '<p class="site-stat">' +
+        esc(it.splats) + T.t(' hạt', ' splats') + '<br>' + esc(captured) +
+      '</p>' +
 
-        '<div class="flex items-center justify-between gap-3 mt-auto pt-4">' +
-          '<button class="locate" type="button" aria-pressed="false" data-locate="' + it.id + '">' +
-            '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" aria-hidden="true"><path d="M4.5.8C2.6.8 1 2.3 1 4.2c0 2.6 3.5 6 3.5 6S8 6.8 8 4.2C8 2.3 6.4.8 4.5.8Z" stroke="currentColor" stroke-width="1.1"/><circle cx="4.5" cy="4.2" r="1.2" fill="currentColor"/></svg>' +
-            T.t('Vị trí', 'Locate') + '</button>' +
-          (open
-            ? '<span class="chip chip--live">' + T.t('Mở bản scan →', 'Open scan →') + '</span>'
-            : '<span class="chip chip--soon">' + T.t('Sắp ra mắt', 'Coming soon') + '</span>') +
-        '</div>' +
+      '<div class="site-act">' +
+        '<button class="locate" type="button" aria-pressed="false" data-locate="' + it.id + '">' +
+          '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" aria-hidden="true"><path d="M4.5.8C2.6.8 1 2.3 1 4.2c0 2.6 3.5 6 3.5 6S8 6.8 8 4.2C8 2.3 6.4.8 4.5.8Z" stroke="currentColor" stroke-width="1.1"/><circle cx="4.5" cy="4.2" r="1.2" fill="currentColor"/></svg>' +
+          T.t('Vị trí', 'Locate') + '</button>' +
+        (open
+          ? '<span class="chip chip--live">' + T.t('Mở bản scan ↗', 'Open scan ↗') + '</span>'
+          : '<span class="chip chip--soon">' + T.t('Sắp ra mắt', 'Coming soon') + '</span>') +
       '</div>' +
     '</article>';
   }
@@ -352,6 +347,7 @@ tailwind.config = {
       'Our scanning team has not reached this region yet. The first monument in ' +
       name + ' will appear here as soon as it has been captured.');
 
+    /* Gọn một khối: tên vùng + một dòng giải thích + nút đề xuất */
     return '<section aria-label="' + esc(name) + '">' +
       '<div class="region-head">' +
         '<h2 class="region-name m-0">' + esc(name) + '</h2>' +
@@ -359,12 +355,11 @@ tailwind.config = {
           T.t('Sắp mở rộng', 'Expanding soon') +
         '</span>' +
       '</div>' +
-      (blurb ? '<p class="mt-4 mb-0 text-bonemute text-[.875rem] max-w-[62ch]">' + esc(blurb) + '</p>' : '') +
-      '<div class="soon-panel mt-8">' +
-        '<p class="u-eyebrow m-0">' + T.t('Chưa có bản quét', 'No scans yet') + '</p>' +
-        '<p class="mt-4 mb-0 text-bonedim leading-[1.75] max-w-[52ch]">' + esc(note) + '</p>' +
-        '<a class="btn btn--ghost btn--sm mt-6" href="/home/#lien-he">' +
-          esc(T.t('Đề xuất di tích ở ' + name, 'Suggest a monument in ' + name)) +
+      '<div class="soon-row">' +
+        '<p class="text-navy-500 text-[.9375rem] leading-[1.6] max-w-[60ch]">' +
+          esc(blurb ? blurb + ' ' + note : note) + '</p>' +
+        '<a class="hx-link flex-none" href="/home/#lien-he">' +
+          esc(T.t('Đề xuất di tích ở ' + name + ' →', 'Suggest a monument in ' + name + ' →')) +
         '</a>' +
       '</div>' +
     '</section>';
@@ -409,17 +404,17 @@ tailwind.config = {
       return '<section aria-label="' + esc(regionName) + '">' +
         '<div class="region-head">' +
           '<h2 class="region-name m-0">' + esc(regionName) + '</h2>' +
-          '<span class="font-mono text-[10px] tracking-[.16em] uppercase text-bonemute ml-auto flex-none">' +
+          '<span class="font-mono text-[10px] tracking-[.06em] uppercase text-navy-500 ml-auto flex-none">' +
             n + T.t(' địa điểm', n === 1 ? ' site' : ' sites') +
           '</span>' +
         '</div>' +
-        (meta ? '<p class="mt-4 mb-0 text-bonemute text-[.875rem] max-w-[62ch]">' + esc(meta) + '</p>' : '') +
+        (meta ? '<p class="mt-4 text-navy-500 text-[.9375rem] max-w-[62ch]">' + esc(meta) + '</p>' : '') +
         r.order.map(function (cn) {
           var cityName = cn;
           (src.cities || []).forEach(function (c) { if (c.city === cn) cityName = T.f(c, 'city'); });
-          return '<div class="mt-10">' +
+          return '<div class="mt-8">' +
             '<h3 class="city-head m-0">' + esc(cityName) + '</h3>' +
-            '<div class="grid sm:grid-cols-2 gap-4 mt-5">' +
+            '<div class="site-list mt-3">' +
               r.cities[cn].map(cardHTML).join('') +
             '</div>' +
           '</div>';
@@ -446,7 +441,7 @@ tailwind.config = {
     if (!window.L) return;
     map = L.map('map', { zoomControl: true, scrollWheelZoom: false, attributionControl: true });
     /* Nền sáng (Esri Light Gray) + lớp tên đường, tên tỉnh phủ lên trên: dễ đọc
-       hơn bản đồ tối, và để ghim đỏ/xanh nổi hẳn lên. (CARTO từ 2026 đòi API key
+       hơn bản đồ tối, và để ghim tím nổi hẳn lên. (CARTO từ 2026 đòi API key
        nên không dùng nữa.) Esri chỉ có ảnh tới mức 16, gần hơn thì tự phóng to. */
     var ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_';
     L.tileLayer(ESRI + 'Base/MapServer/tile/{z}/{y}/{x}', {
@@ -473,7 +468,7 @@ tailwind.config = {
       m.on('click', function () {
         focus(it.id, true);
         var card = listEl.querySelector('[data-id="' + it.id + '"]');
-        if (card) card.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+        if (card) smoothTo(card);
       });
       markers[it.id] = { marker: m, item: it, on: false };
     });
@@ -496,7 +491,7 @@ tailwind.config = {
   }
 
   /* Mức phóng của bản đồ.
-     Ô bản đồ trên máy tính cao 440px, trên điện thoại chỉ 300px, nên máy tính
+     Ô bản đồ trên máy tính cao 460px, trên điện thoại chỉ 300px, nên máy tính
      xem gần được thêm hai bậc mà vẫn đủ thấy xung quanh.
        - fitZoom   : chặn trên khi khớp khung nhìn cho cả danh sách. Các địa điểm
                      nằm cùng một xã sẽ không bị đẩy ra xa nữa; còn khi danh sách
@@ -621,7 +616,7 @@ tailwind.config = {
     e.preventDefault();
     focus(btn.dataset.locate);
     if (window.matchMedia('(max-width: 1023px)').matches) {
-      document.getElementById('map').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      smoothTo(document.getElementById('map'));
     }
   });
 
@@ -651,16 +646,12 @@ tailwind.config = {
 
   if (!window.L) {
     document.getElementById('map').innerHTML =
-      '<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:1.5rem;text-align:center;color:#7f8a82;font-family:JetBrains Mono,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase">' +
+      '<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:1.5rem;text-align:center;color:#8d86b3;font-family:Geist Mono,monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase">' +
       T.t('Không tải được bản đồ — kiểm tra kết nối mạng', 'Map failed to load — check your connection') +
       '</div>';
   }
 })();
 </script>
-
-<style>
-  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-</style>
 
 </body>
 </html>
