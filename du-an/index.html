@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="vi">
+<!-- data-no-smooth: trang này cuộn kiểu thường, không dùng cuộn mượt (Lenis) -->
+<html lang="vi" data-no-smooth>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -419,13 +420,15 @@ tailwind.config = {
   function listTitle() { return T.t('Dự án đã quét — PiHeritage', 'Projects — PiHeritage'); }
 
   /* Cuộn tức thì tới một vị trí / phần tử.
-     Phải đi qua Lenis (cuộn mượt): nếu gọi window.scrollTo trong lúc trang còn đang trôi
-     theo quán tính, Lenis sẽ kéo trang về đích cũ — mở dự án mà vẫn đứng ở đáy trang. */
+     Trang này đã tắt cuộn mượt (data-no-smooth trên <html>). Nhánh Lenis bên dưới chỉ để phòng
+     khi bật lại: lúc đó gọi window.scrollTo trong khi trang còn trôi theo quán tính sẽ bị Lenis
+     kéo về đích cũ — mở dự án mà vẫn đứng ở đáy trang. */
   function jump(target, offset) {
     var L = window.PSH_LENIS;
     if (L) { L.scrollTo(target, { immediate: true, force: true, offset: offset || 0 }); return; }
-    if (typeof target === 'number') { window.scrollTo(0, target); return; }
-    window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY + (offset || 0));
+    /* behavior 'instant': nhảy thẳng, không trượt (CSS chung của site đặt scroll-behavior: smooth) */
+    var y = typeof target === 'number' ? target : target.getBoundingClientRect().top + window.scrollY + (offset || 0);
+    window.scrollTo({ top: y, behavior: 'instant' });
   }
 
   function route() {
