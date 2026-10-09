@@ -102,6 +102,10 @@
       var head = (p.id ? 'id:' + q(p.id) + ', ' : '') + 'iv:' + q(p.iv) + ', data:' + q(p.data);
       return '    { ' + head + (p.adm ? ',\n      adm:' + boxJS(p.adm) : '') + ' }';
     }).join(',\n') + (list.length ? '\n' : '') + '  ]';
+    /* Nhóm (tab) trên trang /du-an/ — ví dụ "Coffee Sely", "Đại học Bách khoa". Công khai, đọc được. */
+    if (cfg.groups && cfg.groups.length) {
+      out += ',\n  groups: [\n' + cfg.groups.map(function (g) { return '    ' + JSON.stringify(g); }).join(',\n') + '\n  ]';
+    }
     /* Dự án khách đồng ý công khai — bản đọc được, cho trang /du-an/. */
     if (cfg.showcase) {
       out += ',\n  showcase: [\n' + cfg.showcase.map(function (e) { return '    ' + JSON.stringify(e); }).join(',\n') +

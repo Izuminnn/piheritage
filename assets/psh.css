@@ -552,6 +552,54 @@ a.plaque:active{transform:translate3d(0,-1px,0)}
 .search-ico{position:absolute;left:1rem;top:50%;margin-top:-8px;color:var(--navy-300);pointer-events:none}
 .field--search{padding-left:2.75rem;min-height:46px}
 
+/* ---------- Trang Dự án: nhóm dạng tab mở/đóng ----------
+   Mỗi nhóm là một hàng lớn: tên · số dự án/bản scan · ảnh nhỏ xếp chồng · mũi tên.
+   Mở ra thì hiện lưới dự án của nhóm. Chỉ animate transform + opacity. */
+.grp-list{border-top:1px solid var(--line-light)}
+.grp{border-bottom:1px solid var(--line-light)}
+.grp-head{
+  position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.5rem 1.5rem;
+  width:100%;padding:clamp(1.25rem,2.4vw,1.9rem) 0;background:none;border:0;cursor:pointer;text-align:left;color:var(--navy-900);
+}
+@media(min-width:768px){.grp-head{grid-template-columns:minmax(0,1fr) auto auto auto}}
+.grp-name{font-family:var(--f-display);font-weight:400;font-size:var(--fs-sm);letter-spacing:-.035em;line-height:1.05;
+  transition:transform .45s var(--ease),color .3s var(--ease)}
+.grp-meta{grid-column:1;font-family:var(--f-mono);font-size:.6875rem;letter-spacing:.04em;text-transform:uppercase;color:var(--navy-500)}
+@media(min-width:768px){.grp-meta{grid-column:auto}}
+.grp-thumbs{display:none}
+@media(min-width:768px){
+  .grp-thumbs{display:flex;padding-left:10px}
+  .grp-thumbs img{width:58px;height:42px;object-fit:cover;border-radius:6px;margin-left:-10px;border:2px solid var(--slate-50);
+    box-shadow:var(--shade-light);transition:transform .45s var(--ease-spring)}
+  .grp-head:hover .grp-thumbs img:nth-child(1){transform:translate3d(-6px,0,0) rotate(-4deg)}
+  .grp-head:hover .grp-thumbs img:nth-child(3){transform:translate3d(6px,0,0) rotate(4deg)}
+}
+/* Mũi tên: dấu cộng xoay thành dấu nhân khi mở */
+.grp-chev{grid-column:2;grid-row:1 / span 2;position:relative;width:44px;height:44px;border-radius:50%;background:#fff;box-shadow:var(--shade-light);
+  transition:transform .5s var(--ease-spring),background-color .3s var(--ease)}
+@media(min-width:768px){.grp-chev{grid-column:auto;grid-row:auto}}
+.grp-chev::before,.grp-chev::after{content:'';position:absolute;left:50%;top:50%;width:14px;height:1.5px;margin:-.75px 0 0 -7px;background:var(--navy-900);transition:transform .45s var(--ease),background-color .3s var(--ease)}
+.grp-chev::after{transform:rotate(90deg)}
+.grp.is-open .grp-chev{transform:rotate(135deg);background:var(--psh)}
+.grp.is-open .grp-chev::before,.grp.is-open .grp-chev::after{background:#fff}
+.grp-head:hover .grp-name{transform:translate3d(6px,0,0);color:var(--psh)}
+.grp-head:hover .grp-chev{transform:scale(1.06)}
+.grp.is-open .grp-head:hover .grp-chev{transform:rotate(135deg) scale(1.06)}
+.grp-head:focus-visible{outline:2px solid var(--psh);outline-offset:4px;border-radius:var(--r-sm)}
+.grp-head:active .grp-chev{transform:scale(.94)}
+.grp.is-open .grp-head:active .grp-chev{transform:rotate(135deg) scale(.94)}
+.grp-panel{padding-bottom:clamp(1.75rem,3vw,2.75rem)}
+.grp-note{margin:-.25rem 0 1.25rem;max-width:62ch;font-size:.9375rem;line-height:1.6;color:var(--navy-500)}
+/* Thẻ trong nhóm hiện so le khi mở */
+@keyframes grp-in{from{opacity:0;transform:translate3d(0,18px,0)}to{opacity:1;transform:none}}
+.grp-panel.is-shown .card{animation:grp-in .8s var(--ease-expo,cubic-bezier(.16,1,.3,1)) backwards}
+.grp-panel.is-shown .card:nth-child(2){animation-delay:70ms}
+.grp-panel.is-shown .card:nth-child(3){animation-delay:140ms}
+.grp-panel.is-shown .card:nth-child(4){animation-delay:210ms}
+.grp-panel.is-shown .card:nth-child(n+5){animation-delay:280ms}
+.grp-panel.is-shown .grp-note{animation:grp-in .7s var(--ease-expo,cubic-bezier(.16,1,.3,1)) backwards}
+@media (prefers-reduced-motion:reduce){.grp-panel.is-shown .card,.grp-panel.is-shown .grp-note{animation:none}}
+
 /* ---------- Tiêu đề nhóm vùng / tỉnh ---------- */
 .region-head{display:flex;align-items:baseline;gap:1rem;padding-bottom:1rem;border-bottom:1px solid var(--ink-500)}
 .region-name{font-family:var(--f-display);font-weight:400;letter-spacing:-.035em;font-size:var(--fs-sm);line-height:1.05;color:var(--bone)}

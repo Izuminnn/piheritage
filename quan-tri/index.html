@@ -72,9 +72,11 @@ tailwind.config = {
   .adm-row:hover{border-color:var(--ink-400);box-shadow:var(--shade-1)}
   .adm-row.is-dirty{border-color:rgba(201,162,39,.45)}
   .adm-row--client{grid-template-columns:112px minmax(0,1fr) auto auto}
+  .adm-row.grp-row{grid-template-columns:minmax(0,1fr) auto}
   @media(max-width:767px){
     .adm-row,.adm-row--client{grid-template-columns:80px minmax(0,1fr)}
     .adm-row .adm-actions,.adm-row .adm-code{grid-column:1/-1;justify-content:flex-start}
+    .adm-row.grp-row{grid-template-columns:minmax(0,1fr)}
   }
   .adm-thumb{width:100%;aspect-ratio:16/9;border-radius:var(--r-sm);object-fit:cover;background:var(--ink-900);display:block}
   .adm-thumb--empty{
@@ -380,6 +382,24 @@ tailwind.config = {
   </form>
 </dialog>
 
+<!-- ============================ NHÓM TRÊN TRANG DỰ ÁN ============================ -->
+<dialog class="modal" id="d-group" aria-labelledby="d-group-title">
+  <form class="dlg" id="f-group" novalidate>
+    <div class="dlg-head"><h2 class="dlg-title" id="d-group-title">Nhóm trên trang Dự án</h2></div>
+    <div class="dlg-body">
+      <div><label class="field-label" for="g-name">Tên nhóm *</label><input class="field" id="g-name" placeholder="VD: Coffee Sely, Đại học Bách khoa"></div>
+      <div><label class="field-label" for="g-name_en">Tên nhóm (EN)</label><input class="field" id="g-name_en" placeholder="VD: Hanoi University of Science and Technology"></div>
+      <div><label class="field-label" for="g-note">Mô tả ngắn</label><textarea class="field" id="g-note" placeholder="Không bắt buộc — hiện khi mở tab, VD: Chuỗi cà phê, quét 3 cơ sở tại Hà Nội."></textarea></div>
+      <div><label class="field-label" for="g-note_en">Mô tả (EN)</label><textarea class="field" id="g-note_en"></textarea></div>
+    </div>
+    <div class="dlg-foot">
+      <p class="plate-msg is-error m-0 mr-auto" id="g-msg" role="alert"></p>
+      <button class="btn btn--ghost btn--sm" type="button" data-close>Huỷ</button>
+      <button class="btn btn--primary btn--sm" type="submit">Xong</button>
+    </div>
+  </form>
+</dialog>
+
 <!-- ============================ DỰ ÁN KHÁCH HÀNG ============================ -->
 <dialog class="drawer" id="d-client" aria-labelledby="d-client-title">
   <form class="dlg" id="f-client" novalidate>
@@ -432,6 +452,11 @@ tailwind.config = {
         <p class="hint">Bật thì ai cũng xem được dự án này — tên, ảnh bìa, lời nhắn và bản scan — ở
           <span class="font-mono">piheritage.com/du-an/</span>, không cần mã. Mã riêng vẫn dùng được.
           <span class="text-brass">Chỉ bật khi khách đã đồng ý.</span></p>
+        <div class="mt-4">
+          <label class="field-label" for="k-group">Nằm trong nhóm (tab) nào trên trang Dự án</label>
+          <select class="field" id="k-group"></select>
+          <p class="hint">Tạo nhóm mới ở mục “Nhóm trên trang Dự án” phía trên danh sách. Không chọn nhóm thì dự án nằm trong tab “Dự án khác”.</p>
+        </div>
       </div>
 
       <fieldset class="grid gap-4 border-0 p-0 m-0">
@@ -779,6 +804,7 @@ tailwind.config = {
         <p class="adm-sub">${esc(sub)}</p>
         <div class="flex flex-wrap gap-1.5 mt-2">
           ${row.info.public ? '<span class="chip chip--live">Công khai</span>' : '<span class="chip chip--soon">Riêng tư · chỉ mở bằng mã</span>'}
+          ${row.info.public && groupName(row.info.group) ? `<span class="chip">Nhóm: ${esc(groupName(row.info.group))}</span>` : ''}
           ${isNew ? '<span class="chip chip--dirty">Chưa lưu</span>' : ''}
         </div>
       </div>
@@ -792,6 +818,79 @@ tailwind.config = {
         <button class="locate locate--danger" type="button" data-act="del-client" data-i="${i}">Xoá</button>
       </div>
     </div>`;
+  }
+
+  /* ---------------- Nhóm (tab) trên trang Dự án ---------------- */
+
+  const groups = () => (C.cfg.groups = C.cfg.groups || []);
+  const groupName = (id) => { const g = groups().find((x) => x.id === id); return g ? g.name : ''; };
+  /* Dự án công khai đang nằm trong nhóm — chỉ dự án công khai mới hiện trên trang Dự án */
+  const groupCount = (id) => C.rows.filter((r) => r.info && r.info.public && r.info.group === id).length;
+
+  function groupsBox() {
+    const list = groups();
+    const rows = list.map((g, i) => {
+      const n = groupCount(g.id);
+      return `<div class="adm-row grp-row">
+        <div class="min-w-0">
+          <p class="adm-name">${esc(g.name)}</p>
+          <p class="adm-sub">${n} dự án công khai${g.note ? ' · ' + esc(g.note) : ''}</p>
+        </div>
+        <div class="adm-actions">
+          <button class="locate" type="button" data-act="grp-up" data-i="${i}" ${i === 0 ? 'disabled' : ''} aria-label="Đưa ${esc(g.name)} lên">↑</button>
+          <button class="locate" type="button" data-act="grp-down" data-i="${i}" ${i === list.length - 1 ? 'disabled' : ''} aria-label="Đưa ${esc(g.name)} xuống">↓</button>
+          <button class="locate" type="button" data-act="grp-link" data-i="${i}">Sao chép link</button>
+          <button class="locate" type="button" data-act="grp-edit" data-i="${i}">Sửa</button>
+          <button class="locate locate--danger" type="button" data-act="grp-del" data-i="${i}">Xoá</button>
+        </div>
+      </div>`;
+    }).join('');
+    return `<section class="surface p-5 lg:p-6 mb-10" aria-labelledby="grp-title">
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <div>
+          <p class="u-eyebrow m-0" id="grp-title">Nhóm trên trang Dự án</p>
+          <p class="hint m-0 mt-2">Mỗi nhóm là một tab trên <span class="font-mono">${SITE.replace('https://', '')}/du-an/</span>, bấm vào thì mở ra các dự án công khai trong nhóm. Thứ tự ở đây là thứ tự trên web.</p>
+        </div>
+        <button class="btn btn--primary btn--sm ml-auto" type="button" data-act="grp-add">+ Thêm nhóm</button>
+      </div>
+      <div class="space-y-2">${rows || '<p class="adm-empty">Chưa có nhóm nào — trang Dự án đang hiện mọi dự án công khai thành một lưới chung.</p>'}</div>
+    </section>`;
+  }
+
+  let editingGroup = null;
+  function openGroup(i) {
+    editingGroup = i;
+    const g = i == null ? {} : groups()[i];
+    $('d-group-title').textContent = i == null ? 'Thêm nhóm' : 'Sửa nhóm';
+    ['name', 'name_en', 'note', 'note_en'].forEach((k) => { $('g-' + k).value = g[k] || ''; });
+    $('g-msg').textContent = '';
+    $('d-group').showModal();
+    $('g-name').focus();
+  }
+
+  $('f-group').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = (k) => $('g-' + k).value.trim();
+    if (!v('name')) { $('g-msg').textContent = 'Chưa điền tên nhóm.'; $('g-name').focus(); return; }
+    const list = groups();
+    const clash = list.some((g, k) => k !== editingGroup && g.name.toLowerCase() === v('name').toLowerCase());
+    if (clash) { $('g-msg').textContent = 'Đã có nhóm trùng tên.'; $('g-name').focus(); return; }
+    const base = { name: v('name'), name_en: v('name_en'), note: v('note'), note_en: v('note_en') };
+    if (editingGroup == null) {
+      /* id cố định từ lúc tạo — đổi tên nhóm sau này không làm hỏng link #nhom-… đã gửi */
+      let id = slug(v('name')) || 'nhom';
+      while (list.some((g) => g.id === id)) id += '-' + rid().slice(0, 3);
+      list.push(compact(Object.assign({ id: id }, base)));
+    } else {
+      list[editingGroup] = compact(Object.assign({ id: list[editingGroup].id }, base));
+    }
+    $('d-group').close();
+    change('client', (editingGroup == null ? 'Thêm' : 'Sửa') + ' nhóm: ' + v('name'));
+  });
+
+  function groupOptions(sel) {
+    $('k-group').innerHTML = '<option value="">— Không nhóm (tab “Dự án khác”) —</option>' +
+      groups().map((g) => `<option value="${esc(g.id)}"${g.id === sel ? ' selected' : ''}>${esc(g.name)}</option>`).join('');
   }
 
   function renderClients() {
@@ -831,7 +930,7 @@ tailwind.config = {
       return;
     }
 
-    el.innerHTML = `<div class="flex flex-wrap items-center gap-4 mb-6">
+    el.innerHTML = groupsBox() + `<div class="flex flex-wrap items-center gap-4 mb-6">
         <p class="m-0 text-bonedim text-[.9375rem]">${C.rows.length} dự án · link gửi khách có dạng <span class="font-mono text-[12px] text-bone">${SITE.replace('https://', '')}/khach-hang/#ma=…</span></p>
         <button class="btn btn--primary btn--sm ml-auto" type="button" data-act="add-client">+ Thêm dự án khách hàng</button>
       </div>
@@ -1176,6 +1275,7 @@ tailwind.config = {
     $('k-scans').innerHTML = '';
     (d.scans && d.scans.length ? d.scans : [{}]).forEach(scanRow);
     $('k-public').checked = !!(info && info.public);
+    groupOptions(info && info.group);
     pendingCover = null;
     $('k-cover-msg').textContent = COVER_HINT;
     $('k-cover-msg').classList.remove('hint--warn');
@@ -1273,7 +1373,8 @@ tailwind.config = {
     }
     if (cover) data.cover = cover;
 
-    const info = compact({ code: code, created: created, public: isPublic || undefined, publicCover: publicCover, data: data });
+    const info = compact({ code: code, created: created, public: isPublic || undefined, publicCover: publicCover,
+      group: $('k-group').value || undefined, data: data });
     const box = await V.seal(code, data, C.cfg);
     const adm = await V.sealKey(adminK, info);
     const entry = { id: old && old.entry.id ? old.entry.id : rid(), iv: box.iv, data: box.data, adm: adm };
@@ -1361,6 +1462,23 @@ tailwind.config = {
       C.rows.splice(ii, 1);
       change('client', 'Xoá một dự án khách hàng');
     }
+    else if (act === 'grp-add') openGroup(null);
+    else if (act === 'grp-edit') openGroup(ii);
+    else if (act === 'grp-up' || act === 'grp-down') {
+      const list = groups();
+      const j = act === 'grp-up' ? ii - 1 : ii + 1;
+      if (j < 0 || j >= list.length) return;
+      [list[ii], list[j]] = [list[j], list[ii]];
+      change('client', 'Đổi thứ tự nhóm: ' + list[j].name);
+    }
+    else if (act === 'grp-del') {
+      const g = groups()[ii];
+      const n = groupCount(g.id);
+      if (!confirm('Xoá nhóm “' + g.name + '”?' + (n ? '\n\n' + n + ' dự án trong nhóm sẽ chuyển sang tab “Dự án khác”. Dự án và bản scan không bị xoá.' : ''))) return;
+      groups().splice(ii, 1);
+      change('client', 'Xoá nhóm: ' + g.name);
+    }
+    else if (act === 'grp-link') copy(SITE + '/du-an/#nhom-' + groups()[ii].id, 'Link nhóm');
     else if (act === 'copy-code') copy(C.rows[ii].info.code, 'Mã');
     else if (act === 'copy-link') copy(SITE + '/khach-hang/#ma=' + C.rows[ii].info.code, 'Link riêng');
   });
@@ -1460,6 +1578,8 @@ tailwind.config = {
             captured: d.captured, splats: d.splats,
             note: d.note, note_en: d.note_en,
             cover: r.info.publicCover,
+            /* nhóm đã bị xoá thì bỏ qua — dự án rơi về tab "Dự án khác" */
+            group: groups().some((g) => g.id === r.info.group) ? r.info.group : undefined,
             scans: d.scans
           });
         });

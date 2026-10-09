@@ -114,7 +114,8 @@ tailwind.config = {
 
   <div class="sheet sheet--slate">
     <div class="shell pt-8 lg:pt-12 pb-24 lg:pb-32">
-      <div id="grid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-[15px]"></div>
+      <!-- Có nhóm (tạo ở trang quản trị) → mỗi nhóm là một tab mở/đóng; chưa có nhóm → một lưới chung -->
+      <div id="grid"></div>
 
       <div id="empty" class="soon-panel" hidden>
         <div class="g12 gap-y-6 items-end">
@@ -336,12 +337,82 @@ tailwind.config = {
     '</article>';
   }
 
+  /* ---------------- Nhóm (tab) ----------------
+     Mỗi nhóm là một hàng bấm được; mở ra thì hiện lưới dự án của nhóm.
+     Dự án không thuộc nhóm nào gom vào "Dự án khác" ở cuối. */
+  var GROUPS = ((window.PSH_CLIENT || {}).groups || []).filter(function (g) { return g && g.id; });
+  var OTHER = '__khac';
+  var open = {};          // nhóm nào đang mở — giữ nguyên khi đổi ngôn ngữ hay quay lại từ trang chi tiết
+
+  function buckets() {
+    var known = {}, out = [];
+    GROUPS.forEach(function (g) { known[g.id] = { g: g, items: [] }; });
+    var other = [];
+    LIST.forEach(function (p) { (known[p.group] ? known[p.group].items : other).push(p); });
+    GROUPS.forEach(function (g) { if (known[g.id].items.length) out.push(known[g.id]); });
+    if (other.length) out.push({ g: { id: OTHER, name: 'Dự án khác', name_en: 'Other projects' }, items: other });
+    return out;
+  }
+
+  function groupHTML(b, k) {
+    var g = b.g, isOpen = !!open[g.id];
+    var scans = b.items.reduce(function (n, p) { return n + (p.scans || []).length; }, 0);
+    var covers = b.items.filter(function (p) { return p.cover; }).slice(0, 3).map(function (p) {
+      return '<img src="' + esc(p.cover) + '" alt="" loading="lazy">';
+    }).join('');
+    var pid = 'gp-' + esc(g.id);
+    return '<section class="grp' + (isOpen ? ' is-open' : '') + '" data-g="' + esc(g.id) + '" style="--i:' + k + '">' +
+      '<h2 class="m-0"><button class="grp-head" type="button" aria-expanded="' + isOpen + '" aria-controls="' + pid + '">' +
+        '<span class="grp-name">' + esc(T.f(g, 'name')) + '</span>' +
+        '<span class="grp-meta">' +
+          b.items.length + T.t(' dự án', b.items.length === 1 ? ' project' : ' projects') + ' · ' +
+          scans + T.t(' bản scan', scans === 1 ? ' scan' : ' scans') +
+        '</span>' +
+        '<span class="grp-thumbs" aria-hidden="true">' + covers + '</span>' +   // luôn có, để mũi tên thẳng cột
+        '<span class="grp-chev" aria-hidden="true"></span>' +
+      '</button></h2>' +
+      '<div class="grp-panel" id="' + pid + '"' + (isOpen ? '' : ' hidden') + '>' +
+        (T.f(g, 'note') ? '<p class="grp-note">' + esc(T.f(g, 'note')) + '</p>' : '') +
+        '<div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-[15px]">' + b.items.map(cardHTML).join('') + '</div>' +
+      '</div>' +
+    '</section>';
+  }
+
   function renderList() {
-    $('grid').innerHTML = LIST.map(cardHTML).join('');
-    $('grid').hidden = !LIST.length;
+    var grid = $('grid');
+    if (!GROUPS.length) {
+      grid.className = 'grid sm:grid-cols-2 xl:grid-cols-3 gap-[15px]';
+      grid.innerHTML = LIST.map(cardHTML).join('');
+    } else {
+      var bs = buckets();
+      /* Lần đầu vào trang: mở sẵn nhóm đầu tiên để người xem thấy ngay có gì bên trong */
+      if (!Object.keys(open).length && bs.length && location.hash.indexOf('#nhom-') !== 0) open[bs[0].g.id] = true;
+      grid.className = 'grp-list';
+      grid.innerHTML = bs.map(groupHTML).join('');
+    }
+    grid.hidden = !LIST.length;
     $('empty').hidden = LIST.length > 0;
     document.querySelectorAll('[data-sc-count]').forEach(function (el) { el.textContent = LIST.length; });
   }
+
+  function toggleGroup(sec, force) {
+    var id = sec.getAttribute('data-g');
+    var on = force != null ? force : !open[id];
+    open[id] = on;
+    sec.classList.toggle('is-open', on);
+    sec.querySelector('.grp-head').setAttribute('aria-expanded', String(on));
+    var panel = sec.querySelector('.grp-panel');
+    panel.hidden = !on;
+    if (on) {
+      /* chạy lại hiệu ứng hiện dần cho các thẻ bên trong */
+      panel.classList.remove('is-shown'); void panel.offsetWidth; panel.classList.add('is-shown');
+    }
+  }
+
+  $('grid').addEventListener('click', function (e) {
+    var head = e.target.closest('.grp-head');
+    if (head) toggleGroup(head.closest('.grp'));
+  });
 
   /* ---------------- Điều hướng: /du-an/#<id> mở thẳng một dự án ---------------- */
 
@@ -366,9 +437,22 @@ tailwind.config = {
       $('detail-view').hidden = true;
       $('list-view').hidden = false;
       document.title = listTitle();
-      /* Quay lại danh sách thì đưa về đúng thẻ vừa xem. */
+
+      /* /du-an/#nhom-<id> → mở đúng nhóm đó và cuộn tới */
+      var gid = id.indexOf('nhom-') === 0 ? id.slice(5) : null;
+      var gsec = gid && $('grid').querySelector('.grp[data-g="' + CSS.escape(gid) + '"]');
+      if (gsec) {
+        toggleGroup(gsec, true);
+        setTimeout(function () { gsec.scrollIntoView({ block: 'start' }); window.scrollBy(0, -90); }, 60);
+        return;
+      }
+      /* Quay lại danh sách thì đưa về đúng thẻ vừa xem (mở nhóm chứa nó nếu đang đóng). */
       var card = lastId && $('grid').querySelector('[data-id="' + lastId + '"]');
-      if (card) card.scrollIntoView({ block: 'center' });
+      if (card) {
+        var sec = card.closest('.grp');
+        if (sec && !sec.classList.contains('is-open')) toggleGroup(sec, true);
+        card.scrollIntoView({ block: 'center' });
+      }
       else window.scrollTo(0, 0);
     }
   }
