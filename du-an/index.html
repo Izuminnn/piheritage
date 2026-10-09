@@ -418,6 +418,16 @@ tailwind.config = {
 
   function listTitle() { return T.t('Dự án đã quét — PiHeritage', 'Projects — PiHeritage'); }
 
+  /* Cuộn tức thì tới một vị trí / phần tử.
+     Phải đi qua Lenis (cuộn mượt): nếu gọi window.scrollTo trong lúc trang còn đang trôi
+     theo quán tính, Lenis sẽ kéo trang về đích cũ — mở dự án mà vẫn đứng ở đáy trang. */
+  function jump(target, offset) {
+    var L = window.PSH_LENIS;
+    if (L) { L.scrollTo(target, { immediate: true, force: true, offset: offset || 0 }); return; }
+    if (typeof target === 'number') { window.scrollTo(0, target); return; }
+    window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY + (offset || 0));
+  }
+
   function route() {
     var id = '';
     try { id = decodeURIComponent(location.hash.slice(1)); } catch (e) { /* hash hỏng thì coi như trống */ }
@@ -429,7 +439,7 @@ tailwind.config = {
       $('list-view').hidden = true;
       $('detail-view').hidden = false;
       view.show(p);
-      window.scrollTo(0, 0);
+      jump(0);
       $('o-project').focus({ preventScroll: true });
     } else {
       current = null;
@@ -443,7 +453,7 @@ tailwind.config = {
       var gsec = gid && $('grid').querySelector('.grp[data-g="' + CSS.escape(gid) + '"]');
       if (gsec) {
         toggleGroup(gsec, true);
-        setTimeout(function () { gsec.scrollIntoView({ block: 'start' }); window.scrollBy(0, -90); }, 60);
+        setTimeout(function () { jump(gsec, -90); }, 60);
         return;
       }
       /* Quay lại danh sách thì đưa về đúng thẻ vừa xem (mở nhóm chứa nó nếu đang đóng). */
@@ -451,9 +461,9 @@ tailwind.config = {
       if (card) {
         var sec = card.closest('.grp');
         if (sec && !sec.classList.contains('is-open')) toggleGroup(sec, true);
-        card.scrollIntoView({ block: 'center' });
+        jump(card, -(window.innerHeight - card.offsetHeight) / 2);   // đặt thẻ vừa xem giữa màn hình
       }
-      else window.scrollTo(0, 0);
+      else jump(0);
     }
   }
 
