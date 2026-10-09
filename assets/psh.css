@@ -555,27 +555,40 @@ a.plaque:active{transform:translate3d(0,-1px,0)}
 /* ---------- Trang Dự án: nhóm dạng tab mở/đóng ----------
    Mỗi nhóm là một hàng lớn: tên · số dự án/bản scan · ảnh nhỏ xếp chồng · mũi tên.
    Mở ra thì hiện lưới dự án của nhóm. Chỉ animate transform + opacity. */
-.grp-list{border-top:1px solid var(--line-light)}
-.grp{border-bottom:1px solid var(--line-light)}
+/* Mỗi nhóm là một ô trắng nổi trên nền slate */
+.grp-list{display:grid;gap:14px}
+.grp{
+  --grp-pad:clamp(18px,2.4vw,32px);
+  position:relative;padding:0 var(--grp-pad);background:#fff;border:1px solid var(--line-light);border-radius:var(--r-lg);
+  box-shadow:var(--shade-light);
+  transition:transform .45s var(--ease-spring),box-shadow .4s var(--ease),border-color .3s var(--ease);
+}
+.grp:not(.is-open):hover{transform:translate3d(0,-3px,0);box-shadow:var(--shade-light-2)}
+.grp.is-open{border-color:rgba(120,66,192,.45);box-shadow:0 0 0 1px rgba(120,66,192,.18),var(--shade-light-2)}
 .grp-head{
   position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.5rem 1.5rem;
-  width:100%;padding:clamp(1.25rem,2.4vw,1.9rem) 0;background:none;border:0;cursor:pointer;text-align:left;color:var(--navy-900);
+  width:100%;padding:clamp(1.1rem,2vw,1.6rem) 0;background:none;border:0;cursor:pointer;text-align:left;color:var(--navy-900);
 }
+/* Khi mở: kẻ mảnh tách phần đầu ô với nội dung */
+.grp.is-open .grp-head{border-bottom:1px solid var(--line-light);margin-bottom:clamp(1rem,2vw,1.5rem)}
+/* Thẻ dự án bên trong ô trắng: viền mảnh thay cho bóng, nền hơi xám để tách khỏi ô */
+.grp .card{background:var(--slate-50);box-shadow:none;border:1px solid var(--line-light)}
+.grp .card:hover,.grp .card:focus-within{box-shadow:var(--shade-light-2);border-color:transparent}
 @media(min-width:768px){.grp-head{grid-template-columns:minmax(0,1fr) auto auto auto}}
-.grp-name{font-family:var(--f-display);font-weight:400;font-size:var(--fs-sm);letter-spacing:-.035em;line-height:1.05;
+.grp-name{font-family:var(--f-display);font-weight:400;font-size:clamp(1.3125rem,1.05rem + .9vw,1.875rem);letter-spacing:-.03em;line-height:1.1;
   transition:transform .45s var(--ease),color .3s var(--ease)}
 .grp-meta{grid-column:1;font-family:var(--f-mono);font-size:.6875rem;letter-spacing:.04em;text-transform:uppercase;color:var(--navy-500)}
 @media(min-width:768px){.grp-meta{grid-column:auto}}
 .grp-thumbs{display:none}
 @media(min-width:768px){
   .grp-thumbs{display:flex;padding-left:10px}
-  .grp-thumbs img{width:58px;height:42px;object-fit:cover;border-radius:6px;margin-left:-10px;border:2px solid var(--slate-50);
+  .grp-thumbs img{width:58px;height:42px;object-fit:cover;border-radius:6px;margin-left:-10px;border:2px solid #fff;
     box-shadow:var(--shade-light);transition:transform .45s var(--ease-spring)}
   .grp-head:hover .grp-thumbs img:nth-child(1){transform:translate3d(-6px,0,0) rotate(-4deg)}
   .grp-head:hover .grp-thumbs img:nth-child(3){transform:translate3d(6px,0,0) rotate(4deg)}
 }
 /* Mũi tên: dấu cộng xoay thành dấu nhân khi mở */
-.grp-chev{grid-column:2;grid-row:1 / span 2;position:relative;width:44px;height:44px;border-radius:50%;background:#fff;box-shadow:var(--shade-light);
+.grp-chev{grid-column:2;grid-row:1 / span 2;position:relative;width:44px;height:44px;border-radius:50%;background:var(--slate-50);box-shadow:inset 0 0 0 1px var(--line-light);
   transition:transform .5s var(--ease-spring),background-color .3s var(--ease)}
 @media(min-width:768px){.grp-chev{grid-column:auto;grid-row:auto}}
 .grp-chev::before,.grp-chev::after{content:'';position:absolute;left:50%;top:50%;width:14px;height:1.5px;margin:-.75px 0 0 -7px;background:var(--navy-900);transition:transform .45s var(--ease),background-color .3s var(--ease)}
