@@ -4,31 +4,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-en="Projects — PiHeritage">Dự án đã quét — PiHeritage</title>
-<meta name="description" content="Các công trình PSH Design × Pigo Tour đã quét 3DGS cho ban quản lý di tích trường học, đơn vị du lịch và doanh nghiệp — xem ảnh và mở bản quét ngay trên trình duyệt."
-      data-en-content="Sites PSH Design × Pigo Tour have scanned in 3DGS for heritage boards, schools, tourism operators and businesses — see each one and open its scan in your browser.">
+<title data-en="Projects — PiGo Heritage">Dự án đã quét — PiGo Heritage</title>
+<meta name="description" content="Các công trình PSH Design × PiGo Tour đã quét 3DGS cho ban quản lý di tích, đơn vị du lịch và doanh nghiệp — xem ảnh và mở bản quét ngay trên trình duyệt."
+      data-en-content="Sites PSH Design × PiGo Tour have scanned in 3DGS for heritage boards, tourism operators and businesses — see each one and open its scan in your browser.">
 
+<meta property="og:site_name" content="PiGo Heritage">
+<meta property="og:image" content="https://piheritage.com/assets/brand/og-image.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="theme-color" content="#0E3B26">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=Be+Vietnam+Pro:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/psh.css">
-<link rel="icon" type="image/png" href="/brand_assets/piheritagelogo.png">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/assets/brand/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
   theme: { extend: {
     colors: {
-      ink:  { 900:'#07060d', 800:'#110f1c', 700:'#181527', 600:'#1f1b31', 500:'#2b2640', 400:'#3a3354' },
-      psh:  '#7842c0', pshb:'#8b51d6', pshl:'#b591ef', pigo:'#a46ae8', lime:'#d9cff0',
-      bone: '#ffffff', bonedim:'#c8c2dc', bonemute:'#8f88ab', brass:'#f2b84b',
-      navy: { 900:'#1d1650', 700:'#322a6b', 500:'#5a5288', 300:'#8d86b3' },
-      slate:{ 50:'#f3f1f8', 100:'#e6e1f2', 200:'#d9cff0', 300:'#c6bde0' }
+      ink:  { 900:'#08261a', 800:'#0e3b26', 700:'#124530', 600:'#16503a', 500:'#1f5e44', 400:'#2b7053' },
+      psh:  '#6b2e1f', pshb:'#7d3826', pshl:'#d69678', pigo:'#e0ae90', lime:'#eaf4ee',
+      bone: '#ffffff', bonedim:'#c9d8cf', bonemute:'#8fae9d', brass:'#f2b84b',
+      navy: { 900:'#1f2328', 700:'#3a4148', 500:'#5b6670', 300:'#8d969e' },
+      slate:{ 50:'#f3f6f4', 100:'#e6eee9', 200:'#eaf4ee', 300:'#bfd2c6' }
     },
     fontFamily: {
-      display:['"Inter Tight"','"Be Vietnam Pro"','sans-serif'],
+      display:['Saira','"Be Vietnam Pro"','sans-serif'],
       body:['"Be Vietnam Pro"','sans-serif'],
-      serif:['"Inter Tight"','sans-serif'],
-      mono:['"Geist Mono"','ui-monospace','monospace']
+      serif:['Saira','sans-serif'],
+      mono:['Saira','sans-serif'],
+      code:['ui-monospace','Consolas','monospace']
     },
     maxWidth: { shell:'1720px' }
   }}
@@ -41,9 +48,9 @@ tailwind.config = {
 <!-- ============================ NAV ============================ -->
 <header id="nav" class="hnav">
   <div class="shell hnav-row">
-    <a href="/home/" class="group hnav-logo" aria-label="PiHeritage — trang chủ" data-en-aria-label="PiHeritage — home">
-      <img src="/brand_assets/piheritagelogo.png" alt="" class="pi-mark w-7 h-6 object-contain flex-none">
-      <span class="hnav-word">PiHeritage</span>
+    <a href="/home/" class="group hnav-logo" aria-label="PiGo Heritage — trang chủ" data-en-aria-label="PiGo Heritage — home">
+      <img class="hnav-full" src="/assets/brand/header-heritage-dark.png" alt="" width="295" height="48">
+      <img class="hnav-mark" src="/assets/brand/symbol-192.png" alt="" width="40" height="40">
     </a>
 
     <div class="hnav-right">
@@ -102,8 +109,9 @@ tailwind.config = {
         </div>
         <div class="col-span-6 lg:col-start-9 lg:col-span-4 2xl:col-start-9 2xl:col-span-3 lg:pb-3 rise">
           <p class="phero-copy"
-             data-en="Part of the 3DGS work PSH Design has done for heritage boards, schools, tourism operators and businesses.">
-            Một phần các bản quét 3DGS PSH Design đã làm cho ban quản lý di tích, trường học, đơn vị du lịch và doanh nghiệp.
+             data-en="Part of the 3DGS work PSH Design has done for heritage boards, tourism operators and businesses — shared with our clients' permission. Pick a project to see it and open its scan.">
+            Một phần các bản quét 3DGS PSH Design đã làm cho ban quản lý di tích, đơn vị du lịch và doanh nghiệp —
+            được khách hàng đồng ý công khai. Chọn một dự án để xem ảnh và mở bản scan.
           </p>
         </div>
       </div>
@@ -223,10 +231,13 @@ tailwind.config = {
 <footer class="foot">
   <div class="shell pt-12">
     <div class="g12 gap-y-10">
-      <div class="col-span-6 lg:col-span-6 flex items-start gap-2">
-        <a class="foot-ico" href="/home/" aria-label="PiHeritage — trang chủ" data-en-aria-label="PiHeritage — home"><img src="/brand_assets/piheritagelogo.png" alt="" class="w-5 h-5 object-contain mono-white"></a>
-        <a class="foot-ico" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer" aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab"><img src="/assets/pshlogo-white.png" alt="" class="w-6"></a>
-        <a class="foot-ico" href="https://pigotour.com" target="_blank" rel="noopener noreferrer" aria-label="Pigo Tour — mở pigotour.com trong tab mới" data-en-aria-label="Pigo Tour — open pigotour.com in a new tab"><img src="/brand_assets/pigotourlogo.png" alt="" class="w-6 mono-white"></a>
+      <div class="col-span-6 lg:col-span-6">
+        <a class="foot-logo" href="/home/" aria-label="PiGo Heritage — trang chủ" data-en-aria-label="PiGo Heritage — home"><img src="/assets/brand/heritage-slogan-dark.png" alt="" width="380" height="84"></a>
+        <div class="foot-partners">
+          <span class="foot-head" data-en="With">Cùng</span>
+          <a class="foot-ico foot-ico--wide" href="https://pigotour.com" target="_blank" rel="noopener noreferrer" aria-label="PiGo Tour — mở pigotour.com trong tab mới" data-en-aria-label="PiGo Tour — open pigotour.com in a new tab"><img src="/assets/brand/tour-gon-dark.png" alt="" width="110" height="27"></a>
+          <a class="foot-ico foot-ico--wide" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer" aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab"><img src="/assets/pshlogo-white.png" alt="" width="40" height="32"></a>
+        </div>
       </div>
 
       <nav class="col-span-3 lg:col-start-7 lg:col-span-3" aria-label="Liên kết trang" data-en-aria-label="Site links">
@@ -268,8 +279,8 @@ tailwind.config = {
     </div>
 
     <div class="mt-20 lg:mt-28 py-6 border-t border-white/10 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
-      <p class="m-0 text-[.9375rem] font-medium" data-en="<span data-year>2026</span> © PSH Design × Pigo Tour">
-        <span data-year>2026</span> © PSH Design × Pigo Tour
+      <p class="m-0 text-[.9375rem] font-medium" data-en="<span data-year>2026</span> © PSH Design × PiGo Tour">
+        <span data-year>2026</span> © PSH Design × PiGo Tour
       </p>
       <p class="m-0 flex flex-wrap gap-x-5 gap-y-2">
         <a class="foot-mono" href="/gallery/" data-en="Scan library">Thư viện scan</a>
@@ -416,7 +427,7 @@ tailwind.config = {
 
   /* ---------------- Điều hướng: /du-an/#<id> mở thẳng một dự án ---------------- */
 
-  function listTitle() { return T.t('Dự án đã quét — PiHeritage', 'Projects — PiHeritage'); }
+  function listTitle() { return T.t('Dự án đã quét — PiGo Heritage', 'Projects — PiGo Heritage'); }
 
   /* Cuộn tức thì tới một vị trí / phần tử.
      Trang này đã tắt cuộn mượt (data-no-smooth trên <html>). Nhánh Lenis bên dưới chỉ để phòng

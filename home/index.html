@@ -3,31 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-en="PiHeritage — Vietnam's heritage in 3DGS">PiHeritage — Di sản Việt Nam bằng 3DGS</title>
-<meta name="description" content="PSH Design × Pigo Tour quét và dựng lại di tích, di sản Việt Nam bằng công nghệ 3DGS. Miễn phí cho trường học và tổ chức giáo dục."
-      data-en-content="PSH Design × Pigo Tour scan and rebuild Vietnam's monuments and heritage sites with 3DGS. Free for schools and educational institutions.">
+<title data-en="PiGo Heritage — Vietnam's heritage in 3DGS">PiGo Heritage — Di sản Việt Nam bằng 3DGS</title>
+<meta name="description" content="PSH Design × PiGo Tour quét và dựng lại di tích, di sản Việt Nam bằng công nghệ 3DGS. Miễn phí cho trường học và tổ chức giáo dục."
+      data-en-content="PSH Design × PiGo Tour scan and rebuild Vietnam's monuments and heritage sites with 3DGS. Free for schools and educational institutions.">
 
+<meta property="og:site_name" content="PiGo Heritage">
+<meta property="og:image" content="https://piheritage.com/assets/brand/og-image.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="theme-color" content="#0E3B26">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=Be+Vietnam+Pro:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/psh.css">
-<link rel="icon" type="image/png" href="/brand_assets/piheritagelogo.png">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/assets/brand/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
   theme: { extend: {
     colors: {
-      ink:  { 900:'#07060d', 800:'#110f1c', 700:'#181527', 600:'#1f1b31', 500:'#2b2640', 400:'#3a3354' },
-      psh:  '#7842c0', pshb:'#8b51d6', pshl:'#b591ef', pigo:'#a46ae8', lime:'#d9cff0',
-      bone: '#ffffff', bonedim:'#c8c2dc', bonemute:'#8f88ab', brass:'#f2b84b',
-      navy: { 900:'#1d1650', 700:'#322a6b', 500:'#5a5288', 300:'#8d86b3' },
-      slate:{ 50:'#f3f1f8', 100:'#e6e1f2', 200:'#d9cff0', 300:'#c6bde0' }
+      ink:  { 900:'#08261a', 800:'#0e3b26', 700:'#124530', 600:'#16503a', 500:'#1f5e44', 400:'#2b7053' },
+      psh:  '#6b2e1f', pshb:'#7d3826', pshl:'#d69678', pigo:'#e0ae90', lime:'#eaf4ee',
+      bone: '#ffffff', bonedim:'#c9d8cf', bonemute:'#8fae9d', brass:'#f2b84b',
+      navy: { 900:'#1f2328', 700:'#3a4148', 500:'#5b6670', 300:'#8d969e' },
+      slate:{ 50:'#f3f6f4', 100:'#e6eee9', 200:'#eaf4ee', 300:'#bfd2c6' }
     },
     fontFamily: {
-      display:['"Inter Tight"','"Be Vietnam Pro"','sans-serif'],
+      display:['Saira','"Be Vietnam Pro"','sans-serif'],
       body:['"Be Vietnam Pro"','sans-serif'],
-      serif:['"Inter Tight"','sans-serif'],
-      mono:['"Geist Mono"','ui-monospace','monospace']
+      serif:['Saira','sans-serif'],
+      mono:['Saira','sans-serif'],
+      code:['ui-monospace','Consolas','monospace']
     },
     maxWidth: { shell:'1720px' }
   }}
@@ -47,13 +54,14 @@ tailwind.config = {
 .hx-shade{
   position:absolute;inset:0;
   background:
-    linear-gradient(98deg,rgba(7,6,13,.62) 0%,rgba(7,6,13,.42) 24%,rgba(7,6,13,.12) 48%,rgba(7,6,13,0) 68%),
-    linear-gradient(to bottom,rgba(7,6,13,.55) 0%,rgba(7,6,13,0) 18%),
-    linear-gradient(to top,rgba(7,6,13,.72) 0%,rgba(7,6,13,.35) 16%,rgba(7,6,13,0) 40%);
+    linear-gradient(98deg,rgba(6,26,17,.62) 0%,rgba(6,26,17,.42) 24%,rgba(6,26,17,.12) 48%,rgba(6,26,17,0) 68%),
+    linear-gradient(to bottom,rgba(6,26,17,.55) 0%,rgba(6,26,17,0) 18%),
+    linear-gradient(to top,rgba(6,26,17,.72) 0%,rgba(6,26,17,.35) 16%,rgba(6,26,17,0) 40%);
 }
 .hx-inner{position:relative;z-index:2;padding-top:120px;padding-bottom:clamp(2.5rem,7vh,5rem)}
 /* Lớp tối đã nhẹ đi để video hiện rõ — bóng chữ mờ giữ tiêu đề đọc được trên vùng sáng */
-.hx-title{font-size:var(--fs-2xl);line-height:1.02;margin:0;color:#fff;text-shadow:0 2px 30px rgba(7,6,13,.45)}
+.hx-title .u-grad{filter:drop-shadow(0 2px 16px rgba(6,26,17,.6))}
+.hx-title{font-size:var(--fs-2xl);line-height:1.02;margin:0;color:#fff;text-shadow:0 2px 30px rgba(6,26,17,.45)}
 .hx-copy{font-size:1rem;line-height:1.45;color:#fff;font-weight:500;margin:0;max-width:40ch}
 
 /* ---------- Dải đối tác ---------- */
@@ -62,7 +70,9 @@ tailwind.config = {
 .partners{position:relative;z-index:2;padding:2.5rem 0 calc(2.5rem + 30px)}
 .partners-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1.75rem 1.25rem}
 .partners-row > .u-eyebrow{flex-basis:100%;justify-content:center}
-.partners-row img{max-width:24vw}
+/* Logo PiGo giữ cao ≥ 32px (tối thiểu theo quy cách) — không ép theo bề ngang */
+.partners-row img{max-width:none}
+@media(max-width:1023px){.partners-row .plogo-psh img{width:72px!important}.partners-row .plogo-tour img{width:auto!important;height:32px}.partners-row .plogo-wide img{width:auto!important;height:34px}}
 .partners-row .plogo-wide img{max-width:50vw}
 @media(min-width:1024px){
   .partners-row{justify-content:space-between;gap:1.5rem 3.5rem}
@@ -74,12 +84,12 @@ tailwind.config = {
 .plogo:focus-visible{opacity:1;outline:2px solid var(--focus);outline-offset:6px}
 .plogo:active{transform:translate3d(0,0,0) scale(.98)}
 .plogo img{display:block;height:auto}
-.plogo-op{font-family:var(--f-display);font-weight:300;font-size:2rem;color:var(--bone-mute);line-height:1}
+.plogo-op{font-family:var(--f-display);font-weight:600;font-size:2rem;color:var(--bone-mute);line-height:1}
 
 /* ---------- Danh sách dính bên trái — mục đang xem đậm, còn lại lavender ---------- */
 .spy-list{list-style:none;margin:2.5rem 0 0;padding:0}
 .spy-link{
-  display:inline-block;font-family:var(--f-display);font-size:var(--fs-md);line-height:1.18;letter-spacing:-.035em;
+  display:inline-block;font-family:var(--f-display);font-weight:700;font-size:var(--fs-md);line-height:1.18;letter-spacing:-.005em;
   color:var(--slate-300);text-decoration:none;border-radius:6px;
   transition:color .35s var(--ease),transform .35s var(--ease-spring);
 }
@@ -89,7 +99,7 @@ tailwind.config = {
 .spy-link:active{transform:translate3d(2px,0,0)}
 
 .feat + .feat{margin-top:clamp(5rem,9vw,8.5rem)}
-.feat-title{font-family:var(--f-display);font-size:var(--fs-xs);letter-spacing:-.025em;line-height:1.2;color:var(--navy-900);margin:1.5rem 0 0}
+.feat-title{font-family:var(--f-display);font-weight:600;font-size:var(--fs-xs);letter-spacing:-.005em;line-height:1.2;color:var(--navy-900);margin:1.5rem 0 0}
 .feat-text{margin-top:1.1rem!important;max-width:58ch;font-size:1rem;line-height:1.6;color:var(--navy-700)}
 
 /* Thẻ minh hoạ — tỉ lệ 580 × 467 như tham chiếu.
@@ -101,12 +111,12 @@ tailwind.config = {
 .tag--edge{top:33%;right:4%}
 @media(max-width:639px){.tag--tr{top:auto;bottom:4.5%;right:auto;left:3.5%}}
 .viz-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.1)}
-.viz-tint{position:absolute;inset:0;background:#6a36b8;mix-blend-mode:multiply}
-.viz-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,6,13,.6) 0%,rgba(7,6,13,.1) 60%),radial-gradient(70% 60% at 70% 20%,rgba(190,150,255,.35),transparent 70%)}
+.viz-tint{position:absolute;inset:0;background:#5a4030;mix-blend-mode:multiply}
+.viz-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,26,17,.6) 0%,rgba(6,26,17,.1) 60%),radial-gradient(70% 60% at 70% 20%,rgba(250,172,38,.35),transparent 70%)}
 .viz-label{
   position:absolute;top:4.5%;left:50%;transform:translateX(-50%);z-index:2;
   display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap;
-  padding:.3rem;border-radius:var(--r-sm);background:rgba(243,241,248,.92);
+  padding:.3rem;border-radius:var(--r-sm);background:rgba(243,246,244,.92);
   font-size:.8125rem;font-weight:500;color:var(--navy-900);box-shadow:var(--shade-light);
 }
 .viz-label b{font-weight:500;background:var(--psh);color:#fff;border-radius:5px;padding:.35rem .7rem}
@@ -114,19 +124,19 @@ tailwind.config = {
 .panel{
   position:absolute;left:10%;right:10%;bottom:19%;z-index:2;
   padding:1rem 1.1rem 1.15rem;border-radius:var(--r-sm);
-  background:rgba(243,241,248,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  box-shadow:0 20px 40px -20px rgba(30,10,60,.6);
+  background:rgba(243,246,244,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 20px 40px -20px rgba(6,26,17,.6);
 }
 .panel-row + .panel-row{margin-top:.55rem}
-.panel-label{font-family:var(--f-mono);font-size:.625rem;letter-spacing:.04em;text-transform:uppercase;color:var(--navy-900)}
+.panel-label{font-family:var(--f-mono);font-weight:600;font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy-900)}
 .panel-line{display:flex;align-items:center;gap:.6rem}
-.panel-bar{flex:1;height:3px;border-radius:3px;background:#fff;box-shadow:0 0 0 .5px rgba(29,22,80,.06)}
-.panel-num{font-family:var(--f-display);font-size:1.875rem;letter-spacing:-.03em;color:var(--navy-900);line-height:1;min-width:2.6ch;text-align:right}
+.panel-bar{flex:1;height:3px;border-radius:3px;background:#fff;box-shadow:0 0 0 .5px rgba(14,59,38,.06)}
+.panel-num{font-family:var(--f-display);font-weight:600;font-size:1.875rem;letter-spacing:-.005em;color:var(--navy-900);line-height:1;min-width:2.6ch;text-align:right}
 
 .viz--slate{background:var(--slate-50)}
 .tag{
   position:absolute;z-index:3;display:inline-flex;align-items:center;gap:.35rem;
-  font-family:var(--f-mono);font-size:.625rem;font-weight:500;letter-spacing:.03em;text-transform:uppercase;
+  font-family:var(--f-mono);font-size:.625rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
   padding:.4rem .55rem;border-radius:5px;white-space:nowrap;
 }
 .tag--navy{background:var(--navy-900);color:#fff}
@@ -136,8 +146,8 @@ tailwind.config = {
 /* Vạch quét chạy dọc — chỉ dịch chuyển transform */
 .scan-line{
   position:absolute;left:4%;right:4%;top:0;height:2px;z-index:2;pointer-events:none;
-  background:linear-gradient(90deg,transparent,#7842c0 18%,#b591ef 82%,transparent);
-  box-shadow:0 0 18px 2px rgba(139,81,214,.45);
+  background:linear-gradient(90deg,transparent,#6b2e1f 18%,#d69678 82%,transparent);
+  box-shadow:0 0 18px 2px rgba(125,56,38,.45);
   animation:scan 4.8s var(--ease) infinite alternate;
 }
 @keyframes scan{from{transform:translate3d(0,80px,0)}to{transform:translate3d(0,min(30vw,340px),0)}}
@@ -145,8 +155,8 @@ tailwind.config = {
 .viz--term{background:var(--ink-800)}
 .term{
   position:absolute;left:10%;right:10%;bottom:7%;z-index:2;
-  padding:1rem 1.1rem;border-radius:var(--r-sm);background:#e9e6f1;
-  font-family:var(--f-mono);font-size:.6875rem;line-height:1.55;color:var(--navy-900);
+  padding:1rem 1.1rem;border-radius:var(--r-sm);background:#e9efeb;
+  font-family:var(--f-mono);font-weight:600;font-size:.6875rem;line-height:1.55;color:var(--navy-900);
 }
 .term p{margin:0}
 .term .ok{color:var(--psh)}
@@ -159,30 +169,30 @@ tailwind.config = {
 .seg-float .seg-tab{font-size:.8125rem;padding:.4rem .8rem}
 .device{
   position:absolute;z-index:2;overflow:hidden;background:#000;
-  box-shadow:0 2px 4px rgba(29,22,80,.08),0 30px 50px -24px rgba(29,22,80,.45);
+  box-shadow:0 2px 4px rgba(14,59,38,.08),0 30px 50px -24px rgba(14,59,38,.45);
   transition:opacity .45s var(--ease),transform .55s var(--ease-spring);
 }
 .device--desktop{left:8%;right:8%;top:19%;bottom:9%;border-radius:var(--r-sm)}
-.device--mobile{left:50%;top:17%;bottom:6%;width:32%;margin-left:-16%;border-radius:22px;border:6px solid #1f1b31}
+.device--mobile{left:50%;top:17%;bottom:6%;width:32%;margin-left:-16%;border-radius:22px;border:6px solid #16503a}
 [data-device="desktop"] .device--mobile,[data-device="mobile"] .device--desktop{opacity:0;transform:translate3d(0,14px,0) scale(.96);pointer-events:none}
-.device-bar{position:relative;z-index:3;display:flex;align-items:center;gap:.4rem;height:28px;padding:0 .65rem;background:#1f1b31}
-.device-bar i{width:7px;height:7px;border-radius:50%;background:#3a3354}
-.device-url{margin-left:.6rem;flex:1;max-width:60%;height:16px;border-radius:4px;background:#2b2640;font-family:var(--f-mono);font-size:.5625rem;line-height:16px;color:var(--bone-dim);padding:0 .5rem;white-space:nowrap;overflow:hidden}
+.device-bar{position:relative;z-index:3;display:flex;align-items:center;gap:.4rem;height:28px;padding:0 .65rem;background:#16503a}
+.device-bar i{width:7px;height:7px;border-radius:50%;background:#2b7053}
+.device-url{margin-left:.6rem;flex:1;max-width:60%;height:16px;border-radius:4px;background:#1f5e44;font-family:var(--f-mono);font-weight:600;font-size:.5625rem;line-height:16px;color:var(--bone-dim);padding:0 .5rem;white-space:nowrap;overflow:hidden}
 .device-screen{position:absolute;inset:0;top:28px}
 .device--mobile .device-screen{top:0}
 .device-screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(.6) contrast(1.05)}
-.device-screen .viz-tint{background:#a98ae0}
+.device-screen .viz-tint{background:#c9a688}
 .device-chip{position:absolute;left:.7rem;bottom:.7rem;z-index:3}
 .device-play{
   position:absolute;left:50%;top:50%;z-index:3;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;
   display:grid;place-items:center;background:var(--psh);color:#fff;
-  box-shadow:0 14px 30px -10px rgba(120,66,192,.9);
+  box-shadow:0 14px 30px -10px rgba(107,46,31,.9);
 }
 
 /* ---------- Khối tối: Giáo dục ---------- */
 .dark-sec{background:var(--ink-800);color:#fff}
 .edu-item + .edu-item{margin-top:2.6rem}
-.edu-title{display:flex;align-items:center;gap:.6rem;font-family:var(--f-display);font-size:var(--fs-2xs);letter-spacing:-.025em;line-height:1.2;color:#fff;margin:0}
+.edu-title{display:flex;align-items:center;gap:.6rem;font-family:var(--f-display);font-weight:600;font-size:var(--fs-2xs);letter-spacing:-.005em;line-height:1.2;color:#fff;margin:0}
 .edu-title svg{flex:none;color:var(--psh-light)}
 .edu-text{margin:.55rem 0 0;font-size:.9375rem;line-height:1.55;color:var(--bone-dim);font-weight:500;max-width:48ch}
 .edu-sub{list-style:none;margin:.9rem 0 0;padding:0;display:grid;gap:.4rem}
@@ -197,16 +207,16 @@ tailwind.config = {
   box-shadow:0 1px 2px rgba(0,0,0,.2),0 18px 36px -22px rgba(0,0,0,.6);
   transition:transform .4s var(--ease-spring),box-shadow .4s var(--ease);
 }
-.lib-card:hover,.lib-card:focus-within{transform:translate3d(0,-3px,0);box-shadow:0 2px 4px rgba(0,0,0,.2),0 26px 44px -22px rgba(139,81,214,.55)}
+.lib-card:hover,.lib-card:focus-within{transform:translate3d(0,-3px,0);box-shadow:0 2px 4px rgba(0,0,0,.2),0 26px 44px -22px rgba(125,56,38,.55)}
 .lib-thumb{position:relative;flex:none;width:100px;height:100px;border-radius:5px;overflow:hidden;background:var(--slate-200)}
 .lib-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}
 .lib-card:hover .lib-thumb img{transform:scale(1.06)}
-.lib-thumb::before{content:'';position:absolute;inset:0;z-index:1;background:rgba(186,160,236,.38);mix-blend-mode:multiply}
+.lib-thumb::before{content:'';position:absolute;inset:0;z-index:1;background:rgba(214,180,150,.38);mix-blend-mode:multiply}
 .lib-thumb::after{content:'';position:absolute;inset:0;z-index:2;background:linear-gradient(to top,rgba(0,0,0,.45),transparent 60%)}
 .lib-body{display:flex;flex-direction:column;min-width:0;padding-top:.15rem}
-.lib-name{font-family:var(--f-display);font-size:1.25rem;letter-spacing:-.02em;line-height:1.2;color:var(--navy-900);margin:0}
+.lib-name{font-family:var(--f-display);font-weight:600;font-size:1.25rem;letter-spacing:-.005em;line-height:1.2;color:var(--navy-900);margin:0}
 .lib-desc{margin:.3rem 0 0;font-size:.875rem;line-height:1.45;color:var(--navy-500)}
-.lib-act{margin-top:auto;padding-top:.6rem;font-family:var(--f-mono);font-size:.6875rem;letter-spacing:.03em;text-transform:uppercase}
+.lib-act{margin-top:auto;padding-top:.6rem;font-family:var(--f-mono);font-weight:600;font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase}
 .lib-link{color:var(--navy-500);text-decoration:underline;text-underline-offset:3px;border-radius:3px;transition:color .25s var(--ease)}
 .lib-link::after{content:'';position:absolute;inset:0;border-radius:var(--r-sm)}
 .lib-link:hover{color:var(--psh)}
@@ -224,14 +234,14 @@ tailwind.config = {
 }
 @media(min-width:1024px){.case{min-height:520px}}
 .case:hover,.case:focus-within{transform:translate3d(0,-4px,0);box-shadow:var(--shade-light-2)}
-.case-tags{display:flex;flex-wrap:wrap;gap:.9rem;font-family:var(--f-mono);font-size:.625rem;letter-spacing:.04em;text-transform:uppercase;color:var(--navy-500)}
+.case-tags{display:flex;flex-wrap:wrap;gap:.9rem;font-family:var(--f-mono);font-weight:600;font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy-500)}
 .case-logo{flex:1;display:grid;place-items:center;padding:2rem 0}
 .case-logo img{display:block;mix-blend-mode:multiply;transition:transform .6s var(--ease-spring)}
 .case:hover .case-logo img{transform:scale(1.04)}
-.case-title{font-family:var(--f-display);font-size:var(--fs-2xs);letter-spacing:-.02em;line-height:1.25;color:var(--navy-900);margin:0}
+.case-title{font-family:var(--f-display);font-weight:600;font-size:var(--fs-2xs);letter-spacing:-.005em;line-height:1.25;color:var(--navy-900);margin:0}
 .case-text{margin-top:.6rem!important;font-size:.875rem;line-height:1.55;color:var(--navy-500)}
 .case-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.9rem}
-.case-chip{font-family:var(--f-mono);font-size:.5625rem;letter-spacing:.04em;text-transform:uppercase;color:var(--navy-700);background:rgba(255,255,255,.6);border-radius:4px;padding:.3rem .45rem}
+.case-chip{font-family:var(--f-mono);font-weight:600;font-size:.5625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy-700);background:rgba(255,255,255,.6);border-radius:4px;padding:.3rem .45rem}
 .case-link{display:inline-block;margin-top:1rem;font-size:.8125rem;font-weight:500;color:var(--navy-500);text-decoration:none;border-radius:3px;transition:color .25s var(--ease)}
 .case-link::after{content:'';position:absolute;inset:0;border-radius:var(--r-md)}
 .case-link:hover{color:var(--psh)}
@@ -245,7 +255,7 @@ tailwind.config = {
 .ex-link{
   display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:60px;
   border-bottom:1px solid var(--line-light);text-decoration:none;color:var(--navy-900);
-  font-family:var(--f-display);font-size:var(--fs-2xs);letter-spacing:-.02em;
+  font-family:var(--f-display);font-weight:600;font-size:var(--fs-2xs);letter-spacing:-.005em;
   transition:color .25s var(--ease);
 }
 .ex-link svg{flex:none;transition:transform .4s var(--ease-spring)}
@@ -268,22 +278,22 @@ tailwind.config = {
 .post-art svg{position:relative;z-index:2;width:28%;height:auto;transition:transform .6s var(--ease-spring)}
 .post:hover .post-art svg{transform:scale(1.06)}
 .post-art--a{background:
-  linear-gradient(152deg,transparent 0 41%,rgba(220,200,255,.95) 45.5%,rgba(150,90,230,.55) 48%,transparent 53%),
-  linear-gradient(152deg,transparent 0 62%,rgba(181,145,239,.3) 64%,transparent 68%),
-  radial-gradient(70% 60% at 30% 40%,rgba(120,66,192,.75),transparent 70%),
-  linear-gradient(160deg,#2c1356 0%,#0e0720 60%,#1d0d3c 100%)}
+  linear-gradient(152deg,transparent 0 41%,rgba(242,201,168,.95) 45.5%,rgba(107,46,31,.55) 48%,transparent 53%),
+  linear-gradient(152deg,transparent 0 62%,rgba(214,150,120,.3) 64%,transparent 68%),
+  radial-gradient(70% 60% at 30% 40%,rgba(107,46,31,.75),transparent 70%),
+  linear-gradient(160deg,#0e3b26 0%,#06180f 60%,#0b2d1d 100%)}
 .post-art--b{background:
-  linear-gradient(118deg,transparent 0 30%,rgba(215,195,255,.9) 33%,rgba(139,81,214,.45) 35.5%,transparent 40%),
-  linear-gradient(118deg,transparent 0 58%,rgba(80,40,140,.9) 58%,rgba(40,18,80,.9) 74%,transparent 74%),
-  radial-gradient(60% 70% at 70% 30%,rgba(120,66,192,.6),transparent 70%),
-  linear-gradient(200deg,#251049 0%,#0b0517 100%)}
+  linear-gradient(118deg,transparent 0 30%,rgba(240,196,160,.9) 33%,rgba(125,56,38,.45) 35.5%,transparent 40%),
+  linear-gradient(118deg,transparent 0 58%,rgba(60,30,20,.9) 58%,rgba(30,15,10,.9) 74%,transparent 74%),
+  radial-gradient(60% 70% at 70% 30%,rgba(107,46,31,.6),transparent 70%),
+  linear-gradient(200deg,#103a26 0%,#05150d 100%)}
 .post-art--c{background:
-  linear-gradient(90deg,transparent 60%,rgba(225,210,255,.95) 85%,#fff 100%) 0 18%/100% 2.5% no-repeat,
-  linear-gradient(176deg,#5d33a0 0%,#3d1f72 34%,#0b0618 36%,#07040f 58%,#4a2585 60%,#7a4ac6 100%)}
+  linear-gradient(90deg,transparent 60%,rgba(246,214,186,.95) 85%,#fff 100%) 0 18%/100% 2.5% no-repeat,
+  linear-gradient(176deg,#2f5a42 0%,#1d4430 34%,#06180f 36%,#04120b 58%,#285a40 60%,#6b2e1f 100%)}
 .post-body{padding:1.1rem 1.1rem 1.5rem}
-.post-meta{display:flex;flex-wrap:wrap;gap:.9rem;font-family:var(--f-mono);font-size:.625rem;letter-spacing:.04em;text-transform:uppercase;color:var(--navy-900)}
+.post-meta{display:flex;flex-wrap:wrap;gap:.9rem;font-family:var(--f-mono);font-weight:600;font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy-900)}
 .post-meta span{color:var(--navy-500)}
-.post-title{margin-top:.7rem!important;font-family:var(--f-display);font-size:var(--fs-xs);letter-spacing:-.025em;line-height:1.2;color:var(--navy-900);word-break:break-word}
+.post-title{margin-top:.7rem!important;font-family:var(--f-display);font-weight:600;font-size:var(--fs-xs);letter-spacing:-.005em;line-height:1.2;color:var(--navy-900);word-break:break-word}
 </style>
 </head>
 <body>
@@ -292,9 +302,9 @@ tailwind.config = {
 <!-- ============================ NAV ============================ -->
 <header id="nav" class="hnav">
   <div class="shell hnav-row">
-    <a href="/home/" class="group hnav-logo" aria-label="PiHeritage — trang chủ" data-en-aria-label="PiHeritage — home">
-      <img src="/brand_assets/piheritagelogo.png" alt="" class="pi-mark w-7 h-6 object-contain flex-none">
-      <span class="hnav-word">PiHeritage</span>
+    <a href="/home/" class="group hnav-logo" aria-label="PiGo Heritage — trang chủ" data-en-aria-label="PiGo Heritage — home">
+      <img class="hnav-full" src="/assets/brand/header-heritage-dark.png" alt="" width="295" height="48">
+      <img class="hnav-mark" src="/assets/brand/symbol-192.png" alt="" width="40" height="40">
     </a>
 
     <div class="hnav-right">
@@ -375,8 +385,8 @@ tailwind.config = {
 
       <div class="col-span-6 lg:col-start-9 lg:col-span-4 2xl:col-start-9 2xl:col-span-3 lg:pb-3 rise">
         <p class="hx-copy"
-           data-en="PiHeritage is a partnership between PSH Design and Pigo Tour: Vietnam's monuments and heritage sites rebuilt with 3DGS. Not a photo, not a video — you step into the actual space and look from any angle, right in your browser.">
-          PiHeritage là chương trình hợp tác giữa PSH Design và Pigo Tour: dựng lại và số hóa các di tích,
+           data-en="PiGo Heritage is a partnership between PSH Design and PiGo Tour: Vietnam's monuments and heritage sites rebuilt with 3DGS. Not a photo, not a video — you step into the actual space and look from any angle, right in your browser.">
+          PiGo Heritage là chương trình hợp tác giữa PSH Design và PiGo Tour: dựng lại và số hóa các di tích,
           di sản Việt Nam bằng công nghệ 3DGS. Không phải ảnh, không phải video — bạn bước vào đúng không gian đó,
           xoay mọi góc và khám phá mọi ngóc ngách như đang ở đó.
         </p>
@@ -398,18 +408,18 @@ tailwind.config = {
   <div class="partners" role="region" aria-label="Đơn vị hợp tác" data-en-aria-label="Partners">
     <div class="shell partners-row">
       <p class="u-eyebrow m-0" data-en="A partnership between">Chương trình hợp tác giữa</p>
-      <a class="plogo" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer"
+      <a class="plogo plogo-psh" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer"
          aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab">
         <img src="/assets/pshlogo-white.png" alt="" class="w-[92px]">
       </a>
       <span class="plogo-op" aria-hidden="true">×</span>
-      <a class="plogo" href="https://pigotour.com" target="_blank" rel="noopener noreferrer"
-         aria-label="Pigo Tour — mở pigotour.com trong tab mới" data-en-aria-label="Pigo Tour — open pigotour.com in a new tab">
-        <img src="/brand_assets/pigotourlogo.png" alt="" class="mono-white w-[64px]">
+      <a class="plogo plogo-tour" href="https://pigotour.com" target="_blank" rel="noopener noreferrer"
+         aria-label="PiGo Tour — mở pigotour.com trong tab mới" data-en-aria-label="PiGo Tour — open pigotour.com in a new tab">
+        <img src="/assets/brand/tour-gon-dark.png" alt="" class="w-[170px]" width="170" height="42">
       </a>
       <span class="plogo-op" aria-hidden="true">=</span>
-      <a class="plogo plogo-wide" href="/gallery/" aria-label="PiHeritage — thư viện scan" data-en-aria-label="PiHeritage — scan library">
-        <img src="/brand_assets/piheritagebgdelete.png" alt="" class="mono-white w-[190px]">
+      <a class="plogo plogo-wide" href="/gallery/" aria-label="PiGo Heritage — thư viện scan" data-en-aria-label="PiGo Heritage — scan library">
+        <img src="/assets/brand/heritage-gon-dark.png" alt="" class="w-[230px]" width="230" height="46">
       </a>
     </div>
   </div>
@@ -450,7 +460,7 @@ tailwind.config = {
           <div class="viz">
             <img class="viz-img" src="/images/chuavanphuc.webp" alt="" loading="lazy">
             <span class="viz-tint"></span><span class="viz-shade"></span>
-            <p class="viz-label"><b data-en="Library">Thư viện</b><span data-en="PiHeritage today">PiHeritage hôm nay</span></p>
+            <p class="viz-label"><b data-en="Library">Thư viện</b><span data-en="PiGo Heritage today">PiGo Heritage hôm nay</span></p>
             <!-- Ba số đầu do assets/psh.js đếm thẳng từ heritage-data.js rồi ghi đè. -->
             <div class="panel">
               <div class="panel-row">
@@ -487,8 +497,8 @@ tailwind.config = {
             <span class="tag tag--white tag--tr" data-en="≈ half a day / mid-sized site">≈ nửa ngày / di tích cỡ trung</span>
             <svg class="scan-svg" viewBox="0 0 600 360" fill="none" aria-hidden="true">
               <defs>
-                <pattern id="dp" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="4.5" cy="4.5" r="2.4" fill="#c9cfe0"/></pattern>
-                <pattern id="dpk" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="4.5" cy="4.5" r="2.6" fill="#8b51d6"/></pattern>
+                <pattern id="dp" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="4.5" cy="4.5" r="2.4" fill="#c5d4cb"/></pattern>
+                <pattern id="dpk" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="4.5" cy="4.5" r="2.6" fill="#7d3826"/></pattern>
               </defs>
               <g fill="url(#dp)">
                 <path d="M150 92q20 4 35-6h230q15 10 35 6l-10 12H160Z"/>
@@ -593,8 +603,8 @@ tailwind.config = {
           <span data-en="Schools, libraries, museums">Trường học, thư viện, bảo tàng</span>
         </h3>
         <p class="edu-text"
-           data-en="The entire PiHeritage library is free for every educational institution in Vietnam — for classroom and online teaching alike, with no view limit and no contract.">
-          Toàn bộ thư viện PiHeritage miễn phí cho mọi cơ sở giáo dục tại Việt Nam — dùng cho tiết học
+           data-en="The entire PiGo Heritage library is free for every educational institution in Vietnam — for classroom and online teaching alike, with no view limit and no contract.">
+          Toàn bộ thư viện PiGo Heritage miễn phí cho mọi cơ sở giáo dục tại Việt Nam — dùng cho tiết học
           trực tiếp lẫn trực tuyến, không giới hạn số lượt xem, không cần hợp đồng.
         </p>
       </div>
@@ -612,8 +622,8 @@ tailwind.config = {
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5C5.5 4.3 8.2 4.3 11 6c2.8-1.7 5.5-1.7 8-.5v12c-2.5-1.2-5.2-1.2-8 .5-2.8-1.7-5.5-1.7-8-.5v-12Z"/><path d="M11 6v12"/></svg>
           <span data-en="Interpretation included">Kèm bản thuyết minh</span>
         </h3>
-        <p class="edu-text" data-en="Comes with the site interpretation written by Pigo Tour.">
-          Kèm bản thuyết minh do Pigo Tour biên soạn cho từng địa điểm.
+        <p class="edu-text" data-en="Comes with the site interpretation written by PiGo Tour.">
+          Kèm bản thuyết minh do PiGo Tour biên soạn cho từng địa điểm.
         </p>
       </div>
       <div class="edu-item rise">
@@ -687,8 +697,8 @@ tailwind.config = {
 
         <article class="case rise">
           <p class="case-tags"><span data-en="Content &amp; journeys">Bên nội dung &amp; hành trình</span><span data-en="See it for real, then go for real">Đi thật, sau khi đã xem thật</span></p>
-          <div class="case-logo"><img src="/brand_assets/pigotourlogo.png" alt="Pigo Tour" class="w-[180px]"></div>
-          <h3 class="case-title" data-en="Pigo Tour picks the destinations and takes people there.">Pigo Tour chọn điểm đến và đưa người xem tới tận nơi.</h3>
+          <div class="case-logo"><img src="/assets/brand/tour-gon-light.png" alt="PiGo Tour" class="w-[230px] max-w-full"></div>
+          <h3 class="case-title" data-en="PiGo Tour picks the destinations and takes people there.">PiGo Tour chọn điểm đến và đưa người xem tới tận nơi.</h3>
           <p class="case-text"
              data-en="A travel operator: writes the interpretation for each site, works with site management boards to secure scanning permission, and runs trips for people who want to visit after seeing the scan.">
             Đơn vị lữ hành: viết thuyết minh cho từng di tích, làm việc với ban quản lý để xin phép quét,
@@ -700,13 +710,13 @@ tailwind.config = {
             <span class="case-chip" data-en="Field tours">Tour thực địa</span>
           </div>
           <a class="case-link" href="https://pigotour.com" target="_blank" rel="noopener noreferrer"
-             aria-label="Pigo Tour — mở pigotour.com trong tab mới" data-en-aria-label="Pigo Tour — open pigotour.com in a new tab">pigotour.com ↗</a>
+             aria-label="PiGo Tour — mở pigotour.com trong tab mới" data-en-aria-label="PiGo Tour — open pigotour.com in a new tab">pigotour.com ↗</a>
         </article>
 
         <article class="case rise md:col-span-2 xl:col-span-1">
           <p class="case-tags"><span data-en="Where the two meet">Điểm giao thoa</span></p>
-          <div class="case-logo"><img src="/brand_assets/piheritagebgdelete.png" alt="PiHeritage" class="w-[300px] max-w-full"></div>
-          <h3 class="case-title" data-en="See it first in 3DGS, then go for real with Pigo Tour.">Xem trước bằng 3DGS, rồi đi thật cùng Pigo Tour.</h3>
+          <div class="case-logo"><img src="/assets/brand/heritage-slogan-light.png" alt="PiGo Heritage" class="w-[320px] max-w-full"></div>
+          <h3 class="case-title" data-en="See it first in 3DGS, then go for real with PiGo Tour.">Xem trước bằng 3DGS, rồi đi thật cùng PiGo Tour.</h3>
           <p class="case-text" data-en="A scan does not replace the trip — it is the reason to start one.">
             Bản scan không thay thế chuyến đi — nó khơi nguồn cho chuyến đi ấy.
           </p>
@@ -728,7 +738,7 @@ tailwind.config = {
         <li><a class="ex-link" href="#giao-duc"><span data-en="Schools programme">Chương trình trường học</span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9h12M10.5 5l4 4-4 4" stroke="currentColor" stroke-width="1.3"/></svg></a></li>
         <li><a class="ex-link" href="#lien-he"><span data-en="Request a scan">Gửi yêu cầu quét</span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9h12M10.5 5l4 4-4 4" stroke="currentColor" stroke-width="1.3"/></svg></a></li>
         <li><a class="ex-link" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer"><span>PSH Design</span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13 13 5M6.5 5H13v6.5" stroke="currentColor" stroke-width="1.3"/></svg></a></li>
-        <li><a class="ex-link" href="https://pigotour.com" target="_blank" rel="noopener noreferrer"><span>Pigo Tour</span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13 13 5M6.5 5H13v6.5" stroke="currentColor" stroke-width="1.3"/></svg></a></li>
+        <li><a class="ex-link" href="https://pigotour.com" target="_blank" rel="noopener noreferrer"><span>PiGo Tour</span><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13 13 5M6.5 5H13v6.5" stroke="currentColor" stroke-width="1.3"/></svg></a></li>
       </ul>
     </div>
   </section>
@@ -790,10 +800,13 @@ tailwind.config = {
 <footer class="foot">
   <div class="shell pt-12">
     <div class="g12 gap-y-10">
-      <div class="col-span-6 lg:col-span-6 flex items-start gap-2">
-        <a class="foot-ico" href="/home/" aria-label="PiHeritage — trang chủ" data-en-aria-label="PiHeritage — home"><img src="/brand_assets/piheritagelogo.png" alt="" class="w-5 h-5 object-contain mono-white"></a>
-        <a class="foot-ico" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer" aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab"><img src="/assets/pshlogo-white.png" alt="" class="w-6"></a>
-        <a class="foot-ico" href="https://pigotour.com" target="_blank" rel="noopener noreferrer" aria-label="Pigo Tour — mở pigotour.com trong tab mới" data-en-aria-label="Pigo Tour — open pigotour.com in a new tab"><img src="/brand_assets/pigotourlogo.png" alt="" class="w-6 mono-white"></a>
+      <div class="col-span-6 lg:col-span-6">
+        <a class="foot-logo" href="/home/" aria-label="PiGo Heritage — trang chủ" data-en-aria-label="PiGo Heritage — home"><img src="/assets/brand/heritage-slogan-dark.png" alt="" width="380" height="84"></a>
+        <div class="foot-partners">
+          <span class="foot-head" data-en="With">Cùng</span>
+          <a class="foot-ico foot-ico--wide" href="https://pigotour.com" target="_blank" rel="noopener noreferrer" aria-label="PiGo Tour — mở pigotour.com trong tab mới" data-en-aria-label="PiGo Tour — open pigotour.com in a new tab"><img src="/assets/brand/tour-gon-dark.png" alt="" width="110" height="27"></a>
+          <a class="foot-ico foot-ico--wide" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer" aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab"><img src="/assets/pshlogo-white.png" alt="" width="40" height="32"></a>
+        </div>
       </div>
 
       <nav class="col-span-3 lg:col-start-7 lg:col-span-3" aria-label="Liên kết trang" data-en-aria-label="Site links">
@@ -832,8 +845,8 @@ tailwind.config = {
     </div>
 
     <div class="mt-20 lg:mt-28 py-6 border-t border-white/10 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
-      <p class="m-0 text-[.9375rem] font-medium" data-en="<span data-year>2026</span> © PSH Design × Pigo Tour">
-        <span data-year>2026</span> © PSH Design × Pigo Tour
+      <p class="m-0 text-[.9375rem] font-medium" data-en="<span data-year>2026</span> © PSH Design × PiGo Tour">
+        <span data-year>2026</span> © PSH Design × PiGo Tour
       </p>
       <p class="m-0 flex flex-wrap gap-x-5 gap-y-2">
         <a class="foot-mono" href="/gallery/" data-en="Scan library">Thư viện scan</a>
