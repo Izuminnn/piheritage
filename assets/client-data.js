@@ -1,5 +1,5 @@
 /* =========================================================================
-   PIHERITAGE — BẢN SCAN RIÊNG CỦA KHÁCH HÀNG
+   PIGO HERITAGE — BẢN SCAN RIÊNG CỦA KHÁCH HÀNG
    -------------------------------------------------------------------------
    Trang /khach-hang/ đọc file này. Mỗi khối { iv, data } là MỘT dự án của
    một khách, đã được khoá bằng mã truy cập riêng của khách đó. Bản sao `adm`

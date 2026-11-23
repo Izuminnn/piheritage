@@ -1,5 +1,5 @@
 /* =========================================================================
-   PIHERITAGE — KHOÁ BẢN SCAN RIÊNG CỦA KHÁCH HÀNG
+   PIGO HERITAGE — KHOÁ BẢN SCAN RIÊNG CỦA KHÁCH HÀNG
    -------------------------------------------------------------------------
    Trang là web tĩnh, ai cũng đọc được file JS. Nên dữ liệu mỗi dự án (tên
    khách, link viewer, lời nhắn…) được mã hoá AES-256-GCM, khoá sinh ra từ

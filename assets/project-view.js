@@ -1,5 +1,5 @@
 /* =========================================================================
-   PIHERITAGE — HIỂN THỊ MỘT DỰ ÁN TRÊN SÂN KHẤU VIEWER
+   PIGO HERITAGE — HIỂN THỊ MỘT DỰ ÁN TRÊN SÂN KHẤU VIEWER
    -------------------------------------------------------------------------
    Dùng chung cho /khach-hang/ (dự án riêng, mở bằng mã) và /du-an/ (dự án
    công khai). Trang gọi PSH_VIEW({...}).show(project) là ra:

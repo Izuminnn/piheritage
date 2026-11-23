@@ -1,5 +1,5 @@
 /* =========================================================================
-   PIHERITAGE — CHUYỂN ĐỔI TIẾNG VIỆT / TIẾNG ANH
+   PIGO HERITAGE — CHUYỂN ĐỔI TIẾNG VIỆT / TIẾNG ANH
    -------------------------------------------------------------------------
    CÁCH DỊCH MỘT CÂU: viết tiếng Việt như bình thường trong HTML, rồi thêm
    thuộc tính `data-en` chứa bản tiếng Anh. Ví dụ:

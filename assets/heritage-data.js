@@ -1,5 +1,5 @@
 /* =========================================================================
-   PIHERITAGE — DANH SÁCH DI TÍCH & DI SẢN
+   PIGO HERITAGE — DANH SÁCH DI TÍCH & DI SẢN
    -------------------------------------------------------------------------
    ĐÂY LÀ FILE DUY NHẤT chứa danh sách địa điểm.
    Cả trang chủ (đếm số liệu) và trang gallery đều đọc từ đây.

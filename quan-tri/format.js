@@ -1,5 +1,5 @@
 /* =========================================================================
-   PIHERITAGE — ĐỌC / GHI FILE DỮ LIỆU CHO TRANG QUẢN TRỊ
+   PIGO HERITAGE — ĐỌC / GHI FILE DỮ LIỆU CHO TRANG QUẢN TRỊ
    -------------------------------------------------------------------------
    heritage-data.js và client-data.js là file JS viết tay được. Trang quản trị
    chỉ ghi lại phần nằm giữa hai dòng mốc @@PSH-DATA-START / @@PSH-DATA-END,

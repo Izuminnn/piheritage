@@ -3,33 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quản trị — PiHeritage</title>
+<title>Quản trị — PiGo Heritage</title>
 <!-- Trang nội bộ, không có nút nào trên web dẫn tới đây. Bảo vệ thật sự là token GitHub:
      không có token thì trang này không đọc cũng không ghi được gì. -->
 <meta name="robots" content="noindex, nofollow">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&family=Be+Vietnam+Pro:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="/assets/psh.css">
-<link rel="icon" type="image/png" href="/brand_assets/piheritagelogo.png">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/assets/brand/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
   theme: { extend: {
     colors: {
-      ink:  { 900:'#07060d', 800:'#110f1c', 700:'#181527', 600:'#1f1b31', 500:'#2b2640', 400:'#3a3354' },
-      psh:  '#7842c0', pshb:'#8b51d6', pshl:'#b591ef', pigo:'#a46ae8', lime:'#d9cff0',
-      bone: '#ffffff', bonedim:'#c8c2dc', bonemute:'#8f88ab', brass:'#f2b84b',
-      navy: { 900:'#1d1650', 700:'#322a6b', 500:'#5a5288', 300:'#8d86b3' },
-      slate:{ 50:'#f3f1f8', 100:'#e6e1f2', 200:'#d9cff0', 300:'#c6bde0' }
+      ink:  { 900:'#08261a', 800:'#0e3b26', 700:'#124530', 600:'#16503a', 500:'#1f5e44', 400:'#2b7053' },
+      psh:  '#6b2e1f', pshb:'#7d3826', pshl:'#d69678', pigo:'#e0ae90', lime:'#eaf4ee',
+      bone: '#ffffff', bonedim:'#c9d8cf', bonemute:'#8fae9d', brass:'#f2b84b',
+      navy: { 900:'#1f2328', 700:'#3a4148', 500:'#5b6670', 300:'#8d969e' },
+      slate:{ 50:'#f3f6f4', 100:'#e6eee9', 200:'#eaf4ee', 300:'#bfd2c6' }
     },
     fontFamily: {
-      display:['"Inter Tight"','"Be Vietnam Pro"','sans-serif'],
+      display:['Saira','"Be Vietnam Pro"','sans-serif'],
       body:['"Be Vietnam Pro"','sans-serif'],
-      serif:['"Inter Tight"','sans-serif'],
-      mono:['"Geist Mono"','ui-monospace','monospace']
+      serif:['Saira','sans-serif'],
+      mono:['Saira','sans-serif'],
+      code:['ui-monospace','Consolas','monospace']
     },
     maxWidth: { shell:'1720px' }
   }}
@@ -171,7 +174,7 @@ tailwind.config = {
   .toast{
     position:fixed;top:84px;right:1rem;z-index:65;width:min(420px,calc(100vw - 2rem));
     padding:1rem 1.15rem;border-radius:var(--r-md);background:var(--ink-700);
-    border:1px solid rgba(181,145,239,.45);box-shadow:var(--shade-2);font-size:.875rem;line-height:1.6;color:var(--bone);
+    border:1px solid rgba(214,150,120,.45);box-shadow:var(--shade-2);font-size:.875rem;line-height:1.6;color:var(--bone);
     animation:modal-in .35s var(--ease);
   }
   .toast.is-error{border-color:rgba(201,162,39,.6)}
@@ -193,9 +196,9 @@ tailwind.config = {
 
 <header id="nav" class="hnav">
   <div class="shell hnav-row">
-    <a href="/home/" class="group hnav-logo" aria-label="PiHeritage — trang chủ">
-      <img src="/brand_assets/piheritagelogo.png" alt="" class="pi-mark w-7 h-6 object-contain flex-none">
-      <span class="hnav-word">PiHeritage</span>
+    <a href="/home/" class="group hnav-logo" aria-label="PiGo Heritage — trang chủ">
+      <img class="hnav-full" src="/assets/brand/header-heritage-dark.png" alt="" width="295" height="48">
+      <img class="hnav-mark" src="/assets/brand/symbol-192.png" alt="" width="40" height="40">
       <span class="hnav-sub hidden sm:inline">Quản trị nội bộ</span>
     </a>
     <div class="nav-pill px-2 gap-2">
@@ -225,7 +228,7 @@ tailwind.config = {
         <ol>
           <li>Đăng nhập GitHub bằng tài khoản sở hữu kho website, vào
             <a class="inline-link" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">Settings → Developer settings → Fine-grained tokens → Generate new token</a>.</li>
-          <li><b class="text-bone">Token name</b>: đặt tên dễ nhớ, ví dụ <code>PiHeritage quản trị</code>. <b class="text-bone">Expiration</b>: chọn 1 năm.</li>
+          <li><b class="text-bone">Token name</b>: đặt tên dễ nhớ, ví dụ <code>PiGo Heritage quản trị</code>. <b class="text-bone">Expiration</b>: chọn 1 năm.</li>
           <li><b class="text-bone">Repository access</b>: chọn <code>Only select repositories</code> → chọn đúng kho website.</li>
           <li><b class="text-bone">Permissions → Repository permissions → Contents</b>: chọn <code>Read and write</code>. Các quyền khác để nguyên.</li>
           <li>Bấm <b class="text-bone">Generate token</b>, chép chuỗi bắt đầu bằng <code>github_pat_…</code> rồi gửi riêng cho anh em cần dùng.</li>

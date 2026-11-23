@@ -1,0 +1,13 @@
+node_modules/
+temporary screenshots/
+
+# Tai lieu noi bo - giu o may, khong dua len GitHub/web
+brand_assets/
+
+# Cau hinh rieng cua may
+*.code-workspace
+.claude/settings.local.json
+
+# Ban sao luu du lieu khach hang - chi giu o may
+assets/client-data.backup-truoc-demo.js
+assets/client-data.demo-local.js

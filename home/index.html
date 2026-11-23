@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title data-en="PiGo Heritage — Vietnam's heritage in 3DGS">PiGo Heritage — Di sản Việt Nam bằng 3DGS</title>
-<meta name="description" content="PSH Design × PiGo Tour quét và dựng lại di tích, di sản Việt Nam bằng công nghệ 3DGS. Miễn phí cho trường học và tổ chức giáo dục."
-      data-en-content="PSH Design × PiGo Tour scan and rebuild Vietnam's monuments and heritage sites with 3DGS. Free for schools and educational institutions.">
+<meta name="description" content="PiGo Heritage, thương hiệu của PSH Design, quét và số hoá 3D di tích, di sản Việt Nam bằng công nghệ 3DGS. Miễn phí cho trường học và tổ chức giáo dục."
+      data-en-content="PiGo Heritage, a PSH Design brand, scans and digitises Vietnam's monuments and heritage sites in 3DGS. Free for schools and educational institutions.">
 
 <meta property="og:site_name" content="PiGo Heritage">
 <meta property="og:image" content="https://piheritage.com/assets/brand/og-image.png">
@@ -50,42 +50,61 @@ tailwind.config = {
 .hx-screen{position:relative;z-index:2;min-height:max(640px,min(100svh,980px));display:flex;flex-direction:column;justify-content:flex-end}
 .hx-media{position:absolute;inset:0;z-index:0}
 .hx-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* Video YouTube làm nền: iframe phóng to hơn khung (giữ tỉ lệ 16:9) rồi cắt phần thừa — giống object-fit:cover.
+   Phóng thêm 20% để đẩy thanh tiêu đề / logo YouTube ra ngoài khung nhìn. */
+.hx-media{container-type:size}
+.hx-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hx-yt{position:absolute;left:50%;top:50%;width:max(120cqw,213.33cqh);height:max(120cqh,67.5cqw);
+  transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity 1.2s var(--ease)}
+.hx-yt.is-on{opacity:1}
+.hx-yt iframe{width:100%;height:100%;border:0}
 /* Video giữ màu gốc — chỉ phủ lớp tối để chữ đọc được */
 .hx-shade{
   position:absolute;inset:0;
   background:
-    linear-gradient(98deg,rgba(6,26,17,.62) 0%,rgba(6,26,17,.42) 24%,rgba(6,26,17,.12) 48%,rgba(6,26,17,0) 68%),
-    linear-gradient(to bottom,rgba(6,26,17,.55) 0%,rgba(6,26,17,0) 18%),
-    linear-gradient(to top,rgba(6,26,17,.72) 0%,rgba(6,26,17,.35) 16%,rgba(6,26,17,0) 40%);
+    linear-gradient(98deg,rgba(6,26,17,.72) 0%,rgba(6,26,17,.52) 26%,rgba(6,26,17,.2) 50%,rgba(6,26,17,.08) 70%),
+    linear-gradient(to bottom,rgba(6,26,17,.6) 0%,rgba(6,26,17,0) 20%),
+    linear-gradient(to top,rgba(6,26,17,.85) 0%,rgba(6,26,17,.5) 22%,rgba(6,26,17,.12) 48%,rgba(6,26,17,0) 62%),
+    rgba(6,26,17,.12);
+}
+/* Điện thoại: chữ phủ gần hết khung → tối đều hơn, đậm dần về phía dưới */
+@media(max-width:767px){
+  .hx-shade{background:
+    linear-gradient(to bottom,rgba(6,26,17,.55) 0%,rgba(6,26,17,.3) 22%,rgba(6,26,17,.5) 48%,rgba(6,26,17,.82) 100%);}
 }
 .hx-inner{position:relative;z-index:2;padding-top:120px;padding-bottom:clamp(2.5rem,7vh,5rem)}
 /* Lớp tối đã nhẹ đi để video hiện rõ — bóng chữ mờ giữ tiêu đề đọc được trên vùng sáng */
 .hx-title .u-grad{filter:drop-shadow(0 2px 16px rgba(6,26,17,.6))}
 .hx-title{font-size:var(--fs-2xl);line-height:1.02;margin:0;color:#fff;text-shadow:0 2px 30px rgba(6,26,17,.45)}
-.hx-copy{font-size:1rem;line-height:1.45;color:#fff;font-weight:500;margin:0;max-width:40ch}
+.hx-copy{font-size:1.125rem;line-height:1.5;color:#fff;font-weight:500;margin:0;max-width:34ch;text-shadow:0 1px 18px rgba(6,26,17,.7)}
+/* Hai nút chính: to hơn nút thường, mặt đặc để nổi rõ trên video */
+.hx-cta{display:flex;flex-wrap:wrap;gap:12px}
+.hx-cta .btn{min-height:54px;padding:0 1.6rem;font-size:1.0625rem;border-radius:10px}
+.hx-cta .btn--primary{box-shadow:0 0 0 1px rgba(255,255,255,.18),0 14px 34px -12px rgba(6,26,17,.8)}
+.hx-cta .btn--primary:hover{box-shadow:0 0 0 1px rgba(255,255,255,.3),0 18px 40px -12px rgba(107,46,31,.8)}
+.btn--white{background:#fff;color:var(--ink-800);box-shadow:0 14px 34px -12px rgba(6,26,17,.8)}
+.btn--white:hover{background:#f3f6f4;transform:translate3d(0,-2px,0)}
+.btn--white:active{background:#e6eee9}
 
-/* ---------- Dải đối tác ---------- */
+/* ---------- Dải hệ sinh thái ---------- */
 /* Nằm trong hero, nền trong suốt — video chạy phía sau.
-   Đáy chừa thêm 30px vì tấm trắng bên dưới trồi lên đè mép video. */
+   Đáy chừa thêm 30px vì tấm trắng bên dưới trồi lên đè mép video.
+   Logo canh theo CHIỀU CAO: logo PiGo cao 34px (tối thiểu 32px theo quy cách). */
 .partners{position:relative;z-index:2;padding:2.5rem 0 calc(2.5rem + 30px)}
-.partners-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1.75rem 1.25rem}
+.partners-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:1.5rem 2rem}
 .partners-row > .u-eyebrow{flex-basis:100%;justify-content:center}
-/* Logo PiGo giữ cao ≥ 32px (tối thiểu theo quy cách) — không ép theo bề ngang */
-.partners-row img{max-width:none}
-@media(max-width:1023px){.partners-row .plogo-psh img{width:72px!important}.partners-row .plogo-tour img{width:auto!important;height:32px}.partners-row .plogo-wide img{width:auto!important;height:34px}}
-.partners-row .plogo-wide img{max-width:50vw}
-@media(min-width:1024px){
-  .partners-row{justify-content:space-between;gap:1.5rem 3.5rem}
-  .partners-row > .u-eyebrow{flex-basis:auto}
-  .partners-row img{max-width:none}
-}
-.plogo{display:inline-flex;align-items:center;border-radius:var(--r-sm);opacity:.82;transition:opacity .3s var(--ease),transform .35s var(--ease-spring)}
+.plogo{display:inline-flex;align-items:center;border-radius:var(--r-sm);opacity:.9;transition:opacity .3s var(--ease),transform .35s var(--ease-spring)}
 .plogo:hover{opacity:1;transform:translate3d(0,-2px,0)}
 .plogo:focus-visible{opacity:1;outline:2px solid var(--focus);outline-offset:6px}
 .plogo:active{transform:translate3d(0,0,0) scale(.98)}
-.plogo img{display:block;height:auto}
-.plogo-op{font-family:var(--f-display);font-weight:600;font-size:2rem;color:var(--bone-mute);line-height:1}
-
+.plogo img{display:block;height:34px;width:auto;max-width:none}
+.plogo-psh img{height:38px}
+.plogo-sep{width:1px;height:34px;background:rgba(255,255,255,.22)}
+@media(max-width:767px){.plogo-sep{display:none}.plogo-psh{flex-basis:100%;justify-content:center}}
+@media(min-width:1024px){
+  .partners-row{justify-content:space-between;gap:1.5rem 2.5rem}
+  .partners-row > .u-eyebrow{flex-basis:auto}
+}
 /* ---------- Danh sách dính bên trái — mục đang xem đậm, còn lại lavender ---------- */
 .spy-list{list-style:none;margin:2.5rem 0 0;padding:0}
 .spy-link{
@@ -235,7 +254,9 @@ tailwind.config = {
 @media(min-width:1024px){.case{min-height:520px}}
 .case:hover,.case:focus-within{transform:translate3d(0,-4px,0);box-shadow:var(--shade-light-2)}
 .case-tags{display:flex;flex-wrap:wrap;gap:.9rem;font-family:var(--f-mono);font-weight:600;font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy-500)}
-.case-logo{flex:1;display:grid;place-items:center;padding:2rem 0}
+/* vùng logo cao cố định để tiêu đề các thẻ thẳng hàng; link dồn xuống đáy */
+.case-logo{flex:0 0 auto;height:clamp(150px,16vw,220px);display:grid;place-items:center}
+.case-link{margin-top:auto!important;padding-top:1rem}
 .case-logo img{display:block;mix-blend-mode:multiply;transition:transform .6s var(--ease-spring)}
 .case:hover .case-logo img{transform:scale(1.04)}
 .case-title{font-family:var(--f-display);font-weight:600;font-size:var(--fs-2xs);letter-spacing:-.005em;line-height:1.25;color:var(--navy-900);margin:0}
@@ -248,6 +269,34 @@ tailwind.config = {
 .case-link:focus-visible{outline:none}
 .case:has(.case-link:focus-visible){outline:2px solid var(--navy-900);outline-offset:3px}
 .case-link:active{color:var(--psh-deep)}
+/* Thẻ PiGo Heritage: nền xanh rất đậm (dùng logo bản NEN-TOI) để nổi bật "bạn đang ở đây" */
+.case--here{background:var(--ink-800);color:#fff}
+.case--here .case-tags{color:var(--bone-dim)}
+.case--here .case-title{color:#fff}
+.case--here .case-text{color:var(--bone-dim)}
+.case--here .case-logo img{mix-blend-mode:normal}
+.case--here .case-link{color:var(--psh-light)}
+.case--here .case-link:hover{color:#fff}
+.case--here:has(.case-link:focus-visible){outline-color:var(--psh-light)}
+.case-here{color:var(--psh-light)}
+.case-here::before{content:'● ';color:var(--pigo-green-light)}
+
+/* ---------- Câu chuyện PSH Design ---------- */
+.story-psh{display:inline-block;border-radius:var(--r-sm)}
+.story-psh img{display:block;width:300px;max-width:100%;height:auto}
+.story-psh:focus-visible{outline:2px solid var(--focus);outline-offset:4px}
+.story-facts{margin:1.75rem 0 0;display:grid;gap:1rem}
+.story-facts > div{border-top:1px solid var(--line-light);padding-top:.75rem}
+.story-facts dt{font-family:var(--f-mono);font-weight:600;font-size:.6875rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy-500)}
+.story-facts dd{margin:.3rem 0 0;font-family:var(--f-display);font-weight:600;font-size:1.25rem;color:var(--navy-900)}
+.story-text p{margin:0;font-size:1.0625rem;line-height:1.7;color:var(--navy-700);max-width:62ch}
+.story-text p + p{margin-top:1.25rem}
+.story-text .story-lead{font-family:var(--f-display);font-weight:600;font-size:var(--fs-xs);line-height:1.35;color:var(--navy-900)}
+.story-bridge{margin-top:clamp(4rem,8vw,7rem)!important;font-family:var(--f-display);font-weight:600;font-size:var(--fs-2xs);color:var(--navy-900)}
+.story-close{margin-top:clamp(4rem,8vw,7rem);align-items:end}
+.story-quote{margin:0;font-family:var(--f-display);font-weight:700;font-size:var(--fs-lg);line-height:1.05;color:var(--navy-900)}
+.story-slogan{margin-top:1.5rem!important;font-family:var(--f-display);font-weight:600;font-size:.875rem;letter-spacing:.22em;text-transform:uppercase;color:var(--pigo-red)}
+.story-sub{margin-top:.35rem!important;font-size:.875rem;color:var(--navy-500)}
 
 /* ---------- Danh sách khám phá ---------- */
 .ex-grid{list-style:none;margin:0;padding:0;display:grid;column-gap:15px}
@@ -356,18 +405,18 @@ tailwind.config = {
   <!-- ═══════════════════════════════════════════════════════════════════════
        VIDEO NỀN — chỗ duy nhất cần sửa
 
-       1. Bỏ video vào thư mục `videos/` ở gốc repo (ngang hàng với thư mục
-          `home/` và `gallery/`, không phải ngang hàng với file này).
-       2. Sửa đường dẫn trong <source src="..."> bên dưới cho khớp tên file.
-       3. Có ảnh chờ thì điền vào poster="..." (hiện trong lúc video đang tải).
+       CÁCH 1 · YOUTUBE (đang dùng)
+         Điền mã video vào data-youtube="…" ngay bên dưới. Mã là phần sau "v="
+         trong link, ví dụ youtube.com/watch?v=dsfBTeqGD7c → dsfBTeqGD7c.
+         Video phải ở chế độ Không công khai hoặc Công khai (KHÔNG để Riêng tư)
+         và bật "Cho phép nhúng". Trong lúc tải, nền là ảnh thumbnail của video.
 
-       Video nên: .mp4 (H.264), 1920×1080 nằm ngang, 10–20 giây, KHÔNG tiếng,
-       dưới 8 MB. Nó tự chạy, tự lặp, không có nút bấm. Video được chuyển sang
-       đơn sắc magenta cho khớp bảng màu, nên video màu gì cũng hợp.
-
-       Chưa có file cũng không sao — hero sẽ dùng nền đen.
+       CÁCH 2 · FILE MP4
+         Xoá trống data-youtube="" thì trang tự dùng file trong thẻ <video>:
+         bỏ file vào thư mục `videos/` ở gốc repo, sửa <source src="...">.
+         Nên: .mp4 H.264, 1280×720, 10–15 giây, không tiếng, 2–4 MB.
        ═══════════════════════════════════════════════════════════════════════ -->
-  <div class="hx-media" aria-hidden="true">
+  <div class="hx-media" aria-hidden="true" data-youtube="dsfBTeqGD7c">
     <video id="hero-video" autoplay muted loop playsinline preload="auto" poster="">
       <source src="/videos/backgroundtest2.mp4" type="video/mp4">
     </video>
@@ -385,41 +434,38 @@ tailwind.config = {
 
       <div class="col-span-6 lg:col-start-9 lg:col-span-4 2xl:col-start-9 2xl:col-span-3 lg:pb-3 rise">
         <p class="hx-copy"
-           data-en="PiGo Heritage is a partnership between PSH Design and PiGo Tour: Vietnam's monuments and heritage sites rebuilt with 3DGS. Not a photo, not a video — you step into the actual space and look from any angle, right in your browser.">
-          PiGo Heritage là chương trình hợp tác giữa PSH Design và PiGo Tour: dựng lại và số hóa các di tích,
-          di sản Việt Nam bằng công nghệ 3DGS. Không phải ảnh, không phải video — bạn bước vào đúng không gian đó,
-          xoay mọi góc và khám phá mọi ngóc ngách như đang ở đó.
+           data-en="Vietnam's monuments in 3D, scanned by PSH Design. Step inside and look from any angle, right in your browser.">
+          Di tích Việt Nam số hoá 3D bởi PSH Design. Bước vào không gian thật, xoay mọi góc ngay trên trình duyệt.
         </p>
-        <div class="mt-6 flex flex-wrap gap-3">
+        <div class="hx-cta mt-7">
           <a class="btn btn--primary" href="/gallery/" data-en="Heritage library">Thư viện di sản</a>
-          <a class="btn btn--ghost" href="/du-an/" data-en="Projects">Dự án</a>
+          <a class="btn btn--white" href="/du-an/" data-en="Projects">Dự án</a>
         </div>
-        <p class="mt-5 flex flex-wrap gap-x-5 gap-y-2">
-          <a class="hx-link" href="/khach-hang/" data-en="Private scan? Enter project code →">Bản scan riêng? Nhập mã dự án →</a>
-          <a class="hx-link" href="#giao-duc" data-en="Free for schools →">Miễn phí cho trường học →</a>
-        </p>
       </div>
     </div>
   </div>
   <div class="shell relative z-[2]"><div class="phero-rule"></div></div>
   </div>
 
-  <!-- Đối tác: nằm trong hero, nền trong suốt để video chạy phía sau -->
-  <div class="partners" role="region" aria-label="Đơn vị hợp tác" data-en-aria-label="Partners">
+  <!-- Hệ sinh thái: PSH Design và ba thương hiệu PiGo. Nằm trong hero, nền trong suốt để video chạy phía sau -->
+  <div class="partners" role="region" aria-label="Hệ sinh thái PSH Design" data-en-aria-label="The PSH Design family">
     <div class="shell partners-row">
-      <p class="u-eyebrow m-0" data-en="A partnership between">Chương trình hợp tác giữa</p>
+      <p class="u-eyebrow m-0" data-en="One root, three brands">Một gốc rễ, ba thương hiệu</p>
       <a class="plogo plogo-psh" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer"
          aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab">
-        <img src="/assets/pshlogo-white.png" alt="" class="w-[92px]">
+        <img src="/assets/brand/psh-ngang-dark.png" alt="" width="240" height="32">
       </a>
-      <span class="plogo-op" aria-hidden="true">×</span>
-      <a class="plogo plogo-tour" href="https://pigotour.com" target="_blank" rel="noopener noreferrer"
+      <span class="plogo-sep" aria-hidden="true"></span>
+      <a class="plogo" href="https://pigo.com.vn" target="_blank" rel="noopener noreferrer"
+         aria-label="PiGo Bike — mở pigo.com.vn trong tab mới" data-en-aria-label="PiGo Bike — open pigo.com.vn in a new tab">
+        <img src="/assets/brand/bike-gon-dark.png" alt="" width="140" height="34">
+      </a>
+      <a class="plogo" href="https://pigotour.com" target="_blank" rel="noopener noreferrer"
          aria-label="PiGo Tour — mở pigotour.com trong tab mới" data-en-aria-label="PiGo Tour — open pigotour.com in a new tab">
-        <img src="/assets/brand/tour-gon-dark.png" alt="" class="w-[170px]" width="170" height="42">
+        <img src="/assets/brand/tour-gon-dark.png" alt="" width="140" height="34">
       </a>
-      <span class="plogo-op" aria-hidden="true">=</span>
-      <a class="plogo plogo-wide" href="/gallery/" aria-label="PiGo Heritage — thư viện scan" data-en-aria-label="PiGo Heritage — scan library">
-        <img src="/assets/brand/heritage-gon-dark.png" alt="" class="w-[230px]" width="230" height="46">
+      <a class="plogo" href="#gioi-thieu" aria-label="PiGo Heritage — câu chuyện" data-en-aria-label="PiGo Heritage — our story">
+        <img src="/assets/brand/heritage-gon-dark.png" alt="" width="170" height="34">
       </a>
     </div>
   </div>
@@ -668,60 +714,117 @@ tailwind.config = {
 <!-- ============================ TẤM SLATE ============================ -->
 <div class="sheet sheet--slate">
 
-  <!-- Giới thiệu -->
+  <!-- Câu chuyện — nội dung theo "PiGo_PSH_GioiThieu_HeSinhThai" (brand_assets/) -->
   <section id="gioi-thieu" class="pt-16 lg:pt-24">
     <div class="shell">
-      <h2 class="u-display h-xl m-0 max-w-[16ch] rise"
-          data-en="Two companies,<br><span class=&quot;u-grad&quot;>one shared journey</span>">
-        Hai thương hiệu,<br><span class="u-grad">một hành trình</span> chung.
+      <p class="u-eyebrow rise" data-en="Our story">Câu chuyện của chúng tôi</p>
+      <h2 class="u-display h-xl mt-6 mb-0 max-w-[18ch] rise"
+          data-en="Mastering world standards, <span class=&quot;u-grad&quot;>coming home to Vietnam</span>">
+        Chinh phục chuẩn mực thế giới, <span class="u-grad">trở về Việt Nam</span>
       </h2>
 
-      <div class="mt-16 lg:mt-36 grid gap-[15px] md:grid-cols-2 xl:grid-cols-3">
-        <article class="case rise">
-          <p class="case-tags"><span data-en="Capture &amp; build">Bên quét &amp; dựng</span><span>“Being different”</span></p>
-          <div class="case-logo"><img src="/brand_assets/pshlogo.png" alt="PSH Design" class="w-[210px]"></div>
-          <h3 class="case-title" data-en="PSH Design runs the whole technical side of the programme.">PSH Design lo toàn bộ phần kỹ thuật của chương trình.</h3>
-          <p class="case-text"
-             data-en="A design and imaging technology studio: survey, on-site LiDAR scanning, data processing, 3DGS training, and publishing each build to a viewer.">
-            Studio thiết kế và công nghệ hình ảnh: khảo sát, quét LiDAR tại chỗ, xử lý dữ liệu, huấn luyện mô hình 3DGS
-            và đưa bản dựng lên viewer.
-          </p>
-          <div class="case-chips">
-            <span class="case-chip" data-en="LiDAR scanning">Quét LiDAR</span>
-            <span class="case-chip" data-en="3DGS processing">Xử lý 3DGS</span>
-            <span class="case-chip" data-en="Viewer &amp; web embed">Viewer &amp; nhúng web</span>
+      <div class="g12 gap-y-10 mt-14 lg:mt-24">
+        <aside class="col-span-6 lg:col-span-4 rise">
+          <div class="lg:sticky lg:top-[120px]">
+            <a class="story-psh" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer"
+               aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab">
+              <img src="/assets/brand/psh-ngang-light.png" alt="" width="300" height="40">
+            </a>
+            <dl class="story-facts">
+              <div><dt data-en="Founded">Thành lập</dt><dd data-en="2009 · Hanoi">2009 · Hà Nội</dd></div>
+              <div><dt data-en="Work for">Đối tác</dt><dd data-en="Carmakers from Germany, Japan, the UK">Hãng xe Đức, Nhật Bản, Anh</dd></div>
+            </dl>
+            <a class="hx-link inline-block mt-6" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer">pshdesign.com ↗</a>
           </div>
-          <a class="case-link" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer"
-             aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab">pshdesign.com ↗</a>
+        </aside>
+
+        <div class="col-span-6 lg:col-start-6 lg:col-span-7 story-text">
+          <p class="story-lead rise"
+             data-en="In 2009, in the heart of Hanoi, when Vietnam had almost no automotive design industry to speak of, PSH Design was born of a bold, even slightly mad, dream: to build Vietnam’s first wholly Vietnamese automotive and industrial design company, and to give it international stature.">
+            Năm 2009, giữa lòng Hà Nội, khi ngành thiết kế ô tô ở Việt Nam gần như chưa có gì, PSH Design được khai sinh
+            từ một ước mơ táo bạo, thậm chí có phần điên rồ: xây dựng công ty thiết kế ô tô và công nghiệp thuần Việt
+            đầu tiên, và phải đạt tầm vóc quốc tế.
+          </p>
+          <p class="rise"
+             data-en="Seventeen years on, we have steadily taken on the most intricate work in automotive and industrial design, to the most exacting standards of renowned carmakers from Germany, Japan and the United Kingdom. Every surface we shape and every technical model we build is a quiet statement that Vietnamese talent can stand alongside the best in the world.">
+            Mười bảy năm đã trôi qua. Trong suốt chặng đường ấy, chúng tôi bền bỉ đảm nhận những phần việc tinh vi nhất
+            của nghề thiết kế ô tô và công nghiệp, theo những chuẩn mực khắt khe nhất của các hãng xe danh tiếng đến từ
+            Đức, Nhật Bản và Anh. Mỗi đường cong bề mặt, mỗi mô hình kỹ thuật là một lời khẳng định thầm lặng rằng trí
+            tuệ Việt có thể đứng ngang hàng với thế giới.
+          </p>
+          <p class="rise"
+             data-en="For us, going out into the world has never meant leaving home. It has been a long apprenticeship, in which Vietnamese resolve is tempered where the demands are highest. And as with every long journey, the most meaningful moment is the return, carrying with it a mission and a responsibility.">
+            Với chúng tôi, đi ra thế giới chưa bao giờ là rời xa quê hương. Đó là một cuộc rèn luyện dài lâu, để bản
+            lĩnh người Việt được tôi luyện ở những nơi đòi hỏi cao nhất. Và như mọi hành trình dài, khoảnh khắc ý nghĩa
+            nhất là ngày trở về, mang theo một sứ mệnh và trách nhiệm.
+          </p>
+        </div>
+      </div>
+
+      <p class="story-bridge rise" data-en="Today, that knowledge takes three new forms:">Hôm nay, kho tri thức ấy hiện diện trong ba hình hài mới:</p>
+
+      <div class="mt-8 grid gap-[15px] md:grid-cols-2 xl:grid-cols-3">
+        <article class="case rise">
+          <p class="case-tags"><span>PiGo Bike</span><span>pigo.com.vn</span></p>
+          <div class="case-logo"><img src="/assets/brand/bike-gon-light.png" alt="PiGo Bike" class="w-[230px] max-w-full"></div>
+          <h3 class="case-title" data-en="The elegance of green mobility">Vẻ đẹp của sự di chuyển xanh</h3>
+          <p class="case-text"
+             data-en="An electric-assist bicycle under a Vietnamese brand, crafted to the same standards of structure, durability and safety that we pursue in the automotive industry. Free of fumes and noise, and light on energy, PiGo Bike is a graceful choice for those who wish to move with ease and live in harmony with their surroundings, in the city and the countryside alike.">
+            Chiếc xe đạp trợ lực điện mang thương hiệu Việt, được chăm chút bằng chính những tiêu chuẩn về kết cấu, độ bền
+            và an toàn mà chúng tôi theo đuổi trong ngành ô tô. Không khói, không tiếng ồn, tiết kiệm năng lượng, PiGo Bike
+            là một lựa chọn thanh lịch cho những ai muốn di chuyển nhẹ nhàng và sống hài hòa với môi trường, trên phố thị
+            cũng như đường làng.
+          </p>
+          <a class="case-link" href="https://pigo.com.vn" target="_blank" rel="noopener noreferrer"
+             aria-label="PiGo Bike — mở pigo.com.vn trong tab mới" data-en-aria-label="PiGo Bike — open pigo.com.vn in a new tab">pigo.com.vn ↗</a>
         </article>
 
         <article class="case rise">
-          <p class="case-tags"><span data-en="Content &amp; journeys">Bên nội dung &amp; hành trình</span><span data-en="See it for real, then go for real">Đi thật, sau khi đã xem thật</span></p>
+          <p class="case-tags"><span>PiGo Tour</span><span>pigotour.com</span></p>
           <div class="case-logo"><img src="/assets/brand/tour-gon-light.png" alt="PiGo Tour" class="w-[230px] max-w-full"></div>
-          <h3 class="case-title" data-en="PiGo Tour picks the destinations and takes people there.">PiGo Tour chọn điểm đến và đưa người xem tới tận nơi.</h3>
+          <h3 class="case-title" data-en="The art of slowness">Nghệ thuật của sự chậm rãi</h3>
           <p class="case-text"
-             data-en="A travel operator: writes the interpretation for each site, works with site management boards to secure scanning permission, and runs trips for people who want to visit after seeing the scan.">
-            Đơn vị lữ hành: viết thuyết minh cho từng di tích, làm việc với ban quản lý để xin phép quét,
-            và tổ chức chuyến đi cho những người muốn đến tận nơi sau khi đã xem bản scan.
+             data-en="Some landscapes are meant to be seen at the pace of a pedal stroke, not from behind a car window or astride a roaring motorbike. Beginning in Ninh Binh, PiGo Tour invites travellers from Vietnam and abroad to slow down among rice fields, limestone peaks and ancient villages. Each journey lowers emissions, restores quiet to the landscape, brings livelihoods to local communities, and carries the image of a green and welcoming Vietnam to friends around the world.">
+            Có những vùng đất cần được ngắm nhìn bằng nhịp đạp xe, không phải sau ô cửa kính ô tô hay trên yên một chiếc
+            xe máy ồn ào. Khởi đầu từ Ninh Bình, PiGo Tour mời du khách trong nước và quốc tế đi chậm lại giữa đồng lúa,
+            núi đá và những ngôi làng cổ. Mỗi hành trình giảm bớt phát thải, trả lại sự tĩnh lặng cho cảnh quan, mang sinh
+            kế đến cho người dân địa phương, và đưa hình ảnh một Việt Nam xanh, hiếu khách đến với bạn bè năm châu.
           </p>
-          <div class="case-chips">
-            <span class="case-chip" data-en="Destination content">Nội dung điểm đến</span>
-            <span class="case-chip" data-en="Site management liaison">Kết nối ban quản lý</span>
-            <span class="case-chip" data-en="Field tours">Tour thực địa</span>
-          </div>
           <a class="case-link" href="https://pigotour.com" target="_blank" rel="noopener noreferrer"
              aria-label="PiGo Tour — mở pigotour.com trong tab mới" data-en-aria-label="PiGo Tour — open pigotour.com in a new tab">pigotour.com ↗</a>
         </article>
 
-        <article class="case rise md:col-span-2 xl:col-span-1">
-          <p class="case-tags"><span data-en="Where the two meet">Điểm giao thoa</span></p>
-          <div class="case-logo"><img src="/assets/brand/heritage-slogan-light.png" alt="PiGo Heritage" class="w-[320px] max-w-full"></div>
-          <h3 class="case-title" data-en="See it first in 3DGS, then go for real with PiGo Tour.">Xem trước bằng 3DGS, rồi đi thật cùng PiGo Tour.</h3>
-          <p class="case-text" data-en="A scan does not replace the trip — it is the reason to start one.">
-            Bản scan không thay thế chuyến đi — nó khơi nguồn cho chuyến đi ấy.
+        <article class="case case--here rise md:col-span-2 xl:col-span-1">
+          <p class="case-tags"><span>PiGo Heritage</span><span class="case-here" data-en="You are here">Bạn đang ở đây</span></p>
+          <div class="case-logo"><img src="/assets/brand/heritage-gon-dark.png" alt="PiGo Heritage" class="w-[260px] max-w-full"></div>
+          <h3 class="case-title" data-en="Preserving the memory of a nation">Lưu giữ ký ức của một dân tộc</h3>
+          <p class="case-text"
+             data-en="The real-world scanning and technical 3D modelling that have long been PSH’s strength in design now serve a nobler purpose: recording, with precision, every line of our communal houses, pagodas and historic sites. Each digital record is a lasting archive for conservation and restoration, and an open classroom where young Vietnamese and visitors from abroad can admire and understand Vietnamese heritage from anywhere, before they come to see it in person.">
+            Công nghệ quét và mô hình hóa 3D kỹ thuật từ thực tế, thế mạnh nhiều năm của PSH trong thiết kế, nay được dành
+            cho một mục đích cao quý hơn: lưu giữ chính xác từng đường nét của đình, chùa và di tích. Mỗi bản số hóa là một
+            hồ sơ trường tồn cho công tác bảo tồn và phục dựng; đồng thời là một lớp học rộng mở, nơi thế hệ trẻ Việt Nam
+            và bạn bè quốc tế có thể chiêm ngưỡng và thấu hiểu di sản Việt từ bất cứ đâu, trước khi đến tận nơi chiêm bái.
           </p>
           <a class="case-link" href="/gallery/" data-en="Open the scan library →">Mở thư viện scan →</a>
         </article>
+      </div>
+
+      <div class="story-close g12 gap-y-6">
+        <blockquote class="col-span-6 lg:col-span-7 m-0 rise">
+          <p class="story-quote" data-en="Go out to prove.<br><span class=&quot;u-grad&quot;>Come home to give back.</span>">
+            Đi ra thế giới để khẳng định.<br><span class="u-grad">Trở về để đóng góp.</span>
+          </p>
+        </blockquote>
+        <div class="col-span-6 lg:col-start-9 lg:col-span-4 rise">
+          <p class="body-navy"
+             data-en="Three brands, one root. Every carefully designed bike, every journey that brings people closer to the land, every site preserved in digital form shares one spirit: knowledge forged in the wider world, now in service of our country and its people.">
+            Ba thương hiệu, chung một gốc rễ. Mỗi chiếc xe được thiết kế tỉ mỉ, mỗi hành trình đưa con người đến gần hơn
+            với đất nước, mỗi di tích được số hóa đều mang chung một tinh thần: tri thức được hun đúc từ thế giới, nay
+            phục vụ đất nước và dân tộc.
+          </p>
+          <p class="story-slogan">Pioneer Go Curious</p>
+          <p class="story-sub" data-en="Pioneer · Go · Discover">Tiên phong · Lên đường · Khám phá</p>
+        </div>
       </div>
     </div>
   </section>
@@ -803,9 +906,10 @@ tailwind.config = {
       <div class="col-span-6 lg:col-span-6">
         <a class="foot-logo" href="/home/" aria-label="PiGo Heritage — trang chủ" data-en-aria-label="PiGo Heritage — home"><img src="/assets/brand/heritage-slogan-dark.png" alt="" width="380" height="84"></a>
         <div class="foot-partners">
-          <span class="foot-head" data-en="With">Cùng</span>
+          <span class="foot-head" data-en="The family">Cùng hệ sinh thái</span>
+          <a class="foot-ico foot-ico--wide" href="https://pigo.com.vn" target="_blank" rel="noopener noreferrer" aria-label="PiGo Bike — mở pigo.com.vn trong tab mới" data-en-aria-label="PiGo Bike — open pigo.com.vn in a new tab"><img src="/assets/brand/bike-gon-dark.png" alt="" width="110" height="28"></a>
           <a class="foot-ico foot-ico--wide" href="https://pigotour.com" target="_blank" rel="noopener noreferrer" aria-label="PiGo Tour — mở pigotour.com trong tab mới" data-en-aria-label="PiGo Tour — open pigotour.com in a new tab"><img src="/assets/brand/tour-gon-dark.png" alt="" width="110" height="27"></a>
-          <a class="foot-ico foot-ico--wide" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer" aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab"><img src="/assets/pshlogo-white.png" alt="" width="40" height="32"></a>
+          <a class="foot-ico foot-ico--wide" href="https://pshdesign.com" target="_blank" rel="noopener noreferrer" aria-label="PSH Design — mở pshdesign.com trong tab mới" data-en-aria-label="PSH Design — open pshdesign.com in a new tab"><img src="/assets/brand/psh-ngang-dark.png" alt="" width="210" height="28"></a>
         </div>
       </div>
 
@@ -845,8 +949,8 @@ tailwind.config = {
     </div>
 
     <div class="mt-20 lg:mt-28 py-6 border-t border-white/10 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
-      <p class="m-0 text-[.9375rem] font-medium" data-en="<span data-year>2026</span> © PSH Design × PiGo Tour">
-        <span data-year>2026</span> © PSH Design × PiGo Tour
+      <p class="m-0 text-[.9375rem] font-medium" data-en="<span data-year>2026</span> © PSH Design · PiGo Heritage">
+        <span data-year>2026</span> © PSH Design · PiGo Heritage
       </p>
       <p class="m-0 flex flex-wrap gap-x-5 gap-y-2">
         <a class="foot-mono" href="/gallery/" data-en="Scan library">Thư viện scan</a>
@@ -868,6 +972,52 @@ tailwind.config = {
 
   /* ---------- Video nền hero ---------- */
   var v = document.getElementById('hero-video');
+  var media = document.querySelector('.hx-media');
+  var ytId = media && (media.getAttribute('data-youtube') || '').trim();
+
+  if (ytId && /^[\w-]{11}$/.test(ytId)) {
+    /* YouTube: bỏ thẻ <video>, hiện thumbnail ngay, rồi nạp trình phát YouTube.
+       Chỉ cho iframe hiện lên khi video THỰC SỰ đang chạy — tránh màn đen và nút play của YouTube. */
+    if (v) v.remove();
+    v = null;
+    var thumb = document.createElement('img');
+    thumb.className = 'hx-thumb'; thumb.alt = '';
+    thumb.src = 'https://i.ytimg.com/vi/' + ytId + '/maxresdefault.jpg';
+    /* video không có ảnh độ nét cao → YouTube trả về ảnh xám 120px; đổi sang bản hq */
+    thumb.onload = function () { if (thumb.naturalWidth < 200) thumb.src = 'https://i.ytimg.com/vi/' + ytId + '/hqdefault.jpg'; };
+    media.insertBefore(thumb, media.firstChild);
+
+    if (!still) {
+      var box = document.createElement('div');
+      box.className = 'hx-yt';
+      box.innerHTML = '<div id="hx-yt-player"></div>';
+      media.insertBefore(box, thumb.nextSibling);
+
+      window.onYouTubeIframeAPIReady = function () {
+        new YT.Player('hx-yt-player', {
+          videoId: ytId,
+          host: 'https://www.youtube-nocookie.com',
+          playerVars: {
+            autoplay: 1, mute: 1, loop: 1, playlist: ytId, controls: 0, disablekb: 1,
+            fs: 0, iv_load_policy: 3, modestbranding: 1, playsinline: 1, rel: 0
+          },
+          events: {
+            onReady: function (e) { e.target.mute(); e.target.playVideo(); },
+            onStateChange: function (e) {
+              if (e.data === 1) box.classList.add('is-on');           // đang chạy → hiện
+              else if (e.data === 0) e.target.playVideo();            // hết → chạy lại
+            },
+            onError: function () { box.remove(); }                   // bị gỡ / chặn nhúng → giữ thumbnail
+          }
+        });
+      };
+      var s = document.createElement('script');
+      s.src = 'https://www.youtube.com/iframe_api';
+      s.onerror = function () { box.remove(); };
+      document.head.appendChild(s);
+    }
+  }
+
   if (v) {
     /* Chưa gắn file, sai đường dẫn hoặc mạng hỏng → gỡ thẻ <video> đi để lộ nền đen. */
     var src = v.querySelector('source');

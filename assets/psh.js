@@ -1,4 +1,4 @@
-/* PiHeritage — hành vi dùng chung cho cả hai trang */
+/* PiGo Heritage — hành vi dùng chung cho cả hai trang */
 (function () {
   'use strict';
 
@@ -7,10 +7,10 @@
   var reduce = window.PSH_STILL || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* --- Thanh nav khi cuộn ---
-     Ở đỉnh trang: đầy đủ logo + chữ PiHeritage.
+     Ở đỉnh trang: đầy đủ logo + chữ PiGo Heritage.
      Kéo xuống: nav trượt lên ẩn đi, đồng thời thu gọn logo (lúc đang ẩn nên không ai thấy nó co lại).
      Kéo ngược lên: nav hiện lại ở dạng gọn — chỉ còn biểu tượng.
-     Về lại đỉnh trang: chữ PiHeritage hiện ra như cũ. */
+     Về lại đỉnh trang: chữ PiGo Heritage hiện ra như cũ. */
   var nav = document.getElementById('nav');
   if (nav) {
     var TOP = 12;        // coi như đang ở đỉnh trang
